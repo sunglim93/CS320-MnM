@@ -1,1 +1,6 @@
-This is a readme
+Basic Combat Module
+
+- Enter commands via command line
+- Pygame should render a graphical representation for testing
+- There are some index out of bounds errors still lurking around
+- Mostly coming from malformed input
