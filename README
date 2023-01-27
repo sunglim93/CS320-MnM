@@ -1,7 +1,16 @@
-Basic Combat Module
+Welcome to Satchel's branch!
+
+Basic_Combat_Module
 
 - Enter commands via command line
 - Input 'exit' on the CL to exit module
 - Pygame should render a graphical representation for testing
 - There are some index out of bounds errors still lurking around
 - Mostly coming from malformed input
+- Enemy MP bar is not updating properly
+
+Game_Classes
+
+- Holds classes like Player, Enemy, & Spell
+
+
