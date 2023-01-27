@@ -1,116 +1,10 @@
+"""This is a simple combat module that allows
+for testing of basic combat functionality"""
+
+import game_classes as gc
 import pygame as pg
 import random as rd
 import time
-
-class Player:
-    def __init__(self, name, hp, mp, atk, df, magic):
-        self.name = name
-        self.max_hp = hp
-        self.hp = hp
-        self.max_mp = mp
-        self.mp = mp
-        self.atk_low = atk - 10
-        self.atk_high = atk + 10
-        self.df = df
-        self.magic = magic
-        self.actions = ["Attack", "Magic"]
-
-    def generateDamage(self):
-        return rd.randrange(self.atk_low, self.atk_high)
-
-    def takeDamage(self, damage):
-        self.hp -= damage
-        if self.hp < 0:
-            self.hp = 0
-        return self.hp
-
-    def heal(self, heal_amt):
-        self.hp += heal_amt
-        if self.hp > self.max_hp:
-            self.hp = self.max_hp
-
-    def getHP(self):
-        return self.hp
-
-    def getMaxHP(self):
-        return self.max_hp
-
-    def getMP(self):
-        return self.mp
-
-    def getMaxMP(self):
-        return self.max_mp
-
-    def drainMP(self, cost):
-        self.mp -= cost
-
-    def chooseAction(self):
-        i = 1
-        print("Actions")
-        for item in self.actions:
-            print(str(i) + ":", item)
-            i += 1
-
-    def chooseMagic(self):
-        i = 1
-        print("Magic")
-        for spell in self.magic:
-            print(str(i) + ":", spell.name, "(cost:", str(spell.cost) + ")")
-            i += 1
-
-class Enemy:
-    def __init__(self, name, hp, mp, atk, df, magic):
-        self.name = name
-        self.max_hp = hp
-        self.hp = hp
-        self.mp = mp
-        self.atk = atk
-        self.df = df
-        self.magic = [Fire("Fire", 20, 100)]
-
-    def generateDamage(self):
-        return rd.randint(self.atk // 2, self.atk)
-
-    def takeDamage(self, damage):
-        self.hp -= damage
-        if self.hp < 0:
-            self.hp = 0
-
-    def getHP(self):
-        return self.hp
-
-    def getMP(self):
-        return self.mp
-
-    def drainMP(self, cost):
-        self.mp -= cost
-
-    def enemyAI(self):
-        enemy_choice = rd.choice(["Attack", "Magic"])
-        if enemy_choice == "Attack":
-            return "Attack"
-        elif enemy_choice == "Magic" and self.mp >= self.magic[0].cost:
-            return "Magic"
-
-class Spell:
-    def __init__(self, name, cost, damage, type):
-        self.name = name
-        self.cost = cost
-        self.damage = damage
-        self.type = type
-
-    def generateDamage(self):
-        low = self.damage - 15
-        high = self.damage + 15
-        return rd.randrange(low, high)
-
-class Fire(Spell):
-    def __init__(self, name, cost, dmg):
-        super().__init__(name, cost, dmg, "Fire")
-        
-class Shock(Spell):
-    def __init__(self, name, cost, dmg):
-        super().__init__(name, cost, dmg, "Shock")
 
 def drawHealthBar(health, max_health, x, y, width, height):
     # Calculate the percentage of health remaining
@@ -136,11 +30,11 @@ height = 600
 size = (width, height)
 screen = pg.display.set_mode(size)
 
-fire = Fire("Fire", 20, 100)
-Shock = Shock("Shock", 30, 125)
+fire = gc.Fire("Fire", 20, 100)
+shock = gc.Shock("Shock", 30, 125)
 
-player = Player("Player", 500, 60, 60, 34, [fire, Shock])
-enemy = Enemy("Enemy", 400, 34, 25, 34, [Fire])
+player = gc.Player("Player", 500, 60, 60, 34, [fire, shock])
+enemy = gc.Enemy("Enemy", 400, 34, 25, 34, [fire])
 
 # Main game loop
 running = True
@@ -155,7 +49,7 @@ while running:
     drawHealthBar(player.hp, player.max_hp, 10, 10, 100, 20)
     drawManaBar(player.mp, player.max_mp, 10, 40, 100, 20)
     drawHealthBar(enemy.hp, enemy.max_hp, 680, 10, 100, 20)
-    drawManaBar(player.mp, player.max_mp, 680, 40, 100, 20)
+    drawManaBar(enemy.mp, enemy.max_mp, 680, 40, 100, 20)
     pg.display.update()
 
     # Get player input
@@ -185,7 +79,7 @@ while running:
             print("You cast", player.magic[magic_choice].name, "and dealt", magic_dmg, "damage.")
         else:
             print("Not enough MP.")
-    else:
+    elif player_choice != "exit":
         print("Invalid input.")
 
     # Check if the enemy is still alive
