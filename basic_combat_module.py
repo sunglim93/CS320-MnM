@@ -1,5 +1,5 @@
-import pygame
-import random
+import pygame as pg
+import random as rd
 import time
 
 class Player:
@@ -16,7 +16,7 @@ class Player:
         self.actions = ["Attack", "Magic"]
 
     def generateDamage(self):
-        return random.randrange(self.atk_low, self.atk_high)
+        return rd.randrange(self.atk_low, self.atk_high)
 
     def takeDamage(self, damage):
         self.hp -= damage
@@ -69,7 +69,7 @@ class Enemy:
         self.magic = [Fire("Fire", 20, 100)]
 
     def generateDamage(self):
-        return random.randint(self.atk // 2, self.atk)
+        return rd.randint(self.atk // 2, self.atk)
 
     def takeDamage(self, damage):
         self.hp -= damage
@@ -86,7 +86,7 @@ class Enemy:
         self.mp -= cost
 
     def enemyAI(self):
-        enemy_choice = random.choice(["Attack", "Magic"])
+        enemy_choice = rd.choice(["Attack", "Magic"])
         if enemy_choice == "Attack":
             return "Attack"
         elif enemy_choice == "Magic" and self.mp >= self.magic[0].cost:
@@ -102,7 +102,7 @@ class Spell:
     def generateDamage(self):
         low = self.damage - 15
         high = self.damage + 15
-        return random.randrange(low, high)
+        return rd.randrange(low, high)
 
 class Fire(Spell):
     def __init__(self, name, cost, dmg):
@@ -116,25 +116,25 @@ def drawHealthBar(health, max_health, x, y, width, height):
     # Calculate the percentage of health remaining
     health_percent = health / max_health
     # Draw the background of the health bar
-    pygame.draw.rect(screen, (255, 0, 0), (x, y, width, height))
+    pg.draw.rect(screen, (255, 0, 0), (x, y, width, height))
     # Draw the current health as a filled portion of the bar
-    pygame.draw.rect(screen, (0, 255, 0), (x, y, width * health_percent, height))
+    pg.draw.rect(screen, (0, 255, 0), (x, y, width * health_percent, height))
 
 def drawManaBar(mana, max_mana, x, y, width, height):
     # Calculate the percentage of health remaining
     mana_percent = mana / max_mana
     # Draw the background of the health bar
-    pygame.draw.rect(screen, (255, 0, 255), (x, y, width, height))
+    pg.draw.rect(screen, (255, 0, 255), (x, y, width, height))
     # Draw the current health as a filled portion of the bar
-    pygame.draw.rect(screen, (90, 50, 255), (x, y, width * mana_percent, height))
+    pg.draw.rect(screen, (90, 50, 255), (x, y, width * mana_percent, height))
 
-pygame.init()
-
+pg.init()
+pg.display.set_caption("Metal & Magic")
 # Set up the display
 width = 800
 height = 600
 size = (width, height)
-screen = pygame.display.set_mode(size)
+screen = pg.display.set_mode(size)
 
 fire = Fire("Fire", 20, 100)
 Shock = Shock("Shock", 30, 125)
@@ -145,18 +145,18 @@ enemy = Enemy("Enemy", 400, 34, 25, 34, [Fire])
 # Main game loop
 running = True
 while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for event in pg.event.get():
+        if event.type == pg.QUIT:
             running = False
 
     # Draw the player and enemy
-    pygame.draw.rect(screen, (0, 0, 255), (width/2-25, height/2-25, 50, 50))
-    pygame.draw.circle(screen, (255, 0, 0), (width/2+100, height/2), 25)
+    pg.draw.rect(screen, (0, 0, 255), (width/2-25, height/2-25, 50, 50))
+    pg.draw.circle(screen, (255, 0, 0), (width/2+100, height/2), 25)
     drawHealthBar(player.hp, player.max_hp, 10, 10, 100, 20)
     drawManaBar(player.mp, player.max_mp, 10, 40, 100, 20)
     drawHealthBar(enemy.hp, enemy.max_hp, 680, 10, 100, 20)
     drawManaBar(player.mp, player.max_mp, 680, 40, 100, 20)
-    pygame.display.update()
+    pg.display.update()
 
     # Get player input
     player_choice = input("Choose an action: ")
@@ -190,14 +190,14 @@ while running:
 
     # Check if the enemy is still alive
     if enemy.getHP() == 0:
-        pygame.display.update()
+        pg.display.update()
         print("You have defeated the enemy.")
         # Add the following lines:
-        pygame.draw.rect(screen, (255,255,255), (width/2+100, height/2, 25, 25)) # Clear the enemy square
-        font = pygame.font.Font(None, 30)
+        pg.draw.rect(screen, (255,255,255), (width/2+100, height/2, 25, 25)) # Clear the enemy square
+        font = pg.font.Font(None, 30)
         text = font.render("VICTORY!", True, (255, 0, 0))
         screen.blit(text, (width/2 - 50, height/2 + 50)) # Add the text to screen
-        pygame.display.update() # Update the screen
+        pg.display.update() # Update the screen
 
     else:
         time.sleep(0.5)
@@ -211,4 +211,4 @@ while running:
             print("The enemy cast", enemy.magic[0].name, "and dealt", magic_dmg, "damage.")
 
 # End the game
-pygame.quit()
+pg.quit()
