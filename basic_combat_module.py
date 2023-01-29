@@ -1,6 +1,7 @@
 """This is a simple combat module that allows
 for testing of basic combat functionality"""
 
+
 import game_classes as gc
 import pygame as pg
 import random as rd
@@ -44,12 +45,13 @@ while running:
             running = False
 
     # Draw the player and enemy
-    pg.draw.rect(screen, (0, 0, 255), (width/2-25, height/2-25, 50, 50))
-    pg.draw.circle(screen, (255, 0, 0), (width/2+100, height/2), 25)
+
     drawHealthBar(player.hp, player.max_hp, 10, 10, 100, 20)
     drawManaBar(player.mp, player.max_mp, 10, 40, 100, 20)
     drawHealthBar(enemy.hp, enemy.max_hp, 680, 10, 100, 20)
     drawManaBar(enemy.mp, enemy.max_mp, 680, 40, 100, 20)
+    screen.blit(player.size, player.rect)
+    screen.blit(enemy.size, enemy.rect)
     pg.display.update()
 
     # Get player input
@@ -88,8 +90,8 @@ while running:
         print("You have defeated the enemy.")
         font = pg.font.Font(None, 30)
         text = font.render("VICTORY!", True, (255, 0, 0))
-        screen.blit(text, (width/2 - 50, height/2 + 50)) 
-        pg.display.update() 
+        screen.blit(text, (width/2 - 50, height/2 + 50)) # Add the text to screen
+        pg.display.update() # Update the screen
 
     else:
         time.sleep(0.5)

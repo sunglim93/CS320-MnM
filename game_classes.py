@@ -16,6 +16,11 @@ class Player:
         self.df = df
         self.magic = magic
         self.actions = ["Attack", "Magic"]
+        self.rect = pg.Rect(200, 450, 50, 50)
+        self.sprite = pg.Surface((32, 32))
+        self.sprite.fill((255, 0, 0))
+        self.image = pg.image.load('player.png')
+        self.size = pg.transform.scale(self.image, (64, 64))
 
     def generateDamage(self):
         return rd.randrange(self.atk_low, self.atk_high)
@@ -70,6 +75,11 @@ class Enemy:
         self.atk = atk
         self.df = df
         self.magic = [Fire("Fire", 20, 100)]
+        self.rect = pg.Rect(400, 400, 50, 50)
+        self.sprite = pg.Surface((32, 32))
+        self.sprite.fill((255, 0, 0))
+        self.image = pg.image.load('enemy.png')
+        self.size = pg.transform.scale(self.image, (128, 128))
 
     def generateDamage(self):
         return rd.randint(self.atk // 2, self.atk)
@@ -84,6 +94,9 @@ class Enemy:
 
     def getMP(self):
         return self.mp
+
+    def getMaxMP(self):
+        return self.max_mp
 
     def drainMP(self, cost):
         self.mp -= cost
