@@ -86,12 +86,10 @@ while running:
     if enemy.getHP() == 0:
         pg.display.update()
         print("You have defeated the enemy.")
-        # Add the following lines:
-        pg.draw.rect(screen, (255,255,255), (width/2+100, height/2, 25, 25)) # Clear the enemy square
         font = pg.font.Font(None, 30)
         text = font.render("VICTORY!", True, (255, 0, 0))
-        screen.blit(text, (width/2 - 50, height/2 + 50)) # Add the text to screen
-        pg.display.update() # Update the screen
+        screen.blit(text, (width/2 - 50, height/2 + 50)) 
+        pg.display.update() 
 
     else:
         time.sleep(0.5)
