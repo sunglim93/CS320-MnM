@@ -1,1 +1,7 @@
-This is a readme
+Basic Combination QTE
+
+Directions:
+Press left ctrl to start QTE
+Follow button prompts
+  Wrong button press will result in a failure
+  Not completing the QTE in 3 seconds will result in a failure
