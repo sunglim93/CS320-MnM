@@ -1,11 +1,18 @@
-"""This module holds game classes"""
-
 import pygame as pg
 import random as rd
 import time
 
+class Window:
+    def __init__(self, width, height):
+        pg.init()
+        pg.display.set_caption("Metal & Magic")
+        self.width = width
+        self.height = height
+        size = (self.width, self.height)
+        self.res = pg.display.set_mode(size)
+
 class Player:
-    def __init__(self, name, hp, mp, atk, df, magic):
+    def __init__(self, name, x, y, hp, mp, atk, df, magic, weapon):
         self.name = name
         self.max_hp = hp
         self.hp = hp
@@ -16,10 +23,11 @@ class Player:
         self.df = df
         self.magic = magic
         self.actions = ["Attack", "Magic"]
-        self.rect = pg.Rect(200, 450, 50, 50)
+        self.weapon = weapon
+        self.rect = pg.Rect(x, y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load('player.png')
+        self.image = pg.image.load(f"../view/player.png")
         self.size = pg.transform.scale(self.image, (64, 64))
 
     def generateDamage(self):
@@ -66,7 +74,7 @@ class Player:
             i += 1
 
 class Enemy:
-    def __init__(self, name, hp, mp, atk, df, magic):
+    def __init__(self, name, x, y, hp, mp, atk, df, magic):
         self.name = name
         self.max_hp = hp
         self.hp = hp
@@ -75,10 +83,10 @@ class Enemy:
         self.atk = atk
         self.df = df
         self.magic = [Fire("Fire", 20, 100)]
-        self.rect = pg.Rect(400, 400, 50, 50)
+        self.rect = pg.Rect(x, y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load('enemy.png')
+        self.image = pg.image.load(f"../view/enemy.png")
         self.size = pg.transform.scale(self.image, (128, 128))
 
     def generateDamage(self):
@@ -127,4 +135,8 @@ class Fire(Spell):
 class Shock(Spell):
     def __init__(self, name, cost, dmg):
         super().__init__(name, cost, dmg, "Shock")
+
+class KarateKick(Spell):
+    def __init__(self, name, cost, dmg):
+        super().__init__(name, cost, dmg, "Karate Kick")
         

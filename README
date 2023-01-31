@@ -1,16 +1,14 @@
-Welcome to Satchel's branch!
-
-Basic_Combat_Module
+combat_module:
 - Enter commands via command line
 - Enter '1' for attack
-- Enter '2' for spell
+- Enter '2-6' for spell or ability
 - Enter 'exit' to exit module
 - Pygame should render a graphical representation for testing
 - There are some index out of bounds errors still lurking around
 - Mostly coming from malformed input
 - Enemy MP bar is not updating properly
 
-Game_Classes
+classes:
 - Holds classes like Player, Enemy, & Spell
 
 
