@@ -1,8 +1,14 @@
-Basic Combination QTE
+QTEs
+
+To run:
+  Open Terminal
+  Navigate to folder containing MnM.py
+  "python3 MnM.py" to run
 
 Directions:
+
 Press left ctrl to start combo QTE
-Follow button prompts
+  Follow button prompts
   Wrong button press will result in a failure
   Not completing the QTE in 3 seconds will result in a failure
 
