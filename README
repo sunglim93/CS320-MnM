@@ -1,10 +1,14 @@
 QTEs
 
 To run:
-  Open Terminal
-  Navigate to folder containing MnM.py
-  "python3 MnM.py" to run
-
+  Linux:
+    Open Terminal
+    Navigate to folder containing MnM.py
+    "python3 MnM.py" to run
+  Windows:
+    Start menu > Run; type in cmd
+    "python <path name>MnM.py" to run
+    
 Directions:
 
 Press left ctrl to start combo QTE
