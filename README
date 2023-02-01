@@ -1,10 +1,15 @@
 Basic Combination QTE
 
 Directions:
-Press left ctrl to start QTE
+Press left ctrl to start combo QTE
 Follow button prompts
   Wrong button press will result in a failure
   Not completing the QTE in 3 seconds will result in a failure
+
+Press right ctrl to start slider QTE
+  Press z in the correct zone of the slider.
+  Not completeing the QTE within 3 seconds will result in a failure
+  Pressing z when the center of the slider rectangle isn't within the correct zone will result in a failure
   
 NOTES:
 Will need the Assets folder in the same directory as the .py file because it uses it for the text font
