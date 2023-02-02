@@ -219,6 +219,9 @@ def handleComboQTE():
 
 def main():
 	WIN.fill((255,255,255))
+	WIN.blit(FONT.render("Press R ctrl to start combo QTE", True, 'black'), (0,0))
+	WIN.blit(FONT.render("Press L ctrl to start slider QTE", True, 'black'), (0,100))
+	WIN.blit(FONT.render("Press '=' to start multi hit QTE", True, 'black'), (0,200))
 	pygame.display.update()
 	run = True
 	while run:
