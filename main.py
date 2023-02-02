@@ -1,14 +1,19 @@
 import pygame
 import game
 
+#initializing the game state and such
 pygame.init()
 screen = pygame.display.set_mode((800,600))
+
+#setting the text color and size 
 TEXT_COL = ("#ffffff")
 pygame.display.flip()
-
-game = game.Game()
 font = pygame.font.SysFont("arialblack",40)
 
+#instanciating the game 
+game = game.Game()
+
+#method for displaying text on screen
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
     screen.blit(img,(x,y))

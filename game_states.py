@@ -2,7 +2,15 @@ import pygame
 import game
 from random import random
 
+
+# Abstract class that provides methods
+# that each GameState method should have
+# to ensure functionality
 class GameState():
+
+    # When instanciating one of the following
+    # GameState classes, you should pass the current
+    # Game class.
     def getName(self):
         pass
     def getBackground(self):
