@@ -139,4 +139,8 @@ class Shock(Spell):
 class KarateKick(Spell):
     def __init__(self, name, cost, dmg):
         super().__init__(name, cost, dmg, "Karate Kick")
+
+class PsionicStorm(Spell):
+    def __init__(self, name, cost, dmg):
+        super().__init__(name, cost, dmg, "Psionic Storm")
         
