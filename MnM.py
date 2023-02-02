@@ -29,6 +29,82 @@ def drawCursor(curr):
 	x = 100
 	y = 50
 	WIN.blit((FONT.render('V', True, 'red')), (x+(100 * curr),y))
+
+def checkSlider(buttonRect, sliderZone, keyPresses, i): #helper func to check if the cursor is within the sliderZone or not
+	if (buttonRect.center[0] <= sliderZone.right 
+		and buttonRect.center[0] >= sliderZone.left
+		and not keyPresses[i]):
+		keyPresses[i] = True
+		return 1
+	else:
+		keyPresses[i] = True
+		return 0 #this helper func is for the handleTimeSliderQTE()
+
+def handleTimeSliderQTE(numHits): #for multi-hit attacks; every success will translate to a hit
+	quick = True
+	randomList = [] #list to hold the values to spawn slider zones at
+	zoneWidth = 50
+	zoneHeight = 50
+	playerLeeWay = 100 #value to give the player time to react to the start of the QTE
+	
+	success = 0 #var to hold all the successes in the QTE
+	keyPresses = [False, False, False] #keep track of key presses for each slider region
+	sliderZones = [] #list to hold all the slider zones to be created
+	speed = 4 #speed of the slider, can change for higher difficulties
+	randomRanges = []
+
+	sliderRect = pygame.Rect(100, 150, 500, 36) #create slider
+	offset = (zoneHeight - sliderRect.height)//2
+	buttonRect = pygame.Rect(sliderRect.left, sliderRect.top - offset, 10, zoneHeight) #create slider button
+	
+	x = sliderRect.left+playerLeeWay #starting position for first region
+	regionWidth = (sliderRect.width - playerLeeWay)//numHits #determine the width of each region
+	
+	for i in range(numHits):
+		xPrime = x+regionWidth
+		randomRanges.append((x, xPrime))
+		x = xPrime
+
+	for r in randomRanges: #generate a list of random numbers to spawn slider zones
+		randomNum = random.randint(r[0], r[1] - zoneWidth)
+		randomList.append(randomNum)
+
+	for i in range(3): #create rects at the random spots in each region of the slider
+		sliderZones.append(pygame.Rect(randomList[i], sliderRect.top - offset, zoneWidth, zoneHeight))
+	
+	while quick:
+		clock.tick(FPS)
+		WIN.fill((255,255,255)) #bg
+		WIN.blit(FONT.render("Press Z", True, 'black'), (0,0))
+		WIN.blit(FONT.render("Successes: {}".format(success), True, 'black'), (300, 0)) #show number of successes on screen
+		buttonRect.x += speed #move slider
+		if buttonRect.right >= sliderRect.right: #end loop once button reaches the end of the slider
+			quick = False
+			return success #returns the num of successes for the attack
+		pygame.draw.rect(WIN, 'black', sliderRect) #draw slider
+		for i in sliderZones: #draw slider zones
+			pygame.draw.rect(WIN, 'blue', i)
+		pygame.draw.rect(WIN, 'red', buttonRect) #draw slider button
+		pygame.display.update()
+		'''When z button press is detected, check the position of the 
+		slider button. Check if the button is in range of the slider zone
+		in its respective range. If it is within the slider zone, increment
+		success and change its respective key press to True. Otherwise,
+		just turn the key press to True to "consume" the key press for that
+		region. Repeat until all 3 regions have been checked.'''
+		for event in pygame.event.get():
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_z:
+					if (buttonRect.center[0] >= sliderRect.left #There's probably a better way to implement this
+						and buttonRect.center[0] <= sliderZones[0].right):
+						success += checkSlider(buttonRect, sliderZones[0], keyPresses, 0)
+					if (buttonRect.center[0] >= sliderZones[0].right 
+						and buttonRect.center[0] <= sliderZones[1].right):
+						success += checkSlider(buttonRect, sliderZones[1], keyPresses, 1)
+					if (buttonRect.center[0] >= sliderZones[1].right 
+						and buttonRect.center[0] <= sliderRect.right):
+						success += checkSlider(buttonRect, sliderZones[2], keyPresses, 2)		
+
 def handleSliderQTE(): #press z within the correct zone to succeed QTE
 	quick = True
 	sliderRect = pygame.Rect(100, 150, 200, 36) #create rects
@@ -157,6 +233,8 @@ def main():
 					handleComboQTE()
 				if event.key == pygame.K_RCTRL:
 					handleSliderQTE()
+				if event.key == pygame.K_EQUALS:
+					handleTimeSliderQTE(3)
 	pygame.quit()
 
 if __name__ == "__main__":

@@ -7,6 +7,11 @@ To run:
     "python3 MnM.py" to run
     
 Directions:
+    
+Press '=' key to start the multi-hit QTE
+    Press 'z' when the cursor is over the randomized slider zones
+    Each success translates to a hit
+    Missing the specified zone will result in a failure for that zone
 
 Press left ctrl to start combo QTE
   Follow button prompts
