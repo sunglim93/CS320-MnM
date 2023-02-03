@@ -58,6 +58,7 @@ def main():
             if turn == 0:
                 if event.type == pg.MOUSEBUTTONUP:
                     mouse_pos = event.pos
+                    c = -1
                     if exit_button.collidepoint(mouse_pos):
                         running = False
                     elif attack_button.collidepoint(mouse_pos):
@@ -69,37 +70,36 @@ def main():
                         window.res.blit(text, (window.width/2 - 350, window.height/2 + 50))
                         pg.display.update()
                         turn = 1
-                    else:
-                        if magic_button_0.collidepoint(mouse_pos):
-                            c = 0
-                        if magic_button_1.collidepoint(mouse_pos):
-                            c = 1
-                        if magic_button_2.collidepoint(mouse_pos):
-                            c = 2
-                        if magic_button_3.collidepoint(mouse_pos):
-                            c = 3
-                        if c >= 0 and c <= 3:
-                            magic_choice = player.magic[c]
-                            magic_dmg = player.magic[c].generateDamage()
-                            magic_cost = player.magic[c].cost
-                            if player.getMP() >= magic_cost:
-                                player.drainMP(magic_cost)
-                                enemy.takeDamage(magic_dmg)
-                                pg.draw.rect(window.res, (0,0,0), clear_text)
-                                text = font.render("You cast " + player.magic[c].name + " and dealt " \
-                                + str(magic_dmg) + " damage.", True, (255, 0, 0))
-                                window.res.blit(text, (window.width/2 - 250, window.height/2 + 50))
-                                pg.display.update()
-                                turn = 1
-                            else:
-                                pg.draw.rect(window.res, (0,0,0), clear_text)
-                                text = font.render("Not enough MP.", True, (255, 0, 0))
-                                window.res.blit(text, (window.width/2 - 250, window.height/2 + 50))
-                                pg.display.update()
-                                continue
+                    elif magic_button_0.collidepoint(mouse_pos):
+                        c = 0
+                    elif magic_button_1.collidepoint(mouse_pos):
+                        c = 1
+                    elif magic_button_2.collidepoint(mouse_pos):
+                        c = 2
+                    elif magic_button_3.collidepoint(mouse_pos):
+                        c = 3
+                    if c >= 0 and c <= 3:
+                        magic_choice = player.magic[c]
+                        magic_dmg = player.magic[c].generateDamage()
+                        magic_cost = player.magic[c].cost
+                        if player.getMP() >= magic_cost:
+                            player.drainMP(magic_cost)
+                            enemy.takeDamage(magic_dmg)
+                            pg.draw.rect(window.res, (0,0,0), clear_text)
+                            text = font.render("You cast " + player.magic[c].name + " and dealt " \
+                            + str(magic_dmg) + " damage.", True, (255, 0, 0))
+                            window.res.blit(text, (window.width/2 - 250, window.height/2 + 50))
+                            pg.display.update()
+                            turn = 1
+                        else:
+                            pg.draw.rect(window.res, (0,0,0), clear_text)
+                            text = font.render("Not enough MP.", True, (255, 0, 0))
+                            window.res.blit(text, (window.width/2 - 250, window.height/2 + 50))
+                            pg.display.update()
+                            continue
 
             if turn == 1:
-                time.sleep(1.2)
+                time.sleep(1)
                 if enemy.getHP() == 0:
                     pg.draw.rect(window.res, (0,0,0), clear_text)
                     text = font.render(enemy.name + " has been defeated! " + player.name
