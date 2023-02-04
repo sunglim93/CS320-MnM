@@ -1,5 +1,14 @@
 import pygame as pg
 
+class Window:
+    def __init__(self, width, height, title):
+        pg.init()
+        pg.display.set_caption(title)
+        self.width = width
+        self.height = height
+        size = (self.width, self.height)
+        self.res = pg.display.set_mode(size)
+        
 def drawHealthBar(health, max_health, res, x, y, width, height):
     health_percent = health / max_health
     pg.draw.rect(res, (255, 0, 0), (x, y, width, height))
