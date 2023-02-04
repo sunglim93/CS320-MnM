@@ -1,13 +1,12 @@
 combat_module:
-- Enter commands via command line:
-- '1' for attack
-- '2' for spell / ability menu
-- 'exit' to exit module
+- Green button -> Basic Attack
+- Blue buttons -> Abilities
+- Red button -> Exit
 
 classes:
 - Holds classes like Player, Enemy, & Spell
 
 user_interface:
-- will hold UI elements
+Holds UI elements
 
 
