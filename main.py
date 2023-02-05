@@ -6,9 +6,9 @@ pygame.init()
 screen = pygame.display.set_mode((800,600))
 
 #setting the text color and size 
-TEXT_COL = ("#ffffff")
+TEXT_COL = ("#bce7fc")
 pygame.display.flip()
-font = pygame.font.SysFont("arialblack",40)
+font = pygame.font.Font("assets/alagard.ttf",40)
 
 clock = pygame.time.Clock()
 FPS = 60
@@ -24,12 +24,17 @@ def draw_text(text, font, text_col, x, y):
 while game.running():
     state = game.get_state()
     screen.fill(state.getBackground())
+    state.loadUI(screen)
     draw_text(state.getName(), font, TEXT_COL, 160, 250)
     #event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game.quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                game.transitionToMenu()
         state.handleActions(event)
+  
 
     clock.tick(FPS)
     pygame.display.update()
