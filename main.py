@@ -10,6 +10,9 @@ TEXT_COL = ("#ffffff")
 pygame.display.flip()
 font = pygame.font.SysFont("arialblack",40)
 
+clock = pygame.time.Clock()
+FPS = 60
+
 #instanciating the game 
 game = game.Game()
 
@@ -28,5 +31,5 @@ while game.running():
             game.quit()
         state.handleActions(event)
 
-
+    clock.tick(FPS)
     pygame.display.update()
