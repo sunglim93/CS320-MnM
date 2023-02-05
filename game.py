@@ -21,16 +21,14 @@ class Game():
     def get_state(self):
         return self.cur_state
     
-    #lists all states and allows a transition to the next state
-    def transitionToNext(self, state):
-        if state == "MENU":
-            self.cur_state = game_states.Menu(self)
-        elif state == "LOAD":
-            self.cur_state = game_states.Loading(self)
-        elif state == "COMBAT":
-            self.cur_state = game_states.Combat(self)
-        elif state == "SHOP":
-            self.cur_state = game_states.Shop(self)
+    def transitionToLoad(self):
+        self.cur_state = game_states.Loading(self)
+    def transitionToMenu(self):
+        self.cur_state = game_states.Menu(self)
+    def transitionToCombat(self):
+        self.cur_state = game_states.Combat(self)
+    def transitionToShop(self):
+        self.cur_state = game_states.Shop(self)
     
     #allows main loop to check the game is still running
     def running(self):
