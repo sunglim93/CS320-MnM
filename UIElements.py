@@ -1,6 +1,6 @@
 import pygame
 pygame.font.init()
-UI_font = pygame.font.Font("assets/alagard.ttf",30)
+UI_font = pygame.font.Font("assets/alagard.ttf",24)
 
 
 def default_action():
@@ -53,3 +53,22 @@ class Button():
             self.bot_rect.height = self.top_rect_original_height            
             self.dynamic_elevation = self.elevation
             UI_font.set_italic(False)
+
+class HealthBar():
+
+    def __init__(self, cur, max, pos, height, width):
+        self.cur = cur
+        self.max = max
+        self.base_color = "#bce7fc"
+        self.border_color = "#031d44"
+        self.cur_color = "#d6896f"
+        self.rect_base = pygame.Rect(pos, (height, width))
+        self.rect_cur = pygame.Rect(pos, ((cur/max)*(height-3), width-3))
+        self.text = str(cur) + " / " + str(max)
+        self.text_surface = UI_font.render(self.text,False,"#00060e")
+        self.text_rect = self.text_surface.get_rect(center = self.rect_base.center)
+        
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.border_color, self.rect_base, border_radius=4)
+        pygame.draw.rect(surface, self.cur_color, self.rect_cur, border_radius=4)
+        surface.blit(self.text_surface, self.text_rect)
