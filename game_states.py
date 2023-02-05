@@ -70,8 +70,10 @@ class Combat(GameState):
     
     def __init__(self, g):
         self.name = "COMBAT"
-        self.background = "#d6896f"
+        self.background = "#dab785"
         self.game = g
+        self.cur = 100
+        self.healthbar = UIElements.HealthBar(self.cur, 100, (50,50))
 
     def getName(self):
         return self.name
@@ -80,9 +82,13 @@ class Combat(GameState):
         return self.background
     
     def loadUI(self,surface):
+        self.healthbar.update(self.cur, 100)
+        self.healthbar.draw(surface)
         pass
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_h:
+                self.cur -= 10
             if event.key == pygame.K_SPACE:
                 self.game.transitionToLoad()
 

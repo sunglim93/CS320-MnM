@@ -106,15 +106,28 @@ class HealthBar():
     def __init__(self, cur, max, pos, height=30, width=200):
         self.cur = cur
         self.max = max
+        self.pos = pos
+        self.height = height
+        self.width = width
         # delcaring the rectangles for display
         self.base_color = "#031d44"
         self.cur_color = "#d6896f"
-        self.rect_base = pygame.Rect(pos, (height, width))
-        self.rect_cur = pygame.Rect(pos, ((cur/max)*(height-3), width-3))
+        self.rect_base = pygame.Rect(self.pos, (self.width, self.height))
+        self.rect_cur = pygame.Rect(self.pos, ((self.cur/self.max)*(self.width-3), self.height-3))
         # declaring the text object to display current values
         self.text = str(cur) + " / " + str(max)
-        self.text_surface = UI_font.render(self.text,False,"#00060e")
+        self.text_surface = UI_font.render(self.text,False,"#bce7fc")
         self.text_rect = self.text_surface.get_rect(center = self.rect_base.center)
+
+    # use the update method to update the max and min health during combat
+    def update(self, cur, max):
+        self.cur = cur
+        self.max = max
+        self.rect_cur = pygame.Rect(self.pos, ((cur/max)*(self.width-3), self.height-3))
+        self.text = str(cur) + " / " + str(max)
+        self.text_surface = UI_font.render(self.text,False,"#bce7fc")
+        self.text_rect = self.text_surface.get_rect(center = self.rect_base.center)
+        pass
         
     def draw(self, surface):
         #drawing the healthbar and current values onto the screen
