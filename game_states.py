@@ -1,5 +1,6 @@
 import pygame
 import game
+import UIElements
 from random import random
 
 
@@ -28,6 +29,7 @@ class Menu(GameState):
         self.name = "MENU"
         self.background = "#0c2a31"
         self.game = g
+        self.button_start = UIElements.Button("start", 220, 60, (300,300), function=self.game.transitionToLoad)
     
     def getName(self):
         return self.name
@@ -35,21 +37,19 @@ class Menu(GameState):
     def getBackground(self):
         return self.background
     
-    def loadUI(self):
+    def loadUI(self,surface):
+        self.button_start.draw(surface)
         pass
 
     def handleActions(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:                    self.game.transitionToNext("LOAD")
-            elif event.key == pygame.K_ESCAPE:
-                self.game.transitionToNext("MENU")
+        pass
 
 #Class for handling the loading screen
 class Loading(GameState):
     
     def __init__(self, g):
         self.name = "LOADING"
-        self.background = "#70d1a1"
+        self.background = "#70a288"
         self.game = g
     def getName(self):
         return self.name
@@ -57,23 +57,20 @@ class Loading(GameState):
     def getBackground(self):
         return self.background
     
-    def loadUI(self):
+    def loadUI(self,surface):
         pass
 
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                ns = "COMBAT" if random() > 0.5 else "SHOP"
-                self.game.transitionToNext(ns)
-            elif event.key == pygame.K_ESCAPE:
-                self.game.transitionToNext("MENU")
+                self.game.transitionToCombat() if random() > 0.5 else self.game.transitionToShop()
 
 #Class for handling the combat scenarios
 class Combat(GameState):
     
     def __init__(self, g):
         self.name = "COMBAT"
-        self.background = "#420420"
+        self.background = "#d6896f"
         self.game = g
 
     def getName(self):
@@ -82,21 +79,19 @@ class Combat(GameState):
     def getBackground(self):
         return self.background
     
-    def loadUI(self):
+    def loadUI(self,surface):
         pass
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                self.game.transitionToNext("LOAD")
-            elif event.key == pygame.K_ESCAPE:
-                self.game.transitionToNext("MENU")
+                self.game.transitionToLoad()
 
 #Class for handling the shop features
 class Shop(GameState):
     
     def __init__(self, g):
         self.name = "SHOP"
-        self.background = "#e9c46a"
+        self.background = "#04395e"
         self.game = g
     
     def getName(self):
@@ -105,12 +100,10 @@ class Shop(GameState):
     def getBackground(self):
         return self.background
     
-    def loadUI(self):
+    def loadUI(self,surface):
         pass
 
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                self.game.transitionToNext("LOAD")
-            elif event.key == pygame.K_ESCAPE:
-                self.game.transitionToNext("MENU")
+                self.game.transitionToLoad()
