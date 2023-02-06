@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 This is a readme for base game.
 
 combat_module:
@@ -11,3 +12,32 @@ classes:
 user_interface:
 Holds UI elements
 
+=======
+QTEs
+
+To run:
+  Linux:
+    Open Terminal
+    Navigate to folder containing MnM.py
+    "python3 MnM.py" to run
+    
+Directions:
+    
+Press '=' key to start the multi-hit QTE
+    Press 'z' when the cursor is over the randomized slider zones
+    Each success translates to a hit
+    Missing the specified zone will result in a failure for that zone
+
+Press left ctrl to start combo QTE
+  Follow button prompts
+  Wrong button press will result in a failure
+  Not completing the QTE in 3 seconds will result in a failure
+
+Press right ctrl to start slider QTE
+  Press z in the correct zone of the slider.
+  Not completeing the QTE within 3 seconds will result in a failure
+  Pressing z when the center of the slider rectangle isn't within the correct zone will result in a failure
+  
+NOTES:
+Will need the Assets folder in the same directory as the .py file because it uses it for the text font
+>>>>>>> sung-masterbranch

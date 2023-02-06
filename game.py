@@ -1,5 +1,6 @@
 import pygame
 import game_states
+import MnM
 
 # The Game class handles all the transitions and states the game
 # can be in. This is how the main function will interract with 
@@ -29,7 +30,7 @@ class Game():
         self.cur_state = game_states.Combat(self)
     def transitionToShop(self):
         self.cur_state = game_states.Shop(self)
-    
+
     #allows main loop to check the game is still running
     def running(self):
         return self.run

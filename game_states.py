@@ -2,6 +2,7 @@ import pygame
 import game
 import UIElements
 from random import random
+import MnM
 
 
 # Abstract class that provides methods
@@ -63,17 +64,19 @@ class Loading(GameState):
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                self.game.transitionToCombat() if random() > 0.5 else self.game.transitionToShop()
+                #self.game.transitionToCombat() if random() > 0.5 else self.game.transitionToShop()
+                self.game.transitionToCombat()
 
 #Class for handling the combat scenarios
 class Combat(GameState):
     
     def __init__(self, g):
         self.name = "COMBAT"
-        self.background = "#dab785"
+        self.background = "#BC88DF"
         self.game = g
         self.cur = 100
         self.healthbar = UIElements.HealthBar(self.cur, 100, (50,50))
+        self.button_attack = UIElements.Button("attack", 220, 60, (300,400), function=self.sliderQTE)
 
     def getName(self):
         return self.name
@@ -84,7 +87,13 @@ class Combat(GameState):
     def loadUI(self,surface):
         self.healthbar.update(self.cur, 100)
         self.healthbar.draw(surface)
+        self.button_attack.draw(surface)
         pass
+
+
+    def sliderQTE(self):
+        MnM.handleSliderQTE()
+
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_h:
