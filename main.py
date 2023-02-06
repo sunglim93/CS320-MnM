@@ -18,14 +18,19 @@ game = game.Game()
 
 #method for displaying text on screen
 def draw_text(text, font, text_col, x, y):
+    # this is not OOP
+    # each game state clas needs to have it's own
+    # draw method and decide for itself what to draw!!
+    # this is forcing every class to draw a text!!
     img = font.render(text, True, text_col)
     screen.blit(img,(x,y))
+
 
 while game.running():
     state = game.get_state()
     screen.fill(state.getBackground())
     state.loadUI(screen)
-    draw_text(state.getName(), font, TEXT_COL, 160, 250)
+    state.draw(screen)
     #event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

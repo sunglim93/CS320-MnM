@@ -4,7 +4,7 @@ from io import BytesIO
 import requests
 import openai
 
-openai.api_key = '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'
+openai.api_key = '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'
 
 
 # openai.Model.list()
