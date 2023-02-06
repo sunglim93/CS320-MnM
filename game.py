@@ -1,4 +1,6 @@
 import pygame
+from pygame.locals import *
+from pygame import mixer 
 import game_states
 
 # The Game class handles all the transitions and states the game
@@ -12,6 +14,9 @@ class Game():
         #By default the game is initialized to the Main state
         self.cur_state = game_states.Menu(self)
         self.run = True
+        mixer.init()
+        mixer.music.load('assets/cerberus.wav')
+        mixer.music.play()
 
     #allows the current state to be changed
     def set_state(self,new_state=0):
