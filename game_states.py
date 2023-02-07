@@ -1,15 +1,15 @@
-import pygame
-import game
-import UIElements
+import pygame as pg
+import ui_elements as ui
+import classes as gc
 from random import random
-
+import game
 
 # Abstract class that provides methods
 # that each GameState method should have
 # to ensure functionality
 class GameState():
 
-    # When instanciating one of the following
+    # When instantiating one of the following
     # GameState classes, you should pass the current
     # Game class.
     def getName(self):
@@ -21,15 +21,14 @@ class GameState():
     def handleActions(self):
         pass
 
-
-#Class for handling the main menu
+# Class for handling the main menu
 class Menu(GameState):
     
     def __init__(self, g):
         self.name = "MENU"
         self.background = "#0c2a31"
         self.game = g
-        self.button_start = UIElements.Button("start", 220, 60, (300,300), function=self.game.transitionToLoad)
+        self.button_start = ui.Button("start", 220, 60, (300,300), function=self.game.transitionToLoad)
     
     def getName(self):
         return self.name
@@ -61,8 +60,8 @@ class Loading(GameState):
         pass
 
     def handleActions(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
                 self.game.transitionToCombat() if random() > 0.5 else self.game.transitionToShop()
 
 #Class for handling the combat scenarios
@@ -70,10 +69,10 @@ class Combat(GameState):
     
     def __init__(self, g):
         self.name = "COMBAT"
-        self.background = "#dab785"
+        self.background = (0,0,0)
         self.game = g
-        self.cur = 100
-        self.healthbar = UIElements.HealthBar(self.cur, 100, (50,50))
+        # self.cur = 100
+        # self.healthbar = ui.HealthBar(self.cur, 100, (50,50))
 
     def getName(self):
         return self.name
@@ -82,14 +81,15 @@ class Combat(GameState):
         return self.background
     
     def loadUI(self,surface):
-        self.healthbar.update(self.cur, 100)
-        self.healthbar.draw(surface)
+        # self.healthbar.update(self.cur, 100)
+        # self.healthbar.draw(surface)
         pass
+        
     def handleActions(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_h:
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_h:
                 self.cur -= 10
-            if event.key == pygame.K_SPACE:
+            if event.key == pg.K_SPACE:
                 self.game.transitionToLoad()
 
 #Class for handling the shop features
@@ -110,6 +110,6 @@ class Shop(GameState):
         pass
 
     def handleActions(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
                 self.game.transitionToLoad()

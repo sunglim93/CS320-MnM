@@ -1,14 +1,15 @@
-from view import user_interface as ui
-from model import classes as gc
+from view import combat_interface as ui
+import classes as gc
 import pygame as pg
 import random as rd
 import time
 
-def main():
+def combat():
     screen_width = 600
     screen_height = 800
     window = ui.Window(screen_height, screen_width, "Metal & Magic")
-    font = pg.font.Font(None, 30)
+    TEXT_COL = ("#bce7fc")
+    font = pg.font.Font("assets/alagard.ttf",20)
 
     fire = gc.Fire("Fire", 20, 100)
     shock = gc.Shock("Shock", 30, 125)
@@ -20,7 +21,7 @@ def main():
     enemy = gc.Enemy("Wretch", (screen_width * 0.8), (screen_height * 0.45), 300, 60, 25, 34, [fire])
 
     button_width, button_height = 75, 50
-    exit_button_x, exit_button_y = int(screen_width * 0.99), int(screen_height * 0.68)
+    exit_button_x, exit_button_y = int(screen_width * 0.8), int(screen_height * 0.68)
     attack_button_x, attack_button_y = int(screen_width * 0.01), int(screen_height * 0.68)
     magic_button_0_x, magic_button_0_y = int(screen_width * 0.16), int(screen_height * 0.68)
     magic_button_1_x, magic_button_1_y = int(screen_width * 0.31), int(screen_height * 0.68)
@@ -56,7 +57,7 @@ def main():
         ui.drawHealthBar(enemy.hp, enemy.max_hp, window.res, 680, 10, 100, 20)
         ui.drawManaBar(enemy.mp, enemy.max_mp, window.res, 680, 40, 100, 20)
 
-        window.res.blit(player.size, player.rect)
+        player.drawPlayer(window.res)
         window.res.blit(enemy.size, enemy.rect)
         pg.display.update()
 
@@ -74,7 +75,7 @@ def main():
                         dmg = player.generateDamage()
                         enemy.takeDamage(dmg)
                         text = font.render("You attacked the " + enemy.name + " with your " + player.weapon + \
-                        " and deal " + str(dmg) + " damage!", True, (255, 0, 0))
+                        " and deal " + str(dmg) + " damage!", True, TEXT_COL)
                         window.res.blit(text, (window.width/2 - 350, window.height/2 + -50))
                         pg.display.update()
                         turn = 1
@@ -95,13 +96,13 @@ def main():
                             enemy.takeDamage(magic_dmg)
                             pg.draw.rect(window.res, (0,0,0), clear_text)
                             text = font.render("You cast " + player.magic[c].name + " and deal " \
-                            + str(magic_dmg) + " damage!", True, (255, 0, 0))
+                            + str(magic_dmg) + " damage!", True, TEXT_COL)
                             window.res.blit(text, (window.width/2 - 250, window.height/2 - 50))
                             pg.display.update()
                             turn = 1
                         else:
                             pg.draw.rect(window.res, (0,0,0), clear_text)
-                            text = font.render("Not enough MP!", True, (255, 0, 0))
+                            text = font.render("Not enough MP!", True, TEXT_COL)
                             window.res.blit(text, (window.width/2 - 250, window.height/2 - 50))
                             pg.display.update()
                             continue
@@ -111,7 +112,7 @@ def main():
                 pg.draw.rect(window.res, (0,0,0), clear_text)
                 if enemy.getHP() == 0:
                     text = font.render(enemy.name + " has been defeated! " + player.name
-                    + " is Victorious!", True, (255, 0, 0))
+                    + " is Victorious!", True, TEXT_COL)
                     window.res.blit(text, (window.width/2 - 250, window.height/2 - 50))
                 else:
                     enemy_choice = enemy.enemyAI()
@@ -119,7 +120,7 @@ def main():
                         enemy_dmg = enemy.generateDamage()
                         player.takeDamage(enemy_dmg)
                         text = font.render("The " + enemy.name + " attacks you and deals " + str(enemy_dmg) \
-                        + " damage!", True, (255, 0, 0))
+                        + " damage!", True, TEXT_COL)
                         window.res.blit(text, (window.width/2 - 250, window.height/2 - 50))
                     elif enemy_choice == "Magic":
                         enemy_magic_cost = fire.cost
@@ -128,22 +129,19 @@ def main():
                             enemy_magic_dmg = enemy.magic[0].generateDamage()
                             player.takeDamage(enemy_magic_dmg)
                             text = font.render(enemy.name + " casts "+ enemy.magic[0].name + \
-                            " and deals " + str(enemy_magic_dmg)  + " damage!", True, (255, 0, 0))
+                            " and deals " + str(enemy_magic_dmg)  + " damage!", True, TEXT_COL)
                             window.res.blit(text, (window.width/2 - 250, window.height/2 - 50))
                         else:
                             enemy_dmg = enemy.generateDamage()
                             player.takeDamage(enemy_dmg)
                             text = font.render(enemy.name + " attacks you and deals "+ str(enemy_dmg) \
-                            + " damage!", True, (255, 0, 0))
+                            + " damage!", True, TEXT_COL)
                             window.res.blit(text, (window.width/2 - 250, window.height/2 - 50))
                 pg.display.update(clear_text)            
                 if player.getHP() == 0:
-                    text = font.render("GAME OVER!", True, (255, 0, 0))
+                    text = font.render("GAME OVER!", True, TEXT_COL)
                     window.res.blit(text, (window.width/2 - 20, window.height/2 - 90))
                 pg.display.update(clear_text)
                 turn = 0
 
     pg.quit()
-
-if __name__ == '__main__':
-    main()

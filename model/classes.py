@@ -4,6 +4,8 @@ import random as rd
 class Player:
     def __init__(self, name, x, y, hp, mp, atk, df, magic, weapon):
         self.name = name
+        self.x = x
+        self.y = y
         self.max_hp = hp
         self.hp = hp
         self.max_mp = mp
@@ -14,11 +16,19 @@ class Player:
         self.magic = magic
         self.actions = ["Attack", "Magic"]
         self.weapon = weapon
-        self.rect = pg.Rect(x, y, 50, 50)
+        self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
         self.image = pg.image.load(f"view/player.png")
         self.size = pg.transform.scale(self.image, (64, 64))
+
+    def drawPlayer(self, surface):
+        self.rect = pg.Rect(self.x, self.y, 50, 50)
+        self.sprite = pg.Surface((32, 32))
+        self.sprite.fill((255, 0, 0))
+        self.image = pg.image.load(f"view/player.png")
+        self.size = pg.transform.scale(self.image, (64, 64))
+        surface.blit(self.size, self.rect)
 
     def generateDamage(self):
         return rd.randrange(self.atk_low, self.atk_high)
@@ -66,6 +76,8 @@ class Player:
 class Enemy:
     def __init__(self, name, x, y, hp, mp, atk, df, magic):
         self.name = name
+        self.x = x
+        self.y = y
         self.max_hp = hp
         self.hp = hp
         self.max_mp = mp
@@ -73,11 +85,20 @@ class Enemy:
         self.atk = atk
         self.df = df
         self.magic = [Fire("Fire", 20, 100)]
-        self.rect = pg.Rect(x, y, 50, 50)
+        self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
         self.image = pg.image.load(f"view/enemy.png")
         self.size = pg.transform.scale(self.image, (128, 128))
+
+    def drawEnemy(self, surface):
+        self.rect = pg.Rect(self.x, self.y, 50, 50)
+        self.sprite = pg.Surface((32, 32))
+        self.sprite.fill((255, 0, 0))
+        self.image = pg.image.load(f"view/enemy.png")
+        self.size = pg.transform.scale(self.image, (128, 128))
+        surface.blit(self.size, self.rect)
+
 
     def generateDamage(self):
         return rd.randint(self.atk // 2, self.atk)
@@ -133,4 +154,4 @@ class KarateKick(Spell):
 class PsionicStorm(Spell):
     def __init__(self, name, cost, dmg):
         super().__init__(name, cost, dmg, "Psionic Storm")
-        
+
