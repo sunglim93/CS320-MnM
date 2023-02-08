@@ -13,6 +13,9 @@ class GameState():
     # When instanciating one of the following
     # GameState classes, you should pass the current
     # Game class.
+    def __init__(self):
+        self.difficulty = -1
+
     def getName(self):
         pass
     def getBackground(self):
@@ -22,6 +25,12 @@ class GameState():
     def handleActions(self):
         pass
 
+    def setDifficulty(self, difficulty):
+        self.difficulty = difficulty
+
+    def getDifficulty(self):
+        return self.difficulty
+
 
 #Class for handling the main menu
 class Menu(GameState):
@@ -30,7 +39,7 @@ class Menu(GameState):
         self.name = "MENU"
         self.background = "#0c2a31"
         self.game = g
-        self.button_start = UIElements.Button("start", 220, 60, (300,300), function=self.game.transitionToLoad)
+        self.button_start = UIElements.Button("start", 220, 60, (300,300), function=self.game.transitionToDifficulty)
     
     def getName(self):
         return self.name
@@ -78,6 +87,7 @@ class Combat(GameState):
         self.healthbar = UIElements.HealthBar(self.cur, 100, (50,50))
         self.button_attack = UIElements.Button("attack", 220, 60, (300,400), function=self.sliderQTE)
 
+
     def getName(self):
         return self.name
     
@@ -90,9 +100,15 @@ class Combat(GameState):
         self.button_attack.draw(surface)
         pass
 
-
     def sliderQTE(self):
         MnM.handleSliderQTE()
+        self.healthbar = UIElements.HealthBar(self.cur -50, 100, (50,50))
+        self.cur = self.cur - 50
+        print("hp: ", self.cur)
+        if (self.cur <= 0):
+            print("out of hp, going back to loading screen")
+            #self.game.transitionToMenu()
+            self.game.transitionToRoomSelection()
 
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
@@ -122,3 +138,76 @@ class Shop(GameState):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 self.game.transitionToLoad()
+
+#Class for handling difficulty selection
+class Difficulty(GameState):
+    
+    def __init__(self, g):
+        self.name = "Select difficulty"
+        self.background = "#0c2a31"
+        self.game = g
+        self.button_easy = UIElements.Button("easy", 220, 60, (60,400), function=self.setEasyDifficulty)
+        self.button_normal = UIElements.Button("normal", 220, 60, (300,400), function=self.setNormalDifficulty)
+        self.button_hard = UIElements.Button("hard", 220, 60, (540,400), function=self.setHardDifficulty)
+    
+    def getName(self):
+        return self.name
+    
+    def getBackground(self):
+        return self.background
+    
+    def loadUI(self,surface):
+        self.button_easy.draw(surface)
+        self.button_normal.draw(surface)
+        self.button_hard.draw(surface)
+        pass
+
+    def handleActions(self, event):
+        pass
+
+    def setEasyDifficulty(self):
+        self.setDifficulty(0)
+        print("selected easy difficulty, value: ", GameState.getDifficulty(self))
+        self.game.transitionToLoad()
+
+
+    def setNormalDifficulty(self):
+        self.setDifficulty(1)
+        print("selected normal difficulty, value: ", GameState.getDifficulty(self))
+        self.game.transitionToLoad()
+
+    def setHardDifficulty(self):
+        self.setDifficulty(2)
+        print("selected hard, value: ", GameState.getDifficulty(self))
+        self.game.transitionToLoad()
+
+
+class RoomSelection(GameState):
+    
+    def __init__(self, g):
+        self.name = "Select a path"
+        self.background = "#0c2a31"
+        self.game = g
+        self.button_room_random = UIElements.Button("???", 220, 60, (60,400), function=self.randomRoom)
+        self.button_room_shop = UIElements.Button("shop", 220, 60, (540,400), function=self.shopRoom)
+
+    def getName(self):
+        return self.name
+    
+    def getBackground(self):
+        return self.background
+    
+    def loadUI(self,surface):
+        self.button_room_random.draw(surface)
+        self.button_room_shop.draw(surface)
+        pass
+
+    def handleActions(self, event):
+        pass
+
+    def randomRoom(self):
+        self.game.transitionToCombat() if random() > 0.5 else self.game.transitionToShop()
+
+    def shopRoom(self):
+        self.game.transitionToShop()
+
