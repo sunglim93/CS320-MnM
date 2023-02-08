@@ -31,6 +31,12 @@ class Game():
     def transitionToShop(self):
         self.cur_state = game_states.Shop(self)
 
+    def transitionToDifficulty(self):
+        self.cur_state = game_states.Difficulty(self)
+
+    def transitionToRoomSelection(self):
+        self.cur_state = game_states.RoomSelection(self)
+
     #allows main loop to check the game is still running
     def running(self):
         return self.run
