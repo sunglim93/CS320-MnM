@@ -101,7 +101,8 @@ class Combat(GameState):
         pass
 
     def sliderQTE(self):
-        MnM.handleSliderQTE()
+        # temporarily taking out qte since there seems to be an issue with it taking mouse input
+        #MnM.handleSliderQTE()
         self.healthbar = UIElements.HealthBar(self.cur -50, 100, (50,50))
         self.cur = self.cur - 50
         print("hp: ", self.cur)
@@ -124,6 +125,8 @@ class Shop(GameState):
         self.name = "SHOP"
         self.background = "#04395e"
         self.game = g
+        self.button_enter = UIElements.Button("enter shop", 220, 60, (300,250), function=self.enterShop)
+        self.button_leave = UIElements.Button("leave shop", 220, 60, (300,400), function=self.leaveShop)
     
     def getName(self):
         return self.name
@@ -132,18 +135,67 @@ class Shop(GameState):
         return self.background
     
     def loadUI(self,surface):
+        self.button_enter.draw(surface)
+        self.button_leave.draw(surface)
         pass
+
+    def enterShop(self):
+        self.game.transitionToShopMenu()
+
+    def leaveShop(self):
+        self.game.transitionToLoad()
 
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 self.game.transitionToLoad()
 
+
+#Class for handling the player entering shop
+class ShopMenu(GameState):
+    
+    def __init__(self, g):
+        self.name = "SHOP MENU"
+        self.background = "#04395e"
+        self.game = g
+        self.button_buy = UIElements.Button("buy items", 220, 60, (60,400), function=self.buyItems)
+        self.button_sell = UIElements.Button("sell items", 220, 60, (300,400), function=self.sellItems)
+        self.button_back = UIElements.Button("close menu", 220, 60, (540,400), function=self.closeMenu)
+    
+    def getName(self):
+        return self.name
+    
+    def getBackground(self):
+        return self.background
+    
+    def loadUI(self,surface):
+        self.button_buy.draw(surface)
+        self.button_sell.draw(surface)
+        self.button_back.draw(surface)
+        pass
+
+    def closeMenu(self):
+        self.game.transitionToShop()
+
+    def buyItems(self):
+        pass
+
+    def sellItems(self):
+        pass
+
+
+    def handleActions(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                self.game.transitionToLoad()
+
+
+
 #Class for handling difficulty selection
 class Difficulty(GameState):
     
     def __init__(self, g):
-        self.name = "Select difficulty"
+        self.name = "SELECT DIFFICULTY"
         self.background = "#0c2a31"
         self.game = g
         self.button_easy = UIElements.Button("easy", 220, 60, (60,400), function=self.setEasyDifficulty)

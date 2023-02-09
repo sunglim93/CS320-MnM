@@ -39,6 +39,10 @@ class Game():
     def transitionToRoomSelection(self):
         self.cur_state = game_states.RoomSelection(self)
 
+
+    def transitionToShopMenu(self):
+        self.cur_state = game_states.ShopMenu(self)
+
     #allows main loop to check the game is still running
     def running(self):
         return self.run
