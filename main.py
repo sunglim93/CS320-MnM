@@ -25,9 +25,9 @@ def draw_text(text, font, text_col, x, y):
 
 while game.running():
     state = game.get_state()
-    state.loadBackground(screen)
+    screen.fill(state.getBackground())
     state.loadUI(screen)
-    #draw_text(state.getName(), font, TEXT_COL, 160, 250)
+    draw_text(state.getName(), font, TEXT_COL, 160, 250)
     #event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

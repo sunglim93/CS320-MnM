@@ -1,4 +1,22 @@
+<<<<<<< HEAD
 This is a readme for base game
+=======
+<<<<<<< HEAD
+This is a readme for base game.
+
+combat_module:
+- Green button -> Basic Attack
+- Blue buttons -> Abilities
+- Red button -> Exit
+
+classes:
+- Holds classes like Player, Enemy, & Spell
+
+user_interface:
+Holds UI elements
+
+=======
+>>>>>>> anita-masterbranch
 QTEs
 
 To run:
@@ -26,3 +44,7 @@ Press right ctrl to start slider QTE
   
 NOTES:
 Will need the Assets folder in the same directory as the .py file because it uses it for the text font
+<<<<<<< HEAD
+=======
+>>>>>>> sung-masterbranch
+>>>>>>> anita-masterbranch

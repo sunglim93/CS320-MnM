@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 from pygame import mixer 
 import game_states
+import MnM
 
 # The Game class handles all the transitions and states the game
 # can be in. This is how the main function will interract with 
@@ -31,7 +32,17 @@ class Game():
         self.cur_state = game_states.Combat(self)
     def transitionToShop(self):
         self.cur_state = game_states.Shop(self)
-    
+
+    def transitionToDifficulty(self):
+        self.cur_state = game_states.Difficulty(self)
+
+    def transitionToRoomSelection(self):
+        self.cur_state = game_states.RoomSelection(self)
+
+
+    def transitionToShopMenu(self):
+        self.cur_state = game_states.ShopMenu(self)
+
     #allows main loop to check the game is still running
     def running(self):
         return self.run
