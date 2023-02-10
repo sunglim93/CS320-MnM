@@ -1,5 +1,8 @@
+import os
+import multiprocessing as mp
 import pygame
 import game
+import time
 import UIElements
 from random import random
 from PIL import Image, ImageDraw, ImageFont, ImageOps
@@ -158,19 +161,38 @@ class Loading(GameState):
         screen.blit(pygame_image, (0, 0))
         pygame.display.update()
 
-    def draw(self, screen):
+    def fetch_remote(self):
+        print('fetch remote called!')
+        image = self.ai_image()
+        pixeled_image = self.pixelate_ai_image(image)
+        # pixeled_image = pygame.image.load("C:\\Users\\Andy\\Desktop\\text image example.PNG")
+        seconds = int(time.time())
+        file = f"image_cache/{seconds}.png"
+        pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
+        self.image = pygame.image.fromstring(pixeled_image.tobytes(),
+                                             (pixeled_image.width, pixeled_image.height),
+                                             "RGB")
+        image.save(file)
+
+    def load_cache_or_remote(self):
         if self.image is None:
-            image = self.ai_image()
-            pixeled_image = self.pixelate_ai_image(image)
-            # pixeled_image = pygame.image.load("C:\\Users\\Andy\\Desktop\\text image example.PNG")
+            for file in os.listdir("image_cache"):
+                pixeled_image = Image.open(f"image_cache/{file}")
+                self.image = pygame.image.fromstring(pixeled_image.tobytes(),
+                                                     (pixeled_image.width, pixeled_image.height),
+                                                     "RGB")
+                pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
+                # p = mp.Process(target=self.fetch_remote)
+                # p.start()
+                return
 
-            pygame.display.set_caption("Metal and Magic")
+            self.fetch_remote()
 
-            screen = pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
 
-            self.image = pygame.image.fromstring(pixeled_image.tobytes(), (pixeled_image.width, pixeled_image.height),
-                                                 "RGB")
 
+    def draw(self, screen):
+        self.load_cache_or_remote()
+        pygame.display.set_caption("Metal and Magic")
         screen.blit(self.image, (0, 0))
 
         font = pygame.font.Font(None, 36)

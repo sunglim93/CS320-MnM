@@ -1,4 +1,5 @@
 .idea
 game.config
 splash.py
+image_cache
 __pycache__
