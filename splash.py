@@ -3,12 +3,11 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
 import requests
 import openai
+from pygame import mixer
 
-openai.api_key = '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'
-
+openai.api_key = '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'
 
 # openai.Model.list()
-
 
 def ai_image():
     response = openai.Image.create(
@@ -67,6 +66,8 @@ def main():
     screen.blit(text, text_rect)
 
     pygame.display.update()
+    #mixer.music.load('cerberus.wav')
+    #mixer.music.play(-1)
     pygame.time.wait(5000)
     pygame.quit()
 
