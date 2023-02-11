@@ -1,4 +1,6 @@
 import pygame
+from pygame.locals import *
+from pygame import mixer 
 import game_states
 
 # The Game class handles all the transitions and states the game

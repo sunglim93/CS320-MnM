@@ -1,9 +1,11 @@
 import pygame
+from pygame.locals import *
+from pygame import mixer
 
 # Declare default font for UI elements
 pygame.font.init()
 UI_font = pygame.font.Font("assets/alagard.ttf",24)
-
+mixer.init()
 
 class Button():
     #If no aciton is passed to a button, this function will fire
@@ -76,6 +78,7 @@ class Button():
             # if button is clicked (pressed and released) fire function and
             # change elevation to indicate button click to user
             if pygame.mouse.get_pressed()[0] and not self.pressed:
+                mixer.Sound('assets/buttonpress.wav').play()
                 self.dynamic_elevation = 3
                 self.pressed = True
                 self.function()
@@ -121,13 +124,15 @@ class HealthBar():
 
     # use the update method to update the max and min health during combat
     def update(self, cur, max):
-        self.cur = cur
-        self.max = max
-        self.rect_cur = pygame.Rect(self.pos, ((cur/max)*(self.width-3), self.height-3))
-        self.text = str(cur) + " / " + str(max)
-        self.text_surface = UI_font.render(self.text,False,"#bce7fc")
-        self.text_rect = self.text_surface.get_rect(center = self.rect_base.center)
-        pass
+        if self.cur != cur:
+            mixer.Sound('assets/damage.wav').play()
+            self.cur = cur
+            self.max = max
+            self.rect_cur = pygame.Rect(self.pos, ((cur/max)*(self.width-3), self.height-3))
+            self.text = str(cur) + " / " + str(max)
+            self.text_surface = UI_font.render(self.text,False,"#bce7fc")
+            self.text_rect = self.text_surface.get_rect(center = self.rect_base.center)
+
         
     def draw(self, surface):
         #drawing the healthbar and current values onto the screen
