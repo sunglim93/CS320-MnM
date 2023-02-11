@@ -302,7 +302,7 @@ class RoomSelection(GameState):
         pass
 
     def randomRoom(self):
-        self.game.transitionToCombat() if random() > 0.3 else self.game.transitionToShop()
+        self.game.transitionToCombat() if random() > 0.7 else self.game.transitionToShop()
 
     def shopRoom(self):
         self.game.transitionToShop()

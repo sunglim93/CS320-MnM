@@ -1,43 +1,16 @@
-<<<<<<< HEAD
-This is a readme for base game.
+Run python main.py to run the game.
 
-combat_module:
-- Green button -> Basic Attack
-- Blue buttons -> Abilities
-- Red button -> Exit
+Press space when in loading screen to progress to next screen.
 
-classes:
-- Holds classes like Player, Enemy, & Spell
+The game will transition as follows:
+	1. main menu
+	2. difficulty selection
+	3. loading screen
+	4. combat
+	5. room selection
+	6. shop or another combat encounter
+	7. after 3 combat encounters->boss screen
+	8. victory screen
+	9. restart
 
-user_interface:
-Holds UI elements
-
-=======
-QTEs
-
-To run:
-  Linux:
-    Open Terminal
-    Navigate to folder containing MnM.py
-    "python3 MnM.py" to run
-    
-Directions:
-    
-Press '=' key to start the multi-hit QTE
-    Press 'z' when the cursor is over the randomized slider zones
-    Each success translates to a hit
-    Missing the specified zone will result in a failure for that zone
-
-Press left ctrl to start combo QTE
-  Follow button prompts
-  Wrong button press will result in a failure
-  Not completing the QTE in 3 seconds will result in a failure
-
-Press right ctrl to start slider QTE
-  Press z in the correct zone of the slider.
-  Not completeing the QTE within 3 seconds will result in a failure
-  Pressing z when the center of the slider rectangle isn't within the correct zone will result in a failure
-  
-NOTES:
-Will need the Assets folder in the same directory as the .py file because it uses it for the text font
->>>>>>> sung-masterbranch
+When a player selects the ??? path, they may encounter another combat screen even if they have had 3 encounters. This will continue until the player randomly encounters/chooses the shop screen. After leaving the shop, the player will then encounter a boss battle.
