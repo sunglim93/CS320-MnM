@@ -45,7 +45,6 @@ class Menu(GameState):
     def handleActions(self, event):
         pass
 
-
 #Class for handling the loading screen
 class Loading(GameState):
     
