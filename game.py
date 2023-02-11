@@ -15,6 +15,25 @@ class Game():
         #By default the game is initialized to the Main state
         self.cur_state = game_states.Menu(self)
         self.run = True
+        self.difficulty = 0
+        self.numEncounters = 0
+
+    # difficulty settings
+    def setDifficulty(self, difficulty):
+        self.difficulty = difficulty
+
+    def getDifficulty(self):
+        return self.difficulty
+
+    # keep track of battles that the player has encountered
+    def getEncounters(self):
+        return self.numEncounters
+
+    def increaseEncounters(self):
+        self.numEncounters += 1
+
+    def resetEncounters(self):
+        self.numEncounters = 0
 
     #allows the current state to be changed
     def set_state(self,new_state=0):
@@ -24,6 +43,7 @@ class Game():
     def get_state(self):
         return self.cur_state
     
+    #state transitions
     def transitionToLoad(self):
         self.cur_state = game_states.Loading(self)
     def transitionToMenu(self):
@@ -32,16 +52,16 @@ class Game():
         self.cur_state = game_states.Combat(self)
     def transitionToShop(self):
         self.cur_state = game_states.Shop(self)
-
     def transitionToDifficulty(self):
         self.cur_state = game_states.Difficulty(self)
-
     def transitionToRoomSelection(self):
         self.cur_state = game_states.RoomSelection(self)
-
-
     def transitionToShopMenu(self):
         self.cur_state = game_states.ShopMenu(self)
+    def transitionToVictory(self):
+        self.cur_state = game_states.Victory(self)
+    def transitionToBoss(self):
+        self.cur_state = game_states.Boss(self)
 
     #allows main loop to check the game is still running
     def running(self):

@@ -13,9 +13,6 @@ class GameState():
     # When instanciating one of the following
     # GameState classes, you should pass the current
     # Game class.
-    def __init__(self):
-        self.difficulty = -1
-
     def getName(self):
         pass
     def getBackground(self):
@@ -24,12 +21,6 @@ class GameState():
         pass
     def handleActions(self):
         pass
-
-    def setDifficulty(self, difficulty):
-        self.difficulty = difficulty
-
-    def getDifficulty(self):
-        return self.difficulty
 
 
 #Class for handling the main menu
@@ -54,6 +45,7 @@ class Menu(GameState):
     def handleActions(self, event):
         pass
 
+
 #Class for handling the loading screen
 class Loading(GameState):
     
@@ -61,6 +53,7 @@ class Loading(GameState):
         self.name = "LOADING"
         self.background = "#70a288"
         self.game = g
+
     def getName(self):
         return self.name
     
@@ -70,11 +63,15 @@ class Loading(GameState):
     def loadUI(self,surface):
         pass
 
+    # after the player has encountered 3 combat states, transition to the boss combat state
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                #self.game.transitionToCombat() if random() > 0.5 else self.game.transitionToShop()
-                self.game.transitionToCombat()
+                if self.game.getEncounters() < 3:
+                    self.game.transitionToCombat()
+                else:
+                    self.game.transitionToBoss()
+
 
 #Class for handling the combat scenarios
 class Combat(GameState):
@@ -85,8 +82,7 @@ class Combat(GameState):
         self.game = g
         self.cur = 100
         self.healthbar = UIElements.HealthBar(self.cur, 100, (50,50))
-        self.button_attack = UIElements.Button("attack", 220, 60, (300,400), function=self.sliderQTE)
-
+        self.button_attack = UIElements.Button("attack", 220, 60, (300,300), function=self.sliderQTE)
 
     def getName(self):
         return self.name
@@ -100,15 +96,19 @@ class Combat(GameState):
         self.button_attack.draw(surface)
         pass
 
+    # when a player presses the attack button:
+    #   - corresponding QTE event will play for attack (will implement other attacks/QTEs later)
+    #   - hp is decreased based on damage (damage is set to a fixed amount for now)
+    #   - increase number of combat encounters
+    #   - (will be implementing a pick up item screen later)
+    #   - go to room selection screen
     def sliderQTE(self):
         # temporarily taking out qte since there seems to be an issue with it taking mouse input
         #MnM.handleSliderQTE()
         self.healthbar = UIElements.HealthBar(self.cur -50, 100, (50,50))
         self.cur = self.cur - 50
-        print("hp: ", self.cur)
         if (self.cur <= 0):
-            print("out of hp, going back to loading screen")
-            #self.game.transitionToMenu()
+            self.game.increaseEncounters()
             self.game.transitionToRoomSelection()
 
     def handleActions(self, event):
@@ -117,6 +117,54 @@ class Combat(GameState):
                 self.cur -= 10
             if event.key == pygame.K_SPACE:
                 self.game.transitionToLoad()
+
+
+#Class for handling boss battle
+class Boss(GameState):
+    
+    def __init__(self, g):
+        self.name = "BOSS BATTLE"
+        self.background = "#590019"
+        self.game = g
+        self.cur = 100
+        self.healthbar = UIElements.HealthBar(self.cur, 100, (50,50))
+        self.button_attack = UIElements.Button("attack", 220, 60, (300,300), function=self.sliderQTE)
+
+    def getName(self):
+        return self.name
+    
+    def getBackground(self):
+        return self.background
+    
+    def loadUI(self,surface):
+        self.healthbar.update(self.cur, 100)
+        self.healthbar.draw(surface)
+        self.button_attack.draw(surface)
+        pass
+
+    # when a player presses the attack button:
+    #   - corresponding QTE event will play for attack (will implement other attacks/QTEs later)
+    #   - hp is decreased based on damage (damage is set to a fixed amount for now)
+    #   - (player taking damage from enemy will be implemented later)
+    #   - reset total number of combat encounters
+    #   - (will be implementing a pick up item screen later)
+    #   - go to victory screen
+    def sliderQTE(self):
+        # temporarily taking out qte since there seems to be an issue with it taking mouse input
+        #MnM.handleSliderQTE()
+        self.healthbar = UIElements.HealthBar(self.cur -20, 100, (50,50))
+        self.cur = self.cur - 20
+        if (self.cur <= 0):
+            self.game.resetEncounters()
+            self.game.transitionToVictory()
+
+    def handleActions(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_h:
+                self.cur -= 10
+            if event.key == pygame.K_SPACE:
+                self.game.transitionToLoad()
+
 
 #Class for handling the shop features
 class Shop(GameState):
@@ -183,12 +231,10 @@ class ShopMenu(GameState):
     def sellItems(self):
         pass
 
-
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 self.game.transitionToLoad()
-
 
 
 #Class for handling difficulty selection
@@ -218,22 +264,20 @@ class Difficulty(GameState):
         pass
 
     def setEasyDifficulty(self):
-        self.setDifficulty(0)
-        print("selected easy difficulty, value: ", GameState.getDifficulty(self))
+        self.game.setDifficulty(0)
         self.game.transitionToLoad()
 
-
     def setNormalDifficulty(self):
-        self.setDifficulty(1)
-        print("selected normal difficulty, value: ", GameState.getDifficulty(self))
+        self.game.setDifficulty(1)
         self.game.transitionToLoad()
 
     def setHardDifficulty(self):
-        self.setDifficulty(2)
-        print("selected hard, value: ", GameState.getDifficulty(self))
+        self.game.setDifficulty(2)
         self.game.transitionToLoad()
 
 
+#Class for handling room selection
+#  Allows player to select two different paths
 class RoomSelection(GameState):
     
     def __init__(self, g):
@@ -258,8 +302,34 @@ class RoomSelection(GameState):
         pass
 
     def randomRoom(self):
-        self.game.transitionToCombat() if random() > 0.5 else self.game.transitionToShop()
+        self.game.transitionToCombat() if random() > 0.3 else self.game.transitionToShop()
 
     def shopRoom(self):
         self.game.transitionToShop()
 
+
+#Class for handling the victory screen
+#  Brings the player back to the main menu screen
+class Victory(GameState):
+    
+    def __init__(self, g):
+        self.name = "VICTORY"
+        self.background = "#5A8B82"
+        self.game = g
+        self.button_restart = UIElements.Button("restart", 220, 60, (300,400), function=self.menu)
+    
+    def getName(self):
+        return self.name
+    
+    def getBackground(self):
+        return self.background
+    
+    def loadUI(self,surface):
+        self.button_restart.draw(surface)
+        pass
+
+    def handleActions(self, event):
+        pass
+
+    def menu(self):
+        self.game.transitionToMenu()
