@@ -2,7 +2,7 @@ import pygame
 import game
 import UIElements
 from random import random
-import MnM
+import QTE
 
 
 # Abstract class that provides methods
@@ -103,7 +103,7 @@ class Combat(GameState):
     #   - go to room selection screen
     def sliderQTE(self):
         # temporarily taking out qte since there seems to be an issue with it taking mouse input
-        #MnM.handleSliderQTE()
+        MnM.handleSliderQTE()
         self.healthbar = UIElements.HealthBar(self.cur -50, 100, (50,50))
         self.cur = self.cur - 50
         if (self.cur <= 0):

@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 from pygame import mixer 
 import game_states
-import MnM
+import QTE
 
 # The Game class handles all the transitions and states the game
 # can be in. This is how the main function will interract with 
