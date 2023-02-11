@@ -116,7 +116,6 @@ class Combat(GameState):
     #     - (will be implementing a pick up item screen later)
     #     - go to room selection screen
     def sliderQTE(self):
-        # temporarily taking out qte since there seems to be an issue with it taking mouse input
         numHits = QTE.handleTimeSliderQTE(3)
         self.cur -= (10*numHits)
 
