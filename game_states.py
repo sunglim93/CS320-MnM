@@ -15,7 +15,7 @@ class GameState():
     # Game class.
     def getName(self):
         pass
-    def getBackground(self):
+    def loadBackground(self):
         pass
     def loadUI(self):
         pass
@@ -27,23 +27,36 @@ class GameState():
 class Menu(GameState):
     
     def __init__(self, g):
-        self.name = "MENU"
-        self.background = "#0c2a31"
         self.game = g
-        self.button_start = UIElements.Button("start", 220, 60, (300,300), function=self.game.transitionToDifficulty)
+        self.name = "MENU"
+        pygame.font.init()
+        self.MenuFont = pygame.font.Font("assets/alagard.ttf",64)
+        self.background = pygame.image.load('assets/menu.png')
+        self.background = pygame.transform.scale(self.background,(pygame.display.get_surface().get_size()))
+        self.button_start = UIElements.Button("START", 200, 40, (300,300), function=self.game.transitionToLoad)
+        self.button_settings = UIElements.Button("SETTINGS", 200, 40, (300,360), function=self.game.transitionToDifficulty)
+        self.button_quit = UIElements.Button("QUIT", 200, 40, (300,420), function=self.game.quit)
+
+        self.text = "Metal & Magic"
+        self.text_surface = self.MenuFont.render(self.text,False,"#bce7fc")
     
     def getName(self):
         return self.name
     
-    def getBackground(self):
-        return self.background
+    def loadBackground(self, surface):
+        surface.blit(self.background,(0,0))
     
     def loadUI(self,surface):
         self.button_start.draw(surface)
+        self.button_settings.draw(surface)
+        self.button_quit.draw(surface)
+        surface.blit(self.text_surface,(200,100))
         pass
 
     def handleActions(self, event):
         pass
+
+
 
 #Class for handling the loading screen
 class Loading(GameState):
@@ -56,8 +69,8 @@ class Loading(GameState):
     def getName(self):
         return self.name
     
-    def getBackground(self):
-        return self.background
+    def loadBackground(self, surface):
+        surface.fill(self.background)
     
     def loadUI(self,surface):
         pass
@@ -86,8 +99,8 @@ class Combat(GameState):
     def getName(self):
         return self.name
     
-    def getBackground(self):
-        return self.background
+    def loadBackground(self, surface):
+        surface.fill(self.background)
     
     def loadUI(self,surface):
         self.healthbar.update(self.cur, 100)
@@ -134,8 +147,8 @@ class Boss(GameState):
     def getName(self):
         return self.name
     
-    def getBackground(self):
-        return self.background
+    def loadBackground(self, surface):
+        surface.fill(self.background)
     
     def loadUI(self,surface):
         self.healthbar.update(self.cur, 100)
@@ -180,8 +193,8 @@ class Shop(GameState):
     def getName(self):
         return self.name
     
-    def getBackground(self):
-        return self.background
+    def loadBackground(self, surface):
+        surface.fill(self.background)
     
     def loadUI(self,surface):
         self.button_enter.draw(surface)
@@ -214,8 +227,8 @@ class ShopMenu(GameState):
     def getName(self):
         return self.name
     
-    def getBackground(self):
-        return self.background
+    def loadBackground(self, surface):
+        surface.fill(self.background)
     
     def loadUI(self,surface):
         self.button_buy.draw(surface)
@@ -245,15 +258,15 @@ class Difficulty(GameState):
         self.name = "SELECT DIFFICULTY"
         self.background = "#0c2a31"
         self.game = g
-        self.button_easy = UIElements.Button("easy", 220, 60, (60,400), function=self.setEasyDifficulty)
-        self.button_normal = UIElements.Button("normal", 220, 60, (300,400), function=self.setNormalDifficulty)
-        self.button_hard = UIElements.Button("hard", 220, 60, (540,400), function=self.setHardDifficulty)
+        self.button_easy = UIElements.Button("easy", 220, 60, (60,450), function=self.setEasyDifficulty)
+        self.button_normal = UIElements.Button("normal", 220, 60, (300,450), function=self.setNormalDifficulty)
+        self.button_hard = UIElements.Button("hard", 220, 60, (540,450), function=self.setHardDifficulty)
     
     def getName(self):
         return self.name
     
-    def getBackground(self):
-        return self.background
+    def loadBackground(self, surface):
+        surface.fill(self.background)
     
     def loadUI(self,surface):
         self.button_easy.draw(surface)
@@ -266,15 +279,15 @@ class Difficulty(GameState):
 
     def setEasyDifficulty(self):
         self.game.setDifficulty(0)
-        self.game.transitionToLoad()
+        self.game.transitionToMenu()
 
     def setNormalDifficulty(self):
         self.game.setDifficulty(1)
-        self.game.transitionToLoad()
+        self.game.transitionToMenu()
 
     def setHardDifficulty(self):
         self.game.setDifficulty(2)
-        self.game.transitionToLoad()
+        self.game.transitionToMenu()
 
 
 #Class for handling room selection
@@ -291,8 +304,8 @@ class RoomSelection(GameState):
     def getName(self):
         return self.name
     
-    def getBackground(self):
-        return self.background
+    def loadBackground(self, surface):
+        surface.fill(self.background)
     
     def loadUI(self,surface):
         self.button_room_random.draw(surface)
@@ -317,13 +330,13 @@ class Victory(GameState):
         self.name = "VICTORY"
         self.background = "#5A8B82"
         self.game = g
-        self.button_restart = UIElements.Button("restart", 220, 60, (300,400), function=self.menu)
+        self.button_restart = UIElements.Button("restart", 220, 60, (300,460), function=self.game.transitionToMenu)
     
     def getName(self):
         return self.name
     
-    def getBackground(self):
-        return self.background
+    def loadBackground(self, surface):
+        surface.fill(self.background)
     
     def loadUI(self,surface):
         self.button_restart.draw(surface)
@@ -331,6 +344,3 @@ class Victory(GameState):
 
     def handleActions(self, event):
         pass
-
-    def menu(self):
-        self.game.transitionToMenu()

@@ -25,7 +25,7 @@ def draw_text(text, font, text_col, x, y):
 
 while game.running():
     state = game.get_state()
-    screen.fill(state.getBackground())
+    state.loadBackground(screen)
     state.loadUI(screen)
     draw_text(state.getName(), font, TEXT_COL, 160, 250)
     #event handler
