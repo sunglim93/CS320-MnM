@@ -217,28 +217,28 @@ def handleComboQTE():
 					pygame.display.update()
 					quick = False
 
-def main():
-	WIN.fill((255,0,0))
-	# WIN.blit(FONT.render("Press R ctrl to start combo QTE", True, 'black'), (0,0))
-	# WIN.blit(FONT.render("Press L ctrl to start slider QTE", True, 'black'), (0,100))
-	# WIN.blit(FONT.render("Press '=' to start multi hit QTE", True, 'black'), (0,200))
-	pygame.display.update()
-	run = True
-	while run:
-		clock.tick(FPS)
-		events = pygame.event.get()
-		for event in events:
-			if event.type == pygame.QUIT:
-				run = False
+# def main():
+# 	WIN.fill((255,0,0))
+# 	# WIN.blit(FONT.render("Press R ctrl to start combo QTE", True, 'black'), (0,0))
+# 	# WIN.blit(FONT.render("Press L ctrl to start slider QTE", True, 'black'), (0,100))
+# 	# WIN.blit(FONT.render("Press '=' to start multi hit QTE", True, 'black'), (0,200))
+# 	pygame.display.update()
+# 	run = True
+# 	while run:
+# 		clock.tick(FPS)
+# 		events = pygame.event.get()
+# 		for event in events:
+# 			if event.type == pygame.QUIT:
+# 				run = False
 
-			elif event.type == pygame.KEYDOWN:
-				if event.key == pygame.K_LCTRL:
-					handleComboQTE()
-				if event.key == pygame.K_RCTRL:
-					handleSliderQTE()
-				if event.key == pygame.K_EQUALS:
-					handleTimeSliderQTE(3)
-	pygame.quit()
+# 			elif event.type == pygame.KEYDOWN:
+# 				if event.key == pygame.K_LCTRL:
+# 					handleComboQTE()
+# 				if event.key == pygame.K_RCTRL:
+# 					handleSliderQTE()
+# 				if event.key == pygame.K_EQUALS:
+# 					handleTimeSliderQTE(3)
+# 	pygame.quit()
 
-if __name__ == "__main__":
-	main()
+# if __name__ == "__main__":
+# 	main()
