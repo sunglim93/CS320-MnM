@@ -99,13 +99,15 @@ class Combat(GameState):
     #   - corresponding QTE event will play for attack (will implement other attacks/QTEs later)
     #   - hp is decreased based on damage (damage is set to a fixed amount for now)
     #   - increase number of combat encounters
-    #   - (will be implementing a pick up item screen later)
-    #   - go to room selection screen
+    #   - after enemy dies:
+    #     - (will be implementing a pick up item screen later)
+    #     - go to room selection screen
     def sliderQTE(self):
         # temporarily taking out qte since there seems to be an issue with it taking mouse input
-        MnM.handleSliderQTE()
-        self.healthbar = UIElements.HealthBar(self.cur -50, 100, (50,50))
-        self.cur = self.cur - 50
+        numHits = QTE.handleTimeSliderQTE(3)
+        self.healthbar = UIElements.HealthBar(self.cur - (10*numHits), 100, (50,50))
+        self.cur = self.cur - (10*numHits)
+
         if (self.cur <= 0):
             self.game.increaseEncounters()
             self.game.transitionToRoomSelection()
@@ -145,14 +147,14 @@ class Boss(GameState):
     #   - corresponding QTE event will play for attack (will implement other attacks/QTEs later)
     #   - hp is decreased based on damage (damage is set to a fixed amount for now)
     #   - (player taking damage from enemy will be implemented later)
-    #   - reset total number of combat encounters
-    #   - (will be implementing a pick up item screen later)
-    #   - go to victory screen
+    #   - after enemy dies:
+    #     - reset total number of combat encounters
+    #     - (will be implementing a pick up item screen later)
+    #     - go to victory screen
     def sliderQTE(self):
-        # temporarily taking out qte since there seems to be an issue with it taking mouse input
-        #MnM.handleSliderQTE()
-        self.healthbar = UIElements.HealthBar(self.cur -20, 100, (50,50))
-        self.cur = self.cur - 20
+        numHits = QTE.handleTimeSliderQTE(3)
+        self.healthbar = UIElements.HealthBar(self.cur - (10*numHits), 100, (50,50))
+        self.cur = self.cur - (10*numHits)
         if (self.cur <= 0):
             self.game.resetEncounters()
             self.game.transitionToVictory()
