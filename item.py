@@ -1,21 +1,15 @@
 from random import seed,gauss,choice
 
-class Item_Master():
-    ''' Item Master Class
-    type is a dictionary of type name key to an assigned int value
-    ability is a dictionary of ability name key to an assigned int value corresponding to the type it falls into
-    these values are defined initially and do not change
-    '''
-    _type = {"Active" : 1, "Passive" : 2, "Consumable" : 3, "Badge" : 4}
-    _ability = {"Attack" : 1, "Defense" : 2, "Regeneration" : 3}
+_item_types = {"Active" : 1, "Passive" : 2, "Consumable" : 3, "Badge" : 4}
+_item_abilities = {"Attack" : 1, "Defense" : 2, "Regeneration" : 3}
 
-    def randomAbility(self, typeStr):
-        ''' Random Ability
-        returns a random ability name based on type value given
-        '''
-        seed()
-        choices = [key for key,val in self._ability if val == self._type[typeStr]]
-        return choice(choices)
+def _randomAbility(typeStr):
+    ''' Random Ability
+    returns a random ability name based on type value given
+    '''
+    seed()
+    choices = [key for key,val in _item_abilities.items() if val == _item_types[typeStr]]
+    return choice(choices)
 
 class Item():
     ''' Item Class
@@ -37,7 +31,7 @@ class Item():
         choose all item values at once and set them directly
         type must be valid
         '''
-        if typeStr in Item_Master._type:
+        if typeStr in _item_types:
             self.type = typeStr
             self.ability = ability
             self.values = values
@@ -47,7 +41,7 @@ class Item():
         sets type and ability of choice
         type must be valid
         '''
-        if typeStr in Item_Master._type:
+        if typeStr in _item_types:
             self.type = typeStr
             self.ability = ability
 
@@ -56,10 +50,10 @@ class Item():
         sets type and chooses ability randomly based on item type
         type must be valid
         '''
-        if typeStr in Item_Master._type:
+        if typeStr in _item_types:
             # get random ability name
             self.type = typeStr
-            self.ability = Item_Master.randomAbility(typeStr)
+            self.ability = _randomAbility(typeStr)
 
     def randomValueWideRange(self, min, max, difficulty=None):
         ''' Random Value Wide Range
@@ -91,7 +85,7 @@ class Item():
         while randNum > max or randNum < min:
             randNum = gauss(mu, sigma)
 
-        self.values.append(randNum)
+        self.values.append(round(randNum, 2))
 
     def randomValueTopOfRange(self, min, max, difficulty=None):
         ''' Random Value Top of Range
@@ -112,18 +106,18 @@ class Item():
         # shift distribution towards higher end of range with higher difficulty
         if difficulty is not None:
             if difficulty == 0:
-                sigma = sigma*1.25
+                mu = mu*1.1
             elif difficulty == 1:
-                sigma = sigma*1.5
+                mu = mu*1.2
             elif difficulty == 2:
-                sigma = sigma*1.75
+                mu = mu*1.3
 
         # make sure random value is within range
         randNum = gauss(mu, sigma)
         while randNum > max or randNum < min:
             randNum = gauss(mu, sigma)
 
-        self.values.append(randNum)
+        self.values.append(round(randNum, 2))
 
     def getItem(self):
         ''' Get Item
