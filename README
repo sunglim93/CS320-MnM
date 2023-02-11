@@ -1,6 +1,6 @@
 Run python main.py to run the game.
 
-Press space when in loading screen to progress to next screen.
+Press space during loading screen to progress to next screen.
 
 After pressing the attack button, a quick time event will pop up that determines the amount of damage that the enemy will take. During the QTE, the player must left click when the red line aligns with the blue square. The square turn green if the player left clicked at the correct time otherwise the square will turn red.
 
