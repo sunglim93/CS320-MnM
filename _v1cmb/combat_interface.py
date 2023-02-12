@@ -18,3 +18,4 @@ def drawManaBar(mana, max_mana, res, x, y, width, height):
     mana_percent = mana / max_mana
     pg.draw.rect(res, (255, 0, 255), (x, y, width, height))
     pg.draw.rect(res, (90, 50, 255), (x, y, width * mana_percent, height))
+

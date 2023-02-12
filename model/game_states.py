@@ -1,9 +1,10 @@
-import pygame
+from controller import QTE
+from model import classes
+from view import UIElements as ui
+import pygame as pg
+import random as rd
 import game
-import UIElements
-from random import random
-import QTE
-
+import time
 
 # Abstract class that provides methods
 # that each GameState method should have
@@ -23,19 +24,19 @@ class GameState():
         pass
 
 
-#Class for handling the main menu
+# Class for handling the main menu
 class Menu(GameState):
     
     def __init__(self, g):
         self.game = g
         self.name = "MENU"
-        pygame.font.init()
-        self.MenuFont = pygame.font.Font("assets/alagard.ttf",64)
-        self.background = pygame.image.load('assets/menu.png')
-        self.background = pygame.transform.scale(self.background,(pygame.display.get_surface().get_size()))
-        self.button_start = UIElements.Button("START", 200, 40, (300,300), function=self.game.transitionToLoad)
-        self.button_settings = UIElements.Button("SETTINGS", 200, 40, (300,360), function=self.game.transitionToDifficulty)
-        self.button_quit = UIElements.Button("QUIT", 200, 40, (300,420), function=self.game.quit)
+        pg.font.init()
+        self.MenuFont = pg.font.Font("assets/alagard.ttf",64)
+        self.background = pg.image.load('assets/menu.png')
+        self.background = pg.transform.scale(self.background,(pg.display.get_surface().get_size()))
+        self.button_start = ui.Button("START", 200, 40, (300,300), function=self.game.transitionToLoad)
+        self.button_settings = ui.Button("SETTINGS", 200, 40, (300,360), function=self.game.transitionToDifficulty)
+        self.button_quit = ui.Button("QUIT", 200, 40, (300,420), function=self.game.quit)
 
         self.text = "Metal & Magic"
         self.text_surface = self.MenuFont.render(self.text,False,"#bce7fc")
@@ -56,9 +57,7 @@ class Menu(GameState):
     def handleActions(self, event):
         pass
 
-
-
-#Class for handling the loading screen
+# Class for handling the loading screen
 class Loading(GameState):
     
     def __init__(self, g):
@@ -77,36 +76,43 @@ class Loading(GameState):
 
     # after the player has encountered 3 combat states, transition to the boss combat state
     def handleActions(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
                 if self.game.getEncounters() < 3:
                     self.game.transitionToCombat()
                 else:
                     self.game.transitionToBoss()
 
 
-#Class for handling the combat scenarios
+# Class for handling the combat scenarios
 class Combat(GameState):
-    
     def __init__(self, g):
         self.name = "COMBAT"
-        self.background = "#BC88DF"
+        self.combatFont = pg.font.Font("assets/alagard.ttf",24)
+        self.background = "#9a4ccf"
+        self.enemy = classes.Enemy("Wretch")
         self.game = g
-        self.cur = 100
-        self.healthbar = UIElements.HealthBar(self.cur, 100, (50,50))
-        self.button_attack = UIElements.Button("attack", 220, 60, (300,300), function=self.sliderQTE)
-
+        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
+        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (500,50))
+        self.button_attack = ui.Button("attack", 220, 60, (300, 450), function=self.sliderQTE)
+    
     def getName(self):
         return self.name
-    
+
     def loadBackground(self, surface):
         surface.fill(self.background)
-    
+
     def loadUI(self,surface):
-        self.healthbar.update(self.cur, 100)
+        self.healthbar.update(self.game.player.getHP(), self.game.player.getMaxHP())
         self.healthbar.draw(surface)
+        self.enemy_healthbar.update(self.enemy.getHP(), self.enemy.getMaxHP())
+        self.enemy_healthbar.draw(surface)
         self.button_attack.draw(surface)
-        pass
+        self.game.player.drawPlayer(surface, 100, 300)
+        self.enemy.drawEnemy(surface, 600, 300)
+        self.game.player_turn = True
+        self.game.player_attack = 0
+        self.enemy_attack = 0
 
     # when a player presses the attack button:
     #   - corresponding QTE event will play for attack (will implement other attacks/QTEs later)
@@ -117,19 +123,23 @@ class Combat(GameState):
     #     - go to room selection screen
     def sliderQTE(self):
         numHits = QTE.handleTimeSliderQTE(3)
-        self.cur -= (10*numHits)
-
-        if (self.cur <= 0):
+        total_damage = self.game.player.generateDamage()*numHits
+        self.enemy.takeDamage(total_damage)
+        enemy_dmg = self.enemy.generateDamage()
+        self.game.player.takeDamage(enemy_dmg)
+        if (self.game.player.getHP() <= 0):
+            self.cur = 0
+            self.game.transitionToDefeat()
+        if (self.enemy.getHP() <= 0):
             self.game.increaseEncounters()
             self.game.transitionToRoomSelection()
 
     def handleActions(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
                 self.game.transitionToLoad()
 
-
-#Class for handling boss battle
+# Class for handling boss battle
 class Boss(GameState):
     
     def __init__(self, g):
@@ -137,8 +147,8 @@ class Boss(GameState):
         self.background = "#590019"
         self.game = g
         self.cur = 100
-        self.healthbar = UIElements.HealthBar(self.cur, 100, (50,50))
-        self.button_attack = UIElements.Button("attack", 220, 60, (300,300), function=self.sliderQTE)
+        self.healthbar = ui.HealthBar(self.cur, 100, (50,50))
+        self.button_attack = ui.Button("attack", 220, 60, (300,300), function=self.sliderQTE)
 
     def getName(self):
         return self.name
@@ -168,22 +178,22 @@ class Boss(GameState):
             self.game.transitionToVictory()
 
     def handleActions(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_h:
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_h:
                 self.cur -= 10
-            if event.key == pygame.K_SPACE:
+            if event.key == pg.K_SPACE:
                 self.game.transitionToLoad()
 
 
-#Class for handling the shop features
+# Class for handling the shop features
 class Shop(GameState):
     
     def __init__(self, g):
         self.name = "SHOP"
         self.background = "#04395e"
         self.game = g
-        self.button_enter = UIElements.Button("enter shop", 220, 60, (300,250), function=self.enterShop)
-        self.button_leave = UIElements.Button("leave shop", 220, 60, (300,400), function=self.leaveShop)
+        self.button_enter = ui.Button("enter shop", 220, 60, (300,250), function=self.enterShop)
+        self.button_leave = ui.Button("leave shop", 220, 60, (300,400), function=self.leaveShop)
     
     def getName(self):
         return self.name
@@ -203,21 +213,21 @@ class Shop(GameState):
         self.game.transitionToLoad()
 
     def handleActions(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
                 self.game.transitionToLoad()
 
 
-#Class for handling the player entering shop
+# Class for handling the player entering shop
 class ShopMenu(GameState):
     
     def __init__(self, g):
         self.name = "SHOP MENU"
         self.background = "#04395e"
         self.game = g
-        self.button_buy = UIElements.Button("buy items", 220, 60, (60,400), function=self.buyItems)
-        self.button_sell = UIElements.Button("sell items", 220, 60, (300,400), function=self.sellItems)
-        self.button_back = UIElements.Button("close menu", 220, 60, (540,400), function=self.closeMenu)
+        self.button_buy = ui.Button("buy items", 220, 60, (60,400), function=self.buyItems)
+        self.button_sell = ui.Button("sell items", 220, 60, (300,400), function=self.sellItems)
+        self.button_back = ui.Button("close menu", 220, 60, (540,400), function=self.closeMenu)
     
     def getName(self):
         return self.name
@@ -241,21 +251,21 @@ class ShopMenu(GameState):
         pass
 
     def handleActions(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
                 self.game.transitionToLoad()
 
 
-#Class for handling difficulty selection
+# Class for handling difficulty selection
 class Difficulty(GameState):
     
     def __init__(self, g):
         self.name = "SELECT DIFFICULTY"
         self.background = "#0c2a31"
         self.game = g
-        self.button_easy = UIElements.Button("easy", 220, 60, (60,450), function=self.setEasyDifficulty)
-        self.button_normal = UIElements.Button("normal", 220, 60, (300,450), function=self.setNormalDifficulty)
-        self.button_hard = UIElements.Button("hard", 220, 60, (540,450), function=self.setHardDifficulty)
+        self.button_easy = ui.Button("easy", 220, 60, (60,450), function=self.setEasyDifficulty)
+        self.button_normal = ui.Button("normal", 220, 60, (300,450), function=self.setNormalDifficulty)
+        self.button_hard = ui.Button("hard", 220, 60, (540,450), function=self.setHardDifficulty)
     
     def getName(self):
         return self.name
@@ -285,16 +295,16 @@ class Difficulty(GameState):
         self.game.transitionToMenu()
 
 
-#Class for handling room selection
-#  Allows player to select two different paths
+# Class for handling room selection
+# Allows player to select two different paths
 class RoomSelection(GameState):
     
     def __init__(self, g):
         self.name = "Select a path"
         self.background = "#0c2a31"
         self.game = g
-        self.button_room_random = UIElements.Button("???", 220, 60, (60,400), function=self.randomRoom)
-        self.button_room_shop = UIElements.Button("shop", 220, 60, (540,400), function=self.shopRoom)
+        self.button_room_rd = ui.Button("???", 220, 60, (60,400), function=self.rdRoom)
+        self.button_room_shop = ui.Button("shop", 220, 60, (540,400), function=self.shopRoom)
 
     def getName(self):
         return self.name
@@ -303,30 +313,30 @@ class RoomSelection(GameState):
         surface.fill(self.background)
     
     def loadUI(self,surface):
-        self.button_room_random.draw(surface)
+        self.button_room_rd.draw(surface)
         self.button_room_shop.draw(surface)
         pass
 
     def handleActions(self, event):
         pass
 
-    def randomRoom(self):
-        self.game.transitionToCombat() if random() > 0.5 else self.game.transitionToShop()
+    def rdRoom(self):
+        self.game.transitionToCombat() if rd.random() > 0.5 else self.game.transitionToShop()
 
     def shopRoom(self):
         self.game.transitionToShop()
 
 
-#Class for handling the victory screen
-#  Brings the player back to the main menu screen
+# Class for handling the victory screen
+# Brings the player back to the main menu screen
 class Victory(GameState):
     
     def __init__(self, g):
         self.name = "VICTORY"
         self.background = "#5A8B82"
         self.game = g
-        self.button_restart = UIElements.Button("restart", 220, 60, (300,460), function=self.game.transitionToMenu)
-    
+        self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.game.transitionToMenu)
+
     def getName(self):
         return self.name
     
@@ -334,6 +344,29 @@ class Victory(GameState):
         surface.fill(self.background)
     
     def loadUI(self,surface):
+        self.button_restart.draw(surface)
+        pass
+
+    def handleActions(self, event):
+        pass
+
+class Defeat(GameState):
+
+    def __init__(self, g):
+        self.name = "Defeat"
+        self.background = "#00060e"
+        self.game = g
+        self.game.player.setHP()
+        self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.game.transitionToMenu)
+
+    def getName(self):
+        return self.name
+    
+    def loadBackground(self, surface):
+        surface.fill(self.background)
+    
+    def loadUI(self,surface):
+        ui.drawText(surface, "YOU DIED", (400,200))
         self.button_restart.draw(surface)
         pass
 
