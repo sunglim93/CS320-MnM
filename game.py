@@ -1,8 +1,8 @@
 import pygame
 from pygame.locals import *
 from pygame import mixer 
-import game_states
-import QTE
+from model import game_states
+from controller import QTE
 
 # The Game class handles all the transitions and states the game
 # can be in. This is how the main function will interract with 
@@ -17,6 +17,7 @@ class Game():
         self.run = True
         self.difficulty = 0
         self.numEncounters = 0
+        self.player = game_states.Player("Armored Soul")
 
     # difficulty settings
     def setDifficulty(self, difficulty):
@@ -36,7 +37,7 @@ class Game():
         self.numEncounters = 0
 
     #allows the current state to be changed
-    def set_state(self,new_state=0):
+    def set_state(self, new_state=0):
         self.cur_state = new_state
 
     #returns the current state

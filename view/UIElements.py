@@ -139,3 +139,4 @@ class HealthBar():
         pygame.draw.rect(surface, self.base_color, self.rect_base, border_radius=4)
         pygame.draw.rect(surface, self.cur_color, self.rect_cur, border_radius=4)
         surface.blit(self.text_surface, self.text_rect)
+
