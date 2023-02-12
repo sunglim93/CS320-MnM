@@ -1,109 +1,10 @@
 from controller import QTE
+from model import classes
 from view import UIElements as ui
 import pygame as pg
 import random as rd
 import game
 import time
-
-screen_width = 800
-screen_height = 600
-
-class Player:
-    def __init__(self, name, hp=100, atk=20, weapon="rusty dagger"):
-        self.name = name
-        self.max_hp = hp
-        self.hp = hp
-        self.atk = atk
-        self.atk_low = atk - 10
-        self.atk_high = atk + 10
-        self.actions = ["Attack"]
-        self.weapon = weapon
-
-    def drawPlayer(self, surface, x=screen_width/8, y=screen_height/2):
-        self.x = x
-        self.y = y
-        self.rect = pg.Rect(self.x, self.y, 50, 50)
-        self.sprite = pg.Surface((32, 32))
-        self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load(f"assets/player.png")
-        self.size = pg.transform.scale(self.image, (128, 128))
-        surface.blit(self.size, self.rect)
-
-    def generateDamage(self):
-        return rd.randrange(self.atk_low, self.atk_high)
-
-    def takeDamage(self, damage):
-        self.hp -= damage
-        if self.hp < 0:
-            self.hp = 0
-        return self.hp
-
-    def heal(self, heal_amt):
-        self.hp += heal_amt
-        if self.hp > self.max_hp:
-            self.hp = self.max_hp
-
-    def getHP(self):
-        return self.hp
-
-    def getMaxHP(self):
-        return self.max_hp
-
-    def chooseAction(self):
-        i = 1
-        print("Actions")
-        for item in self.actions:
-            print(str(i) + ":", item)
-            i += 1
-
-class Enemy:
-    def __init__(self, name, hp=200, atk=10, weapon="claws"):
-        self.name = name
-        self.max_hp = hp
-        self.hp = hp
-        self.atk = atk
-        self.atk_low = atk - 5
-        self.atk_high = atk + 5
-        self.actions = ["Attack"]
-        self.weapon = weapon
-
-    def drawEnemy(self, surface, x=screen_width/(1.4), y=screen_height/2):
-        self.x = x
-        self.y = y
-        self.rect = pg.Rect(self.x, self.y, 50, 50)
-        self.sprite = pg.Surface((32, 32))
-        self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load(f"assets/bones-0001.png")
-        self.size = pg.transform.scale(self.image, (128, 128))
-        surface.blit(self.size, self.rect)
-
-    def generateDamage(self):
-        return rd.randrange(self.atk_low, self.atk_high)
-
-    def takeDamage(self, damage):
-        self.hp -= damage
-        if self.hp < 0:
-            self.hp = 0
-        return self.hp
-
-    def heal(self, heal_amt):
-        self.hp += heal_amt
-        if self.hp > self.max_hp:
-            self.hp = self.max_hp
-
-    def getHP(self):
-        return self.hp
-
-    def getMaxHP(self):
-        return self.max_hp
-
-    def chooseAction(self):
-        i = 1
-        print("Actions")
-        for item in self.actions:
-            print(str(i) + ":", item)
-            i += 1
-
 
 # Abstract class that provides methods
 # that each GameState method should have
@@ -189,9 +90,9 @@ class Combat(GameState):
         self.name = "COMBAT"
         self.combatFont = pg.font.Font("assets/alagard.ttf",24)
         self.background = "#9a4ccf"
-        self.enemy = Enemy("Wretch")
+        self.enemy = classes.Enemy("Wretch")
         self.game = g
-        self.cur = self.game.player.max_hp
+        self.cur = self.game.player.getHP()
         self.enemy_cur = self.enemy.max_hp
         self.healthbar = ui.HealthBar(self.cur, self.game.player.max_hp, (50,50))
         self.enemy_healthbar = ui.HealthBar(self.enemy_cur, self.enemy.max_hp, (500,50))
@@ -209,8 +110,8 @@ class Combat(GameState):
         self.enemy_healthbar.update(self.enemy_cur, 150)
         self.enemy_healthbar.draw(surface)
         self.button_attack.draw(surface)
-        self.game.player.drawPlayer(surface)
-        self.enemy.drawEnemy(surface)
+        self.game.player.drawPlayer(surface, 100, 300)
+        self.enemy.drawEnemy(surface, 600, 300)
         self.game.player_turn = True
         self.game.player_attack = 0
         self.enemy_attack = 0
@@ -421,7 +322,7 @@ class RoomSelection(GameState):
         pass
 
     def rdRoom(self):
-        self.game.transitionToCombat() if rd() > 0.5 else self.game.transitionToShop()
+        self.game.transitionToCombat() if rd.random() > 0.5 else self.game.transitionToShop()
 
     def shopRoom(self):
         self.game.transitionToShop()
