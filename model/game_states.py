@@ -127,8 +127,9 @@ class Combat(GameState):
         self.enemy.takeDamage(total_damage)
         enemy_dmg = self.enemy.generateDamage()
         self.game.player.takeDamage(enemy_dmg)
-        if (self.game.player.getHP() < 0):
+        if (self.game.player.getHP() <= 0):
             self.cur = 0
+            self.game.transitionToDefeat()
         if (self.enemy.getHP() <= 0):
             self.game.increaseEncounters()
             self.game.transitionToRoomSelection()
@@ -343,6 +344,29 @@ class Victory(GameState):
         surface.fill(self.background)
     
     def loadUI(self,surface):
+        self.button_restart.draw(surface)
+        pass
+
+    def handleActions(self, event):
+        pass
+
+class Defeat(GameState):
+
+    def __init__(self, g):
+        self.name = "Defeat"
+        self.background = "#00060e"
+        self.game = g
+        self.game.player.setHP()
+        self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.game.transitionToMenu)
+
+    def getName(self):
+        return self.name
+    
+    def loadBackground(self, surface):
+        surface.fill(self.background)
+    
+    def loadUI(self,surface):
+        ui.drawText(surface, "YOU DIED", (400,200))
         self.button_restart.draw(surface)
         pass
 

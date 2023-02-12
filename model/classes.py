@@ -50,6 +50,9 @@ class Player:
         for item in self.actions:
             print(str(i) + ":", item)
             i += 1
+    
+    def setHP(self):
+        self.hp = self.max_hp
 
 class Enemy:
     def __init__(self, name, hp=150, atk=10, weapon="claws"):
