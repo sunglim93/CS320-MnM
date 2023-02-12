@@ -11,6 +11,8 @@ class Player:
         self.atk_high = atk + 10
         self.actions = ["Attack"]
         self.weapon = weapon
+        if self.hp < 0:
+            self.hp = 0
 
     def drawPlayer(self, surface, x, y):
         self.x = x
@@ -48,13 +50,16 @@ class Player:
         for item in self.actions:
             print(str(i) + ":", item)
             i += 1
+    
+    def setHP(self):
+        self.hp = self.max_hp
 
 class Enemy:
-    def __init__(self, name, difficultyMod, hp=200, atk=10, weapon="claws"):
+    def __init__(self, name, hp=150, atk=10, weapon="claws"):
         self.name = name
-        self.max_hp = int(hp*difficultyMod) #hp and atk scale with the appropriate difficulty mod
+        self.max_hp = hp
         self.hp = hp
-        self.atk = int(atk*difficultyMod)
+        self.atk = atk
         self.atk_low = atk - 5
         self.atk_high = atk + 5
         self.actions = ["Attack"]

@@ -19,12 +19,7 @@ class Game():
         self.difficulty = 0
         self.numEncounters = 0
         self.player = classes.Player("Armored Soul")
-        self.difficultyMods = { #dictionary containing modifiers
-            0 : 0.5, #easy
-            1 : 1.0, #medium
-            2 : 1.5 #hard
-        }
-        
+
     # difficulty settings
     def setDifficulty(self, difficulty):
         self.difficulty = difficulty
@@ -69,6 +64,8 @@ class Game():
         self.cur_state = game_states.Victory(self)
     def transitionToBoss(self):
         self.cur_state = game_states.Boss(self)
+    def transitionToDefeat(self):
+        self.cur_state = game_states.Defeat(self)
 
     #allows main loop to check the game is still running
     def running(self):

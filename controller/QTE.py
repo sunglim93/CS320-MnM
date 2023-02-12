@@ -215,6 +215,7 @@ def handleComboQTE():
 					pygame.display.update()
 					quick = False
 
+
 # def main():
 # 	WIN.fill((255,0,0))
 # 	# WIN.blit(FONT.render("Press R ctrl to start combo QTE", True, 'black'), (0,0))
