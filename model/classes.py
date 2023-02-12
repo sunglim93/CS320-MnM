@@ -11,6 +11,8 @@ class Player:
         self.atk_high = atk + 10
         self.actions = ["Attack"]
         self.weapon = weapon
+        if self.hp < 0:
+            self.hp = 0
 
     def drawPlayer(self, surface, x, y):
         self.x = x
@@ -50,7 +52,7 @@ class Player:
             i += 1
 
 class Enemy:
-    def __init__(self, name, hp=200, atk=10, weapon="claws"):
+    def __init__(self, name, hp=150, atk=10, weapon="claws"):
         self.name = name
         self.max_hp = hp
         self.hp = hp

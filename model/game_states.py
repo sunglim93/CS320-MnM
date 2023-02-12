@@ -93,7 +93,7 @@ class Combat(GameState):
         self.enemy = classes.Enemy("Wretch")
         self.game = g
         self.cur = self.game.player.getHP()
-        self.enemy_cur = self.enemy.max_hp
+        self.enemy_cur = self.enemy.getHP()
         self.healthbar = ui.HealthBar(self.cur, self.game.player.max_hp, (50,50))
         self.enemy_healthbar = ui.HealthBar(self.enemy_cur, self.enemy.max_hp, (500,50))
         self.button_attack = ui.Button("attack", 220, 60, (300, 450), function=self.sliderQTE)
@@ -131,6 +131,8 @@ class Combat(GameState):
         enemy_dmg = self.enemy.generateDamage()
         self.cur -= (enemy_dmg)
         self.game.player.takeDamage(enemy_dmg)
+        if (self.cur < 0):
+            self.cur = 0
         if (self.enemy_cur <= 0):
             self.game.increaseEncounters()
             self.game.transitionToRoomSelection()
