@@ -92,10 +92,8 @@ class Combat(GameState):
         self.background = "#9a4ccf"
         self.enemy = classes.Enemy("Wretch")
         self.game = g
-        self.cur = self.game.player.getHP()
-        self.enemy_cur = self.enemy.getHP()
-        self.healthbar = ui.HealthBar(self.cur, self.game.player.max_hp, (50,50))
-        self.enemy_healthbar = ui.HealthBar(self.enemy_cur, self.enemy.max_hp, (500,50))
+        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
+        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (500,50))
         self.button_attack = ui.Button("attack", 220, 60, (300, 450), function=self.sliderQTE)
     
     def getName(self):
@@ -105,9 +103,9 @@ class Combat(GameState):
         surface.fill(self.background)
 
     def loadUI(self,surface):
-        self.healthbar.update(self.cur, 100)
+        self.healthbar.update(self.game.player.getHP(), self.game.player.getMaxHP())
         self.healthbar.draw(surface)
-        self.enemy_healthbar.update(self.enemy_cur, 150)
+        self.enemy_healthbar.update(self.enemy.getHP(), self.enemy.getMaxHP())
         self.enemy_healthbar.draw(surface)
         self.button_attack.draw(surface)
         self.game.player.drawPlayer(surface, 100, 300)
@@ -126,14 +124,12 @@ class Combat(GameState):
     def sliderQTE(self):
         numHits = QTE.handleTimeSliderQTE(3)
         total_damage = self.game.player.generateDamage()*numHits
-        self.enemy_cur -= (total_damage)
         self.enemy.takeDamage(total_damage)
         enemy_dmg = self.enemy.generateDamage()
-        self.cur -= (enemy_dmg)
         self.game.player.takeDamage(enemy_dmg)
-        if (self.cur < 0):
+        if (self.game.player.getHP() < 0):
             self.cur = 0
-        if (self.enemy_cur <= 0):
+        if (self.enemy.getHP() <= 0):
             self.game.increaseEncounters()
             self.game.transitionToRoomSelection()
 
