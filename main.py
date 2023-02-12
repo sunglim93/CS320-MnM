@@ -18,11 +18,6 @@ FPS = 60
 #instanciating the game 
 game = game.Game()
 
-#method for displaying text on screen
-def draw_text(text, font, text_col, x, y):
-    img = font.render(text, True, text_col)
-    screen.blit(img,(x,y))
-
 while game.running():
     state = game.get_state()
     state.loadBackground(screen)

@@ -64,6 +64,8 @@ class Game():
         self.cur_state = game_states.Victory(self)
     def transitionToBoss(self):
         self.cur_state = game_states.Boss(self)
+    def transitionToDefeat(self):
+        self.cur_state = game_states.Defeat(self)
 
     #allows main loop to check the game is still running
     def running(self):
