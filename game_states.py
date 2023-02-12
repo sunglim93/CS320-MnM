@@ -116,11 +116,8 @@ class Combat(GameState):
     #     - (will be implementing a pick up item screen later)
     #     - go to room selection screen
     def sliderQTE(self):
-        # temporarily taking out qte since there seems to be an issue with it taking mouse input
         numHits = QTE.handleTimeSliderQTE(3)
-        self.healthbar = UIElements.HealthBar(self.cur - (10*numHits), 100, (50,50))
-        self.cur = self.cur - (10*numHits)
-
+        self.cur -= (10*numHits)
         if (self.cur <= 0):
             self.game.increaseEncounters()
             self.game.transitionToRoomSelection()
@@ -166,8 +163,7 @@ class Boss(GameState):
     #     - go to victory screen
     def sliderQTE(self):
         numHits = QTE.handleTimeSliderQTE(3)
-        self.healthbar = UIElements.HealthBar(self.cur - (10*numHits), 100, (50,50))
-        self.cur = self.cur - (10*numHits)
+        self.cur -= (10*numHits)
         if (self.cur <= 0):
             self.game.resetEncounters()
             self.game.transitionToVictory()
