@@ -105,9 +105,9 @@ class Combat(GameState):
         surface.fill(self.background)
 
     def loadUI(self,surface):
-        self.healthbar.update(self.cur, 100)
+        self.healthbar.update(self.cur, self.game.player.max_hp)
         self.healthbar.draw(surface)
-        self.enemy_healthbar.update(self.enemy_cur, 150)
+        self.enemy_healthbar.update(self.enemy_cur, self.enemy.max_hp)
         self.enemy_healthbar.draw(surface)
         self.button_attack.draw(surface)
         self.game.player.drawPlayer(surface, 100, 300)
