@@ -55,11 +55,11 @@ class Player:
         self.hp = self.max_hp
 
 class Enemy:
-    def __init__(self, name, hp=150, atk=10, weapon="claws"):
+    def __init__(self, name, difficultyMod, hp=150, atk=10, weapon="claws"):
         self.name = name
-        self.max_hp = hp
-        self.hp = hp
-        self.atk = atk
+        self.max_hp = int(hp*difficultyMod) #modify hp and atk according to difficulty
+        self.hp = self.max_hp
+        self.atk = int(atk*difficultyMod)
         self.atk_low = atk - 5
         self.atk_high = atk + 5
         self.actions = ["Attack"]

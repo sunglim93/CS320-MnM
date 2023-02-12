@@ -19,6 +19,11 @@ class Game():
         self.difficulty = 0
         self.numEncounters = 0
         self.player = classes.Player("Armored Soul")
+        self.difficultyMods = { #dictionary containing modifiers
+            0 : 0.5, #easy
+            1 : 1.0, #medium
+            2 : 1.5 #hard
+        }
 
     # difficulty settings
     def setDifficulty(self, difficulty):
