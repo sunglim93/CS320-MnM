@@ -348,12 +348,12 @@ class Victory(GameState):
 class Reward(GameState):
     
     def __init__(self, g):
-        self.name = "DROPPED ITEMS. Select the item to keep."
-        self.background = "#04395e"
+        self.name = "ENEMY DIED. Select an item."
+        self.background = "#BC88DF"
         self.game = g
         # Maybe initialize some items here?
-        self.button_item1 = UIElements.Button("item1", 220, 60, (60,400), function=self.addItem1)
-        self.button_item2 = UIElements.Button("item2", 220, 60, (540,400), function=self.addItem2)
+        self.button_item1 = UIElements.Button("get item1", 220, 60, (60,300), function=self.getItem1)
+        self.button_item2 = UIElements.Button("get item2", 220, 60, (540,300), function=self.getItem2)
     
     def getName(self):
         return self.name
@@ -364,18 +364,14 @@ class Reward(GameState):
     def loadUI(self,surface):
         self.button_item1.draw(surface)
         self.button_item2.draw(surface)
-        pass
-
 
     def getItem1(self):
         # code to put item 1 into player class inventory
         self.game.transitionToRoomSelection()
-        pass
 
     def getItem2(self):
         # code to put item 2 into player class inventory
         self.game.transitionToRoomSelection()
-        pass
 
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
