@@ -7,9 +7,15 @@ pygame.font.init()
 UI_font = pygame.font.Font("assets/alagard.ttf",24)
 mixer.init()
 
+#method for displaying text on screen
+def drawText(surface, text, pos, text_col="#bce7fc"):
+    img = UI_font.render(text, True, text_col)
+    surface.blit(img,(pos))
+
+
 class Button():
     #If no aciton is passed to a button, this function will fire
-    def default_action():
+    def default_action(self):
         print("no action was assigned to button")
     
     #Constructor for a button takes the following parameters
@@ -125,7 +131,8 @@ class HealthBar():
     # use the update method to update the max and min health during combat
     def update(self, cur, max):
         if self.cur != cur:
-            mixer.Sound('assets/damage.wav').play()
+            if self.cur > cur:
+                mixer.Sound('assets/damage.wav').play()
             self.cur = cur
             self.max = max
             self.rect_cur = pygame.Rect(self.pos, ((cur/max)*(self.width-3), self.height-3))
@@ -139,3 +146,4 @@ class HealthBar():
         pygame.draw.rect(surface, self.base_color, self.rect_base, border_radius=4)
         pygame.draw.rect(surface, self.cur_color, self.rect_cur, border_radius=4)
         surface.blit(self.text_surface, self.text_rect)
+
