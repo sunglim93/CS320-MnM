@@ -1,10 +1,8 @@
 import os
-import multiprocessing as mp
 import pygame
-import game
 import time
 import UIElements
-from random import random
+from random import random, choice
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
 import requests
@@ -87,7 +85,7 @@ class Audio(GameState):
             pygame.mixer.music.load(music_file)
             pygame.mixer.music.set_volume(0.0)
             pygame.mixer.music.play(loop)
-            self.current_room =room_id
+            self.current_room = room_id
             # I was thinking of implementing a loop where the music gradually increases
             # once a new room is accessed instead of the music immediately being thrown
             # at the player
@@ -117,6 +115,8 @@ class Loading(GameState):
         self.game = g
         self.button_start = UIElements.Button("start", 220, 60, (300, 300), function=self.game.transitionToLoad)
         self.image = None
+        #self.button_start = UIElements.Button("Next", 220, 60, (300, 300), function=self.game.transitionToCombat)
+        #self.sprite = pygame.image.load('knightanimation.png').convert_alpha()
 
     def getName(self):
         return self.name
@@ -133,7 +133,7 @@ class Loading(GameState):
             parts = line.split('=')
             openai.api_key = parts[1].strip()
             response = openai.Image.create(
-                prompt="An armored character running away from enemies in a castle",
+                prompt="An armored knight running away from enemies in a dark illuminated castle",
                 n=1,
                 size="512x512"
             )
@@ -142,9 +142,13 @@ class Loading(GameState):
             im = Image.open(BytesIO(requests.get(image_url).content))
             return im
 
-    def pixelate_ai_image(self, im, size=16):
-        #  im = im.resize((im.width // 4, im.height // 4), resample=Image.NEAREST)
-        im = im.resize((im.width, im.height), resample=Image.NEAREST)
+    def pixelate_ai_image(self, im):
+        org_size = im.size
+        pixelate_lvl = 4
+        im = im.resize(
+            size=(org_size[0] // pixelate_lvl, org_size[1] // pixelate_lvl),
+            resample=0)
+        im = im.resize(org_size, resample=0)
         return im
 
     def display_screen(self, screen, image):
@@ -172,11 +176,13 @@ class Loading(GameState):
         self.image = pygame.image.fromstring(pixeled_image.tobytes(),
                                              (pixeled_image.width, pixeled_image.height),
                                              "RGB")
-        image.save(file)
+        pixeled_image.save(file)
 
     def load_cache_or_remote(self):
         if self.image is None:
-            for file in os.listdir("image_cache"):
+            choices = os.listdir("image_cache")
+            if choices:
+                file = choice(choices)
                 pixeled_image = Image.open(f"image_cache/{file}")
                 self.image = pygame.image.fromstring(pixeled_image.tobytes(),
                                                      (pixeled_image.width, pixeled_image.height),
@@ -188,19 +194,28 @@ class Loading(GameState):
 
             self.fetch_remote()
 
+    def get_sprite(self, sheet, width, height, scale):
+        sprite_sheet_image = pygame.image.load('knightanimation.png').convert_alpha()
+        image = pygame.Surface((width, height)).convert_alpha()
+        image.blit(sheet, (0, 0), (0, 0, width, height))
+
+        return image
+
+    #frame_0 = get_image(sprite_sheet_image, 32, 32)
+
+
 
 
     def draw(self, screen):
         self.load_cache_or_remote()
         pygame.display.set_caption("Metal and Magic")
         screen.blit(self.image, (0, 0))
-
-        font = pygame.font.Font(None, 36)
-        text = font.render("LOADING", True, (255, 255, 255))
+        font = pygame.font.Font("assets/alagard.ttf", 33)
+        text = font.render("Loading...", True, self.color)
         text_rect = text.get_rect()
         text_rect.center = (self.image.get_width() // 2, self.image.get_height() // 2)
-        pygame.draw.rect(screen, (0, 0, 0), (text_rect.left - 20, text_rect.top - 20,
-                                             text_rect.width + 40, text_rect.height + 40), 0)
+        #pygame.draw.rect(screen, (0, 0, 0), (text_rect.left - 20, text_rect.top - 20,
+                                             #text_rect.width + 40, text_rect.height + 40), 0)
         screen.blit(text, text_rect)
 
     def handleActions(self, event):

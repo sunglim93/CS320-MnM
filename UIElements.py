@@ -7,7 +7,7 @@ UI_font = pygame.font.Font("assets/alagard.ttf",24)
 
 class Button():
     #If no aciton is passed to a button, this function will fire
-    def default_action():
+    def default_action(self):
         print("no action was assigned to button")
     
     #Constructor for a button takes the following parameters
