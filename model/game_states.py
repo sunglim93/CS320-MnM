@@ -227,7 +227,7 @@ class Loading(GameState):
                     self.game.transitionToCombat()
                 else:
                     self.game.transitionToBoss()
-                    
+
     def update(self):
         self.healthbar.update(self.progress, 100)
         self.healthbar.draw(self.surface)
@@ -533,8 +533,8 @@ class Reward(GameState):
         self.background = "#BC88DF"
         self.game = g
         # Maybe initialize some items here?
-        self.button_item1 = UIElements.Button("get item1", 220, 60, (60,300), function=self.getItem1)
-        self.button_item2 = UIElements.Button("get item2", 220, 60, (540,300), function=self.getItem2)
+        self.button_item1 = ui.Button("get item1", 220, 60, (60,300), function=self.getItem1)
+        self.button_item2 = ui.Button("get item2", 220, 60, (540,300), function=self.getItem2)
     
     def getName(self):
         return self.name
