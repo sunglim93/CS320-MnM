@@ -1,6 +1,6 @@
 Run python main.py to run the game.
 
-Press space during loading screen to progress to next screen.
+Press space during loading screen to progress to next state.
 
 After pressing the attack button, a quick time event will pop up that determines the amount of damage that the enemy will take. During the QTE, the player must left click when the red line aligns with the blue square. The square turn green if the player left clicked at the correct time otherwise the square will turn red.
 
@@ -15,4 +15,4 @@ The game will transition as follows:
 	8. victory screen
 	9. restart
 
-When a player selects the ??? path, they may encounter another combat screen even if they have had 3 encounters. This will continue until the player randomly encounters/chooses the shop screen. After leaving the shop, the player will then encounter a boss battle.
+When a player selects the ??? path, they may encounter another combat or the shop.
