@@ -1,4 +1,6 @@
 import pygame
+from pygame.locals import *
+from pygame import mixer
 import game
 
 #initializing the game state and such
@@ -16,21 +18,11 @@ FPS = 60
 #instanciating the game 
 game = game.Game()
 
-#method for displaying text on screen
-def draw_text(text, font, text_col, x, y):
-    # this is not OOP
-    # each game state class needs to have its own
-    # draw method and decide for itself what to draw
-    # this is forcing every class to draw a text
-    img = font.render(text, True, text_col)
-    screen.blit(img,(x,y))
-
-
 while game.running():
     state = game.get_state()
-    screen.fill(state.getBackground())
+    state.loadBackground(screen)
     state.loadUI(screen)
-    state.draw(screen)
+
     #event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
