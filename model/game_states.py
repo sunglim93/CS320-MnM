@@ -10,8 +10,8 @@ import pygame
 import random
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
-import requests
-import openai
+#import requests
+#import openai
 
 # Abstract class that provides methods
 # that each GameState method should have
