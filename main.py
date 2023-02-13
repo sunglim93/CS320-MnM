@@ -31,7 +31,8 @@ while game.running():
             if event.key == pygame.K_ESCAPE:
                 game.transitionToMenu()
         state.handleActions(event)
-  
 
+  
+    state.update()
     clock.tick(FPS)
     pygame.display.update()

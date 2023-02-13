@@ -7,7 +7,7 @@ import random as rd
 import game
 import time
 import pygame
-from random import random, choice
+import random
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
 import requests
@@ -28,6 +28,9 @@ class GameState():
     def loadUI(self):
         pass
     def handleActions(self):
+        pass
+
+    def update(self):
         pass
 
 
@@ -119,14 +122,14 @@ class Loading(GameState):
     
     def __init__(self, g):
         self.name = "MENU"
+        self.progress = 0
         self.background = "#0c2a31"
         self.color = "#bce7fc"
         self.font = pygame.font.Font("assets/alagard.ttf", 40)
         self.game = g
         self.button_start = ui.Button("start", 220, 60, (300, 300), function=self.game.transitionToLoad)
         self.image = None
-        #self.button_start = UIElements.Button("Next", 220, 60, (300, 300), function=self.game.transitionToCombat)
-        #self.sprite = pygame.image.load('knightanimation.png').convert_alpha()
+        self.healthbar = ui.HealthBar(0, 100, (220, 150))
 
     def getName(self):
         return self.name
@@ -179,7 +182,7 @@ class Loading(GameState):
         # pixeled_image = pygame.image.load("C:\\Users\\Andy\\Desktop\\text image example.PNG")
         seconds = int(time.time())
         file = f"image_cache/{seconds}.png"
-        pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
+       #pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
         self.image = pygame.image.fromstring(pixeled_image.tobytes(),
                                              (pixeled_image.width, pixeled_image.height),
                                              "RGB")
@@ -189,12 +192,12 @@ class Loading(GameState):
         if self.image is None:
             choices = os.listdir("image_cache")
             if choices:
-                file = choice(choices)
+                file = random.choice(choices)
                 pixeled_image = Image.open(f"image_cache/{file}")
                 self.image = pygame.image.fromstring(pixeled_image.tobytes(),
                                                      (pixeled_image.width, pixeled_image.height),
                                                      "RGB")
-                pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
+                #pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
                 # p = mp.Process(target=self.fetch_remote)
                 # p.start()
                 return
@@ -209,22 +212,25 @@ class Loading(GameState):
         return image
 
     def loadUI(self, surface):
-
+        self.surface = surface
         self.load_cache_or_remote()
         pygame.display.set_caption("Metal and Magic")
-        surface.blit(self.image, (0, 0))
+        surface.blit(self.image, ( (800 - 512) // 2, (600-512) // 2))
         font = pygame.font.Font("assets/alagard.ttf", 33)
-        text = font.render("Loading...", True, self.color)
-        text_rect = text.get_rect()
-        text_rect.center = (self.image.get_width() // 2, self.image.get_height() // 2)
-        #pygame.draw.rect(screen, (0, 0, 0), (text_rect.left - 20, text_rect.top - 20,
-                                             #text_rect.width + 40, text_rect.height + 40), 0)
-        surface.blit(text, text_rect)
+
 
     def handleActions(self, event):
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                self.game.transitionToCombat() if random() > 0.5 else self.game.transitionToShop()
+                self.game.transitionToCombat() if random.random() > 0.5 else self.game.transitionToShop()
+
+    def update(self):
+        self.healthbar.update(self.progress, 100)
+        self.healthbar.draw(self.surface)
+
+        if self.progress < 100:
+            self.progress += 1
 
 
 # Class for handling the combat scenarios
