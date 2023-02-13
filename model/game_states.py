@@ -223,7 +223,10 @@ class Loading(GameState):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                self.game.transitionToCombat() if random.random() > 0.5 else self.game.transitionToShop()
+                if self.game.getEncounters() < 3:
+                    self.game.transitionToCombat()
+                else:
+                    self.game.transitionToBoss()
 
     def update(self):
         self.healthbar.update(self.progress, 100)
@@ -281,7 +284,7 @@ class Combat(GameState):
             self.game.transitionToDefeat()
         if (self.enemy.getHP() <= 0):
             self.game.increaseEncounters()
-            self.game.transitionToRoomSelection()
+            self.game.transitionToReward()
 
     def handleActions(self, event):
         if event.type == pg.KEYDOWN:
@@ -521,3 +524,37 @@ class Defeat(GameState):
 
     def handleActions(self, event):
         pass
+
+#Class for handling the item drops
+class Reward(GameState):
+    
+    def __init__(self, g):
+        self.name = "ENEMY DIED. Select an item."
+        self.background = "#BC88DF"
+        self.game = g
+        # Maybe initialize some items here?
+        self.button_item1 = ui.Button("get item1", 220, 60, (60,300), function=self.getItem1)
+        self.button_item2 = ui.Button("get item2", 220, 60, (540,300), function=self.getItem2)
+    
+    def getName(self):
+        return self.name
+    
+    def loadBackground(self, surface):
+        surface.fill(self.background)
+    
+    def loadUI(self,surface):
+        self.button_item1.draw(surface)
+        self.button_item2.draw(surface)
+
+    def getItem1(self):
+        # code to put item 1 into player class inventory
+        self.game.transitionToRoomSelection()
+
+    def getItem2(self):
+        # code to put item 2 into player class inventory
+        self.game.transitionToRoomSelection()
+
+    def handleActions(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                self.game.transitionToLoad()
