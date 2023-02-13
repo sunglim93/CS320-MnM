@@ -10,6 +10,7 @@ class Player:
         self.atk_low = atk - 10
         self.atk_high = atk + 10
         self.actions = ["Attack"]
+        self.items = []
         self.weapon = weapon
         if self.hp < 0:
             self.hp = 0

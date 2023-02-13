@@ -10,6 +10,7 @@ import pygame
 import random
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
+import item
 #import requests
 #import openai
 
@@ -532,9 +533,17 @@ class Reward(GameState):
         self.name = "ENEMY DIED. Select an item."
         self.background = "#BC88DF"
         self.game = g
-        # Maybe initialize some items here?
-        self.button_item1 = ui.Button("get item1", 220, 60, (60,300), function=self.getItem1)
-        self.button_item2 = ui.Button("get item2", 220, 60, (540,300), function=self.getItem2)
+        # initialize items
+        activeItem = item.Item()
+        activeItem.randomAbility("Active")
+        activeItem.randomValueWideRange(10, 25, self.game.difficulty)
+        passiveItem = item.Item()
+        passiveItem.randomAbility("Passive")
+        passiveItem.randomValueWideRange(10, 25, self.game.difficulty)
+        self.item1 = activeItem.getItem()
+        self.item2 = passiveItem.getItem()
+        self.button_item1 = ui.Button("get "+self.item1[1], 220, 60, (60,300), function=self.getItem1)
+        self.button_item2 = ui.Button("get "+self.item2[1], 220, 60, (540,300), function=self.getItem2)
     
     def getName(self):
         return self.name
@@ -547,11 +556,13 @@ class Reward(GameState):
         self.button_item2.draw(surface)
 
     def getItem1(self):
-        # code to put item 1 into player class inventory
+        # put item 1 into player class inventory
+        self.game.player.items.append(self.item1)
         self.game.transitionToRoomSelection()
 
     def getItem2(self):
-        # code to put item 2 into player class inventory
+        # put item 2 into player class inventory
+        self.game.player.items.append(self.item2)
         self.game.transitionToRoomSelection()
 
     def handleActions(self, event):
