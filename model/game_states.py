@@ -10,7 +10,7 @@ import pygame
 import random
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
-import item
+from model import item
 #import requests
 #import openai
 
