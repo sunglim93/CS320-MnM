@@ -1,5 +1,7 @@
 from random import seed,gauss,choice
 
+# type is like a class of objects and ability would be the name of an object belonging to a type
+# the value of an ability corresponds to a specific type
 _item_types = {"Active" : 1, "Passive" : 2, "Consumable" : 3, "Badge" : 4}
 _item_abilities = {"Attack" : 1, "Defense" : 2, "Regeneration" : 3}
 
