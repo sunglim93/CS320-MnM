@@ -90,7 +90,7 @@ class Combat(GameState):
         self.name = "COMBAT"
         self.combatFont = pg.font.Font("assets/alagard.ttf",24)
         self.background = "#9a4ccf"
-        self.enemy = classes.Enemy("Wretch")
+        self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty)) #init enemy with appropriate difficulty mods
         self.game = g
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (500,50))

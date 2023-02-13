@@ -81,8 +81,6 @@ def handleTimeSliderQTE(numHits): #for multi-hit attacks; every success will tra
 	while quick:
 		clock.tick(FPS)
 		pygame.draw.rect(WIN, 'orange', bgRect)
-		# WIN.blit(FONT.render("Press Z", True, 'black'), (0,0))
-		# WIN.blit(FONT.render("Successes: {}".format(success), True, 'black'), (300, 0)) #show number of successes on screen
 		buttonRect.x += speed #move slider
 		if buttonRect.right >= sliderRect.right: #end loop once button reaches the end of the slider
 			quick = False
@@ -92,7 +90,7 @@ def handleTimeSliderQTE(numHits): #for multi-hit attacks; every success will tra
 			pygame.draw.rect(WIN, rectColors[i], sliderZones[i])
 		pygame.draw.rect(WIN, 'red', buttonRect) #draw slider button
 		pygame.display.update()
-		'''When z button press is detected, check the position of the 
+		'''When the left mouse button press is detected, check the position of the 
 		slider button. Check if the button is in range of the slider zone
 		in its respective range. If it is within the slider zone, increment
 		success and change its respective key press to True. Otherwise,
