@@ -1,3 +1,4 @@
+import os
 from controller import QTE
 from model import classes
 from view import UIElements as ui
@@ -5,6 +6,13 @@ import pygame as pg
 import random as rd
 import game
 import time
+import pygame
+import random
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+from io import BytesIO
+from model import item
+#import requests
+#import openai
 
 # Abstract class that provides methods
 # that each GameState method should have
@@ -16,11 +24,14 @@ class GameState():
     # Game class.
     def getName(self):
         pass
-    def loadBackground(self):
+    def loadBackground(self, surface):
         pass
     def loadUI(self):
         pass
     def handleActions(self):
+        pass
+
+    def update(self):
         pass
 
 
@@ -57,31 +68,173 @@ class Menu(GameState):
     def handleActions(self, event):
         pass
 
+    def draw(self, screen):
+        img = self.font.render(self.name, True, self.color)
+        screen.blit(img, (160, 250))
+
+# Class for handling the audio of the game
+class Audio(GameState):
+
+    def __init__(self):
+        pygame.mixer.init()
+        self.sounds = {}
+        self.music = {}
+        self.current_room = None
+
+    def load_sound_effect(self, sound_file, sound_id):
+        sound = pygame.mixer.Sound(sound_file)
+        self.sounds[sound_file] = sound
+
+    def play_sound_effect(self, sound_id):
+        sound = self.sounds.get(sound_id)
+        if sound:
+            sound.play()
+
+    def load_music(self, music_file, room_id):
+        self.music[room_id] = music_file
+
+    def play_music(self, room_id, loop = -1):
+        music_file = self.music.get(room_id)
+        if music_file:
+            pygame.mixer.music.load(music_file)
+            pygame.mixer.music.set_volume(0.0)
+            pygame.mixer.music.play(loop)
+            self.current_room = room_id
+            # I was thinking of implementing a loop where the music gradually increases
+            # once a new room is accessed instead of the music immediately being thrown
+            # at the player
+            for i in range(10):
+                pygame.mixer.music.set_volume(0.1 * i)
+                pygame.time.wait(100)
+            pygame.mixer.music.set_volume(0.5)
+
+    def stop_music(self):
+        pygame.mixer.music.stop()
+        self.current_room = None
+
+    def pause_music(self):
+        pygame.mixer.music.pause()
+
+    def resume_music(self):
+            pygame.mixer.music.unpause()
+
 # Class for handling the loading screen
 class Loading(GameState):
     
     def __init__(self, g):
-        self.name = "LOADING"
-        self.background = "#70a288"
+        self.name = "MENU"
+        self.progress = 0
+        self.background = "#0c2a31"
+        self.color = "#bce7fc"
+        self.font = pygame.font.Font("assets/alagard.ttf", 40)
         self.game = g
+        self.button_start = ui.Button("start", 220, 60, (300, 300), function=self.game.transitionToLoad)
+        self.image = None
+        self.healthbar = ui.HealthBar(0, 100, (220, 150))
 
     def getName(self):
         return self.name
-    
-    def loadBackground(self, surface):
-        surface.fill(self.background)
-    
-    def loadUI(self,surface):
-        pass
 
-    # after the player has encountered 3 combat states, transition to the boss combat state
+    def getBackground(self):
+        return self.background
+
+    def ai_image(self):
+        with open('game.config') as fp:
+            line = next(fp)
+            parts = line.split('=')
+            openai.api_key = parts[1].strip()
+            response = openai.Image.create(
+                prompt="An armored knight running away from enemies in a dark illuminated castle",
+                n=1,
+                size="512x512"
+            )
+
+            image_url = response["data"][0]["url"]
+            im = Image.open(BytesIO(requests.get(image_url).content))
+            return im
+
+    def pixelate_ai_image(self, im):
+        org_size = im.size
+        pixelate_lvl = 4
+        im = im.resize(
+            size=(org_size[0] // pixelate_lvl, org_size[1] // pixelate_lvl),
+            resample=0)
+        im = im.resize(org_size, resample=0)
+        return im
+
+    def display_screen(self, screen, image):
+        font = ImageFont.truetype("pixelated.ttf", 36)
+        draw = ImageDraw.Draw(image)
+        text_width, text_height = draw.textsize("Metal and Magic", font=font)
+
+        x = (image.width - text_width) / 2
+        y = (image.height - text_height) / 2
+        draw.text((x, y), "Metal and Magic", fill=(255, 255, 255), font=font)
+
+        pygame_image = pygame.image.fromstring(image.tobytes(), image.size, image.mode)
+
+        screen.blit(pygame_image, (0, 0))
+        pygame.display.update()
+
+    def fetch_remote(self):
+        print('fetch remote called!')
+        image = self.ai_image()
+        pixeled_image = self.pixelate_ai_image(image)
+        # pixeled_image = pygame.image.load("C:\\Users\\Andy\\Desktop\\text image example.PNG")
+        seconds = int(time.time())
+        file = f"image_cache/{seconds}.png"
+       #pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
+        self.image = pygame.image.fromstring(pixeled_image.tobytes(),
+                                             (pixeled_image.width, pixeled_image.height),
+                                             "RGB")
+        pixeled_image.save(file)
+
+    def load_cache_or_remote(self):
+        if self.image is None:
+            choices = os.listdir("image_cache")
+            if choices:
+                file = random.choice(choices)
+                pixeled_image = Image.open(f"image_cache/{file}")
+                self.image = pygame.image.fromstring(pixeled_image.tobytes(),
+                                                     (pixeled_image.width, pixeled_image.height),
+                                                     "RGB")
+                #pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
+                # p = mp.Process(target=self.fetch_remote)
+                # p.start()
+                return
+
+            self.fetch_remote()
+
+    def get_sprite(self, sheet, width, height, scale):
+        sprite_sheet_image = pygame.image.load('knightanimation.png').convert_alpha()
+        image = pygame.Surface((width, height)).convert_alpha()
+        image.blit(sheet, (0, 0), (0, 0, width, height))
+
+        return image
+
+    def loadUI(self, surface):
+        self.surface = surface
+        self.load_cache_or_remote()
+        pygame.display.set_caption("Metal and Magic")
+        surface.blit(self.image, ( (800 - 512) // 2, (600-512) // 2))
+        font = pygame.font.Font("assets/alagard.ttf", 33)
+
+
     def handleActions(self, event):
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_SPACE:
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
                 if self.game.getEncounters() < 3:
                     self.game.transitionToCombat()
                 else:
                     self.game.transitionToBoss()
+
+    def update(self):
+        self.healthbar.update(self.progress, 100)
+        self.healthbar.draw(self.surface)
+
+        if self.progress < 100:
+            self.progress += 1
 
 
 # Class for handling the combat scenarios
@@ -90,7 +243,7 @@ class Combat(GameState):
         self.name = "COMBAT"
         self.combatFont = pg.font.Font("assets/alagard.ttf",24)
         self.background = "#9a4ccf"
-        self.enemy = classes.Enemy("Wretch")
+        self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty)) #init enemy with appropriate difficulty mods
         self.game = g
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (500,50))
@@ -132,7 +285,7 @@ class Combat(GameState):
             self.game.transitionToDefeat()
         if (self.enemy.getHP() <= 0):
             self.game.increaseEncounters()
-            self.game.transitionToRoomSelection()
+            self.game.transitionToReward()
 
     def handleActions(self, event):
         if event.type == pg.KEYDOWN:
@@ -372,3 +525,47 @@ class Defeat(GameState):
 
     def handleActions(self, event):
         pass
+
+#Class for handling the item drops
+class Reward(GameState):
+    
+    def __init__(self, g):
+        self.name = "ENEMY DIED. Select an item."
+        self.background = "#BC88DF"
+        self.game = g
+        # initialize items
+        activeItem = item.Item()
+        activeItem.randomAbility("Active")
+        activeItem.randomValueWideRange(10, 25, self.game.difficulty)
+        passiveItem = item.Item()
+        passiveItem.randomAbility("Passive")
+        passiveItem.randomValueWideRange(10, 25, self.game.difficulty)
+        self.item1 = activeItem.getItem()
+        self.item2 = passiveItem.getItem()
+        self.button_item1 = ui.Button("get "+self.item1[1], 220, 60, (60,300), function=self.getItem1)
+        self.button_item2 = ui.Button("get "+self.item2[1], 220, 60, (540,300), function=self.getItem2)
+    
+    def getName(self):
+        return self.name
+    
+    def loadBackground(self, surface):
+        surface.fill(self.background)
+    
+    def loadUI(self,surface):
+        self.button_item1.draw(surface)
+        self.button_item2.draw(surface)
+
+    def getItem1(self):
+        # put item 1 into player class inventory
+        self.game.player.items.append(self.item1)
+        self.game.transitionToRoomSelection()
+
+    def getItem2(self):
+        # put item 2 into player class inventory
+        self.game.player.items.append(self.item2)
+        self.game.transitionToRoomSelection()
+
+    def handleActions(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                self.game.transitionToLoad()

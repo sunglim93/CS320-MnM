@@ -15,7 +15,7 @@ def drawText(surface, text, pos, text_col="#bce7fc"):
 
 class Button():
     #If no aciton is passed to a button, this function will fire
-    def default_action():
+    def default_action(self):
         print("no action was assigned to button")
     
     #Constructor for a button takes the following parameters
@@ -131,7 +131,8 @@ class HealthBar():
     # use the update method to update the max and min health during combat
     def update(self, cur, max):
         if self.cur != cur:
-            mixer.Sound('assets/damage.wav').play()
+            if self.cur > cur:
+                mixer.Sound('assets/damage.wav').play()
             self.cur = cur
             self.max = max
             self.rect_cur = pygame.Rect(self.pos, ((cur/max)*(self.width-3), self.height-3))

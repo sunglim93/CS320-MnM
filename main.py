@@ -22,6 +22,7 @@ while game.running():
     state = game.get_state()
     state.loadBackground(screen)
     state.loadUI(screen)
+
     #event handler
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -30,7 +31,8 @@ while game.running():
             if event.key == pygame.K_ESCAPE:
                 game.transitionToMenu()
         state.handleActions(event)
-  
 
+  
+    state.update()
     clock.tick(FPS)
     pygame.display.update()
