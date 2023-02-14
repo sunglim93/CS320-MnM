@@ -11,8 +11,6 @@ class Player:
         self.atk_high = atk + 10
         self.actions = ["Attack"]
         self.weapon = weapon
-        if self.hp < 0:
-            self.hp = 0
 
     def drawPlayer(self, surface, x, y):
         self.x = x
