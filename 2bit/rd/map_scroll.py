@@ -40,7 +40,7 @@ for i in range(map_size[1]//wall_size[1]):
             if rd.randint(1,2) == 1:
                 wall_grid[i-1][j] = 1
             else:
-                wall_grid[i+1][j+1] = 1
+                wall_grid[i][j+1] = 1
 
 # Convert grid to list of wall rectangles
 walls = []

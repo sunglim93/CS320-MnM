@@ -81,10 +81,10 @@ size = (700, 500)
 screen = pygame.display.set_mode(size)
 
 pygame.display.set_caption("BlockShooter")
-player = Player(350, 250, 50, (255, 0, 0), 5, 100)
+player = Player(350, 250, 50, (255, 0, 0), 1, 100)
 enemies = []
 for i in range(5):
-    enemies.append(Enemy(random.randint(0, 100), random.randint(0, 100), 25, (0, 255, 0), 0.2, 50))
+    enemies.append(Enemy(random.randint(0, 100), random.randint(0, 100), 25, (0, 255, 0), 0.03, 50))
 
 arrow_keys = {
     'left': False,
