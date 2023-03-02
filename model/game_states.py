@@ -440,12 +440,17 @@ class Difficulty(GameState):
         self.button_easy = ui.Button("easy", 220, 60, (60,450), function=self.setEasyDifficulty)
         self.button_normal = ui.Button("normal", 220, 60, (300,450), function=self.setNormalDifficulty)
         self.button_hard = ui.Button("hard", 220, 60, (540,450), function=self.setHardDifficulty)
+
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
     
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        surface.blit(self.text_surface, (230, 200))
     
     def loadUI(self,surface):
         self.button_easy.draw(surface)
