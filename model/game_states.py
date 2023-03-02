@@ -303,11 +303,18 @@ class Boss(GameState):
         self.healthbar = ui.HealthBar(self.cur, 100, (50,50))
         self.button_attack = ui.Button("attack", 220, 60, (300,300), function=self.sliderQTE)
 
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+
+
+
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        surface.blit(self.text_surface, (190, 150))
     
     def loadUI(self,surface):
         self.healthbar.update(self.cur, 100)
@@ -508,16 +515,22 @@ class RoomSelection(GameState):
 class Victory(GameState):
     
     def __init__(self, g):
-        self.name = "VICTORY"
+        self.name = "VICTORY!!! Play again?"
         self.background = "#5A8B82"
         self.game = g
         self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.game.transitionToMenu)
+
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+
 
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        surface.blit(self.text_surface, (175, 200))
     
     def loadUI(self,surface):
         self.button_restart.draw(surface)
