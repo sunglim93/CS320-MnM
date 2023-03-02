@@ -434,7 +434,7 @@ class ShopMenu(GameState):
 class Difficulty(GameState):
     
     def __init__(self, g):
-        self.name = "SELECT DIFFICULTY"
+        self.name = "Select difficulty"
         self.background = "#0c2a31"
         self.game = g
         self.button_easy = ui.Button("easy", 220, 60, (60,450), function=self.setEasyDifficulty)
@@ -450,7 +450,7 @@ class Difficulty(GameState):
     
     def loadBackground(self, surface):
         surface.fill(self.background)
-        surface.blit(self.text_surface, (230, 200))
+        surface.blit(self.text_surface, (215, 200))
     
     def loadUI(self,surface):
         self.button_easy.draw(surface)
