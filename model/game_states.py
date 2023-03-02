@@ -542,14 +542,19 @@ class Reward(GameState):
         passiveItem.randomValueWideRange(10, 25, self.game.difficulty)
         self.item1 = activeItem.getItem()
         self.item2 = passiveItem.getItem()
-        self.button_item1 = ui.Button("get "+self.item1[1], 220, 60, (60,300), function=self.getItem1)
-        self.button_item2 = ui.Button("get "+self.item2[1], 220, 60, (540,300), function=self.getItem2)
+        self.button_item1 = ui.Button("Get "+self.item1[1]+" Item", 220, 60, (60,300), function=self.getItem1)
+        self.button_item2 = ui.Button("Get "+self.item2[1]+" Item", 220, 60, (540,300), function=self.getItem2)
+
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, (0, 0, 0))
     
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        surface.blit(self.text_surface, (100, 100))
     
     def loadUI(self,surface):
         self.button_item1.draw(surface)
