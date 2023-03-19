@@ -1,4 +1,5 @@
 import pygame as pg
+import time
 
 class Window:
     def __init__(self, width, height, title):
@@ -19,3 +20,10 @@ def drawManaBar(mana, max_mana, res, x, y, width, height):
     pg.draw.rect(res, (255, 0, 255), (x, y, width, height))
     pg.draw.rect(res, (90, 50, 255), (x, y, width * mana_percent, height))
 
+def displayPopUp(window, font, text_col, message, x, y, width, height, duration=1.2):
+    popup_rect = pg.Rect(x, y, width, height)
+    pg.draw.rect(window.res, (0, 0, 0), popup_rect)
+    text = font.render(message, True, text_col)
+    window.res.blit(text, (x, y))
+    pg.display.update()
+    time.sleep(duration)

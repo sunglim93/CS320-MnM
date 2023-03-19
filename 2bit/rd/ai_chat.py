@@ -13,7 +13,7 @@ class NPC:
         max_tokens=50,
         n=1,
         stop=None,
-        temperature=0.5,
+        temperature=0.9,
         )
         message = completions.choices[0].text
         self.message = message.strip()
@@ -25,6 +25,6 @@ while True:
     else:
         with open("corpus.txt", "r") as corpus_file:
             corpus_text = corpus_file.read()
-        final_input = player_prompt
+            final_input = player_prompt
         npc = NPC("Gus: ", final_input)
         print(npc.name + npc.message)
