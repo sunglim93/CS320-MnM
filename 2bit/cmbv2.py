@@ -11,7 +11,7 @@ class Enemy:
     def __init__(self, player, walls):
         self.pos = [100, 100]  # initial position
         self.speed = 0.5  # movement speed
-        self.image = pg.image.load('enemy.png')
+        self.image = pg.image.load("enemy.png")
         self.size = pg.transform.scale(self.image, (64, 64))
         self.rect = pg.Rect(self.pos[0], self.pos[1], self.size.get_width(), self.size.get_height())
         self.player = player
@@ -20,7 +20,7 @@ class Enemy:
         self.is_active = True  # Enemy is active by default
 
     def update(self):
-        if self.hit_count >= 4:  # Despawn enemy if hit count is 4 or more
+        if self.hit_count >= 4:  # Despawn enemy if hit count >= 4
             return
 
         # Calculate distance between enemy and player
@@ -46,7 +46,7 @@ class Enemy:
                 self.rect.topleft = (self.pos[0], self.pos[1])
 
     def draw(self, screen, viewport_pos):
-        if self.hit_count >= 4:  # Do not draw enemy if hit count is 4 or more
+        if self.hit_count >= 4:  # Do not draw enemy if hit count >= 4
             return
 
         # Draw enemy on screen
@@ -67,15 +67,13 @@ class Player:
     def __init__(self):
         self.pos = [200, 300]
         self.speed = 1
-        self.image = pg.image.load('player.png')
+        self.image = pg.image.load("player.png")
         self.size = pg.transform.scale(self.image, (64, 64))
         self.rect = pg.Rect(self.pos[0], self.pos[1], self.size.get_width(), self.size.get_height())
     
     def attack(self):
         attack_rect = pg.Rect(self.pos[0] - attack_range, self.pos[1], self.rect.width + attack_range, self.rect.height)
         return attack_rect
-
-
 
 player = Player()
 
@@ -198,7 +196,6 @@ while running:
 
     player.rect.topleft = (player.pos[0] - viewport_pos[0], player.pos[1] - viewport_pos[1])
     screen.blit(player.size, player.rect)
-    # Update viewport
     pg.display.update()
 
 pg.quit()
