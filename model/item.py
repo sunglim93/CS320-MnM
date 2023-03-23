@@ -2,7 +2,7 @@ from random import seed,gauss,choice
 
 # type is like a class of objects and ability would be the name of an object belonging to a type
 # the value of an ability corresponds to a specific type
-_item_types = {"Active" : 1, "Passive" : 2, "Consumable" : 3, "Badge" : 4}
+_item_types = {"Active" : 1, "Passive" : 2, "Consumable" : 3, "Badge" : 4, "Armor" : 5}
 _item_abilities = {"Attack" : 1, "Defense" : 2, "Regeneration" : 3}
 
 def _randomAbility(typeStr):
@@ -24,19 +24,24 @@ class Item():
     type must be a valid choice from Item Master, ability does not need to be valid
     '''
     def __init__(self):
-        self.type = ""
-        self.ability = ""
-        self.values = []
+        self.__type = ""
+        self.__ability = ""
+        self.__values = []
 
     def createSpecificItem(self, typeStr, ability, values):
         ''' Create Specific Items
         choose all item values at once and set them directly
         type must be valid
+        values can be a list of numerical values or a number
         '''
-        if typeStr in _item_types:
-            self.type = typeStr
-            self.ability = ability
-            self.values = values
+        if type(values) is list or type(values) is int or type(values) is float:
+            if typeStr in _item_types:
+                self.__type = typeStr
+                self.__ability = ability
+                if type(values) is list:
+                    self.__values.extend(values)
+                else:
+                    self.__values.append(values)
 
     def chooseAbility(self, typeStr, ability):
         ''' Choose Ability
@@ -44,8 +49,8 @@ class Item():
         type must be valid
         '''
         if typeStr in _item_types:
-            self.type = typeStr
-            self.ability = ability
+            self.__type = typeStr
+            self.__ability = ability
 
     def randomAbility(self, typeStr):
         ''' Random Ability
@@ -54,8 +59,8 @@ class Item():
         '''
         if typeStr in _item_types:
             # get random ability name
-            self.type = typeStr
-            self.ability = _randomAbility(typeStr)
+            self.__type = typeStr
+            self.__ability = _randomAbility(typeStr)
 
     def randomValueWideRange(self, min, max, difficulty=None):
         ''' Random Value Wide Range
@@ -87,7 +92,7 @@ class Item():
         while randNum > max or randNum < min:
             randNum = gauss(mu, sigma)
 
-        self.values.append(round(randNum, 2))
+        self.__values.append(round(randNum, 2))
 
     def randomValueTopOfRange(self, min, max, difficulty=None):
         ''' Random Value Top of Range
@@ -119,10 +124,34 @@ class Item():
         while randNum > max or randNum < min:
             randNum = gauss(mu, sigma)
 
-        self.values.append(round(randNum, 2))
+        self.__values.append(round(randNum, 2))
 
     def getItem(self):
         ''' Get Item
         returns a tuple of the item fields
         '''
-        return (self.type, self.ability, self.values)
+        return (self.__type, self.__ability, self.__values)
+
+class Armor:
+    def __init__(self):
+        self.__firstWorldArmor = self.__createFirstWorldArmor()
+        self.__secondWorldArmor = self.__createSecondWorldArmor()
+        self.__thirdWorldArmor = self.__createThirdWorldArmor()
+
+    def __createFirstWorldArmor(self):
+        firstWorldArmor = Item()
+        firstWorldArmor.createSpecificItem("Armor", "First", [0.7, 0.75])
+        return firstWorldArmor.getItem()
+
+    def __createSecondWorldArmor(self):
+        secondWorldArmor = Item()
+        secondWorldArmor.createSpecificItem("Armor", "Second", [0.8, 0.85])
+        return secondWorldArmor.getItem()
+
+    def __createThirdWorldArmor(self):
+        thirdWorldArmor = Item()
+        thirdWorldArmor.createSpecificItem("Armor", "Third", [0.9, 0.95])
+        return thirdWorldArmor.getItem()
+    
+    def getArmor(self):
+        return (self.__firstWorldArmor, self.__secondWorldArmor, self.__thirdWorldArmor)
