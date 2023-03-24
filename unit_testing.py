@@ -11,60 +11,71 @@ from model import classes
 
 class testGame(unittest.TestCase):
 
-	# Acceptance test
-	def testMenuInitialize(self):
+	# Acceptance test, confirm Game class properly initializes first set of variables
+	def testGameInitialize(self):
 		g = game.Game()
-		#menu game state should be initialized as a menu class
-		self.assertTrue(isinstance(game_states.Menu(g), game_states.Menu))
-		#cannot initialize menu state without game object
-		with self.assertRaises(TypeError):
-			game_states.Menu()
-
-
-	# Acceptance test
-	def testCombatInitialize(self):
-		g = game.Game()
-		#combat game state should be initialized as a combat class
-		self.assertTrue(isinstance(game_states.Combat(g), game_states.Combat))
-		#cannot initialize combat state without game object
-		with self.assertRaises(TypeError):
-			game_states.Combat()
-
-
-	# Acceptance test
-	def testShopInitialize(self):
-		g = game.Game()
-		#shop game state should be initialized as a shop class
-		self.assertTrue(isinstance(game_states.Shop(g), game_states.Shop))
-		#cannot initialize shop state without game object
-		with self.assertRaises(TypeError):
-			game_states.Shop()
-
-
-	# Acceptance test
-	def testShopMenuInitialize(self):
-		g = game.Game()
-		#shop menu game state should be initialized as a shop menu class
-		self.assertTrue(isinstance(game_states.ShopMenu(g), game_states.ShopMenu))
-		#cannot initialize shop menu state without game object
-		with self.assertRaises(TypeError):
-			game_states.ShopMenu()
-
-
-	# Acceptance test
-	def testRoomSelectionInitialize(self):
-		g = game.Game()
-		#room selection game state should be initialized as a room selection class
-		self.assertTrue(isinstance(game_states.RoomSelection(g), game_states.RoomSelection))
-		#cannot initialize room selection state without game object
-		with self.assertRaises(TypeError):
-			game_states.RoomSelection()
-
-
-	# Acceptance test, confirm that a player class has been initialized with the game class
-	def testPlayerInitialize(self):
-		g = game.Game()
+		self.assertTrue(isinstance(g.cur_state, game_states.Menu))
+		self.assertEqual(g.run, True)
+		self.assertEqual(g.difficulty, 0)
+		self.assertEqual(g.numEncounters, 0)
 		self.assertTrue(isinstance(g.player, classes.Player))
+
+
+	# Acceptance test, confirm buttons on Menu state contain functions
+	def testMenuButtons(self):
+		g = game.Game()
+		state = game_states.Menu(g)
+		self.assertNotEqual(state.button_start.function, 'function')
+		self.assertNotEqual(state.button_settings, 'function')
+		self.assertNotEqual(state.button_quit, 'function')
+
+
+	# Acceptance test, confirm buttons on Combat state contain functions
+	def testCombatButtons(self):
+		g = game.Game()
+		state = game_states.Combat(g)
+		self.assertNotEqual(state.button_attack, 'function')
+
+
+	# Acceptance test, confirm buttons on Shop state contain functions
+	def testShopButtons(self):
+		g = game.Game()
+		state = game_states.Shop(g)
+		self.assertNotEqual(state.button_enter, 'function')
+		self.assertNotEqual(state.button_leave, 'function')
+
+
+	# Acceptance test, confirm buttons on Shop state contain functions
+	def testShopMenuButtons(self):
+		g = game.Game()
+		state = game_states.ShopMenu(g)
+		self.assertNotEqual(state.button_buy, 'function')
+		self.assertNotEqual(state.button_sell, 'function')
+		self.assertNotEqual(state.button_back, 'function')
+
+
+	# Acceptance test, confirm buttons on Shop state contain functions
+	def testDifficultyButtons(self):
+		g = game.Game()
+		state = game_states.Difficulty(g)
+		self.assertNotEqual(state.button_easy, 'function')
+		self.assertNotEqual(state.button_normal, 'function')
+		self.assertNotEqual(state.button_hard, 'function')
+
+
+	# Acceptance test, confirm buttons on Shop state contain functions
+	def testRoomSelectionButtons(self):
+		g = game.Game()
+		state = game_states.RoomSelection(g)
+		self.assertNotEqual(state.button_room_rd, 'function')
+		self.assertNotEqual(state.button_room_shop, 'function')
+
+
+	# Acceptance test, confirm buttons on Shop state contain functions
+	def testVictoryButtons(self):
+		g = game.Game()
+		state = game_states.Victory(g)
+		self.assertNotEqual(state.button_restart, 'function')
 
 
 	#Acceptance test, confirm that an enemy class has been initialized during the combat state
@@ -74,7 +85,7 @@ class testGame(unittest.TestCase):
 		self.assertTrue(isinstance(state.enemy, classes.Enemy))
 
 
-	# White Box Testing to test encounter increment method within the Game class
+	# White Box test, test encounter increment method within the Game class
 	def testEncounterIncrements(self):
 		"""
 		Method tested: increaseEncouter()
@@ -92,7 +103,7 @@ class testGame(unittest.TestCase):
 		self.assertEqual(g.numEncounters, 3)
 
 
-	# White Box Testing to test set difficulty method within Game class
+	# White Box test, test set difficulty method within Game class
 	def testSetDifficulty(self):
 		"""
 		Method tested: setDifficulty()
@@ -108,7 +119,7 @@ class testGame(unittest.TestCase):
 		self.assertEqual(g.difficulty, 1000)
 
 
-	# White Box Testing to test reset encounters method within Game class
+	# White Box test, test reset encounters method within Game class
 	def testResetEncounters(self):
 		"""
 		Method tested: resetEncounters()
@@ -124,7 +135,7 @@ class testGame(unittest.TestCase):
 		self.assertEqual(g.numEncounters, 0)
 
 
-	# Integration Testing to test difficulty values from difficulty class from game_states
+	# Integration Testing, test difficulty values from difficulty class from game_states
 	def testDifficultySettings(self):
 		"""
 		This integration test tests the game class and the difficulty class.
@@ -154,8 +165,7 @@ class testGame(unittest.TestCase):
 		self.assertEqual(g.difficulty, 2)
 
 
-
-	# Integration Testing to test encounter increment from combat class to game class
+	# Integration Testing, test encounter increment from combat class to game class
 	def testCombatIncrement(self):
 		"""
 		This integration test tests the num encounter increment after successfully
