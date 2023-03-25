@@ -251,7 +251,7 @@ class TestIntegration(unittest.TestCase):
         """
         Set up test objects for integration tests: player, enemy, and spells.
         This method tests the Player, Enemy, and Spell classes.
-        The testing approach is bottom-up since testing the individual components first off.
+        The testing approach is big-bang since we are testing multiple units together.
         """
         self.fire = gc.Spell("Fire", 20, 100, "Flame")
         self.shock = gc.Spell("Shock", 30, 125, "Electricity")
@@ -265,7 +265,7 @@ class TestIntegration(unittest.TestCase):
     def test_player_attack_enemy(self):
         """
         Test if player's attack successfully reduces the enemy's HP.
-        This method tests the integration of Player and Enemy classes through the attack process.
+        This method tests the integration of Player and Enemy classes through the attack process using a big-bang approach.
         """
         initial_enemy_hp = self.enemy.getHP()
         dmg = self.player.generateDamage()
@@ -277,7 +277,7 @@ class TestIntegration(unittest.TestCase):
     def test_enemy_attack_player(self):
         """
         Test if enemy's attack successfully reduces the player's HP.
-        This method tests the integration of Player and Enemy classes through the attack process.
+        This method tests the integration of Player and Enemy classes through the attack process using a big-bang approach.
         """
         initial_player_hp = self.player.getHP()
         enemy_dmg = self.enemy.generateDamage()
@@ -289,7 +289,7 @@ class TestIntegration(unittest.TestCase):
     def test_player_cast_spell_on_enemy(self):
         """
         Test if player's spell casting successfully reduces the enemy's HP and drains the player's MP.
-        This method tests the integration of Player, Enemy, and Spell classes through the spell casting process.
+        This method tests the integration of Player, Enemy, and Spell classes through the spell casting process using a big-bang approach.
         """
         spell = self.fire
         initial_enemy_hp = self.enemy.getHP()
