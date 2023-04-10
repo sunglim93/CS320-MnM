@@ -183,7 +183,7 @@ class Loading(GameState):
         # pixeled_image = pygame.image.load("C:\\Users\\Andy\\Desktop\\text image example.PNG")
         seconds = int(time.time())
         file = f"image_cache/{seconds}.png"
-       #pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
+        #pygame.display.set_mode((pixeled_image.width, pixeled_image.height))
         self.image = pygame.image.fromstring(pixeled_image.tobytes(),
                                              (pixeled_image.width, pixeled_image.height),
                                              "RGB")
@@ -278,12 +278,20 @@ class Combat(GameState):
         numHits = QTE.handleTimeSliderQTE(3)
         total_damage = self.game.player.generateDamage()*numHits
         self.enemy.takeDamage(total_damage)
+        # GAME STAT
+        self.game.stats.set_damage_delt(total_damage)
         enemy_dmg = self.enemy.generateDamage()
         self.game.player.takeDamage(enemy_dmg)
+        # GAME STAT
+        self.game.stats.set_damage_taken(enemy_dmg)
         if (self.game.player.getHP() <= 0):
             self.cur = 0
+            # GAME STAT
+            self.game.stats.set_battles_lost()
             self.game.transitionToDefeat()
         if (self.enemy.getHP() <= 0):
+            # GAME STAT
+            self.game.stats.set_battles_won()
             self.game.increaseEncounters()
             self.game.transitionToReward()
 
@@ -328,6 +336,9 @@ class Boss(GameState):
         self.cur -= 10*numHits
         if (self.cur <= 0):
             self.game.resetEncounters()
+            # GAME STAT
+            self.game.stats.set_bosses_defeated()
+            self.game.stats.set_battles_won()
             self.game.transitionToVictory()
 
     def handleActions(self, event):
@@ -490,6 +501,14 @@ class Victory(GameState):
         self.game = g
         self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.game.transitionToMenu)
 
+    def displayAchievements(self, surface):
+        completed = self.game.stats.achievements.getCompletedAchievements()
+        start_pos = 200
+        ui.drawText(surface, "Achievements", (300,start_pos))
+        for ach in completed:
+            start_pos += 40
+            ui.drawText(surface, ach, (300,start_pos))
+
     def getName(self):
         return self.name
     
@@ -498,6 +517,8 @@ class Victory(GameState):
     
     def loadUI(self,surface):
         self.button_restart.draw(surface)
+        # Display all completed achievements
+        self.displayAchievements(surface)
         pass
 
     def handleActions(self, event):
@@ -512,6 +533,14 @@ class Defeat(GameState):
         self.game.player.setHP()
         self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.game.transitionToMenu)
 
+    def displayAchievements(self, surface):
+        completed = self.game.stats.achievements.getCompletedAchievements()
+        start_pos = 200
+        ui.drawText(surface, "Achievements", (300,start_pos))
+        for ach in completed:
+            start_pos += 40
+            ui.drawText(surface, ach, (300,start_pos))
+
     def getName(self):
         return self.name
     
@@ -521,6 +550,8 @@ class Defeat(GameState):
     def loadUI(self,surface):
         ui.drawText(surface, "YOU DIED", (400,200))
         self.button_restart.draw(surface)
+        # Display all completed achievements
+        self.displayAchievements(surface)
         pass
 
     def handleActions(self, event):
