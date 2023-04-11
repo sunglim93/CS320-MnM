@@ -2,18 +2,52 @@ import random as rd
 import pygame as pg
 
 class Player:
-    def __init__(self, name, hp=100, atk=20, weapon="rusty dagger"):
+    def __init__(self, name, hp=100, atk=20):
         self.name = name
         self.max_hp = hp
         self.hp = hp
-        self.atk = atk
-        self.atk_low = atk - 10
-        self.atk_high = atk + 10
+        # weapon gets an attack item whick controls the atk values
+        self.weapon = ("Attack", "Rusty Dagger", [atk])
+        # item1 and item2 get defense or consumables, start out empty
+        self.item1 = None
+        self.item2 = None
+        self.atk = self.weapon[2][0]
+        self.atk_low = self.atk - 10
+        self.atk_high = self.atk + 10
         self.actions = ["Attack"]
-        self.items = []
-        self.weapon = weapon
         if self.hp < 0:
             self.hp = 0
+
+    def removeItem(self, pos):
+        # sets extra items to None
+        if pos == 1:
+            self.item1 = None
+        if pos == 2:
+            self.item2 = None
+
+    def addItem(self, pos, item):
+        # attack item goes in weapon slot, change attack values
+        if item[0] == "Attack":
+            self.weapon = item
+            self.atk = item[2][0]
+            self.atk_low = item[2][0]-10
+            self.atk_high = item[2][0]+10
+        #if item[0] == "Defense":
+        # other items go in pos 1 or 2
+        elif pos == 1:
+            self.item1 = item
+        elif pos == 2:
+            self.item2 = item
+
+    def resetPlayer(self):
+        # restore hp to full
+        self.setHP()
+        # reset weapon to original and remove extra items
+        self.removeItem(1)
+        self.removeItem(2)
+        self.weapon = ("Active", "Rusty Dagger", [20])
+        self.atk_low = 10
+        self.atk_high = 30
 
     def drawPlayer(self, surface, x, y):
         self.x = x
@@ -73,6 +107,16 @@ class Enemy:
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
         self.image = pg.image.load(f"assets/bones-0001.png")
+        self.size = pg.transform.scale(self.image, (128, 128))
+        surface.blit(self.size, self.rect)
+
+    def drawBoss(self, surface, x, y):
+        self.x = x
+        self.y = y
+        self.rect = pg.Rect(self.x, self.y, 50, 50)
+        self.sprite = pg.Surface((32, 32))
+        self.sprite.fill((255, 0, 0))
+        self.image = pg.image.load(f"assets/purpleBoss.png")
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
