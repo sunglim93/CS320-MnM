@@ -755,9 +755,6 @@ class Buy(GameState):
         self.item1 = attackItem.getItem()
         self.item2 = foodItem1.getItem()
         self.item3 = foodItem2.getItem()
-        # no repeat items
-        while self.item2[1] == self.item3[1]:
-            foodItem2.randomAbility("Consumable")
         self.button_item1 = ui.Button(self.item1[1], 220, 60, (60,300), function=self.tradeItem1)
         self.button_item2 = ui.Button(self.item2[1], 220, 60, (300,300), function=self.tradeItem2)
         self.button_item3 = ui.Button(self.item3[1], 220, 60, (540,300), function=self.tradeItem3)
