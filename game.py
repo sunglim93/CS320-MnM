@@ -80,6 +80,8 @@ class Game():
         self.cur_state = game_states.Defeat(self)
     def transitionToReward(self):
         self.cur_state = game_states.Reward(self)
+    def transitionToBuy(self):
+        self.cur_state = game_states.Buy(self)
 
     #allows main loop to check the game is still running
     def running(self):

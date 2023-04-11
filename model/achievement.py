@@ -48,6 +48,14 @@ class GameStats():
         self.__battles_lost = 0
         self.__battles_won = 0
 
+    def resetStatsAndAchievements(self):
+        self.__battles_lost = 0
+        self.__battles_won = 0
+        self.__bosses_defeated = 0
+        self.__damage_delt = 0
+        self.__damage_taken = 0
+        self.achievements._resetAchievements()
+
     def get_damage_delt(self):
         return self.__damage_delt
 
@@ -92,7 +100,6 @@ class Achievement_Master():
     _hiddenAchievements = []
 
     def __init__(self, stats):
-        ''''''
         self.__stats = stats
         self.__initializeGameAchievements()
         self.__initializeHiddenAchievements()
@@ -124,6 +131,14 @@ class Achievement_Master():
         for ach in self._hiddenAchievements:
             if ach._completed:
                 yield ach.message
+
+    def _resetAchievements(self):
+        self.__initialized = False
+        self._gameplayAchievements = []
+        self._hiddenAchievements = []
+        self.__initializeGameAchievements()
+        self.__initializeHiddenAchievements()
+        self.__initialized = True
 
     def __checkStats(self, stats):
         cur_stats = self.__stats.get_all_stats()
