@@ -315,11 +315,18 @@ class Boss(GameState):
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (500,50))
         self.button_attack = ui.Button("attack", 220, 60, (300, 450), function=self.sliderQTE)
 
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+
+
+
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        surface.blit(self.text_surface, (190, 150))
     
     def loadUI(self,surface):
         self.healthbar.update(self.game.player.getHP(), self.game.player.getMaxHP())
@@ -375,17 +382,25 @@ class Boss(GameState):
 class Shop(GameState):
     
     def __init__(self, g):
-        self.name = "SHOP"
+        self.name = "Welcome to the shop!"
         self.background = "#04395e"
         self.game = g
         self.button_enter = ui.Button("enter shop", 220, 60, (300,250), function=self.enterShop)
         self.button_leave = ui.Button("leave shop", 220, 60, (300,400), function=self.leaveShop)
+
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+
+
+
     
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        surface.blit(self.text_surface, (190, 150))
     
     def loadUI(self,surface):
         self.button_enter.draw(surface)
@@ -408,18 +423,24 @@ class Shop(GameState):
 class ShopMenu(GameState):
     
     def __init__(self, g):
-        self.name = "SHOP MENU"
+        self.name = "What would you like to buy?"
         self.background = "#04395e"
         self.game = g
-        self.button_buy = ui.Button("buy items", 220, 60, (60,400), function=self.buyItems)
-        self.button_sell = ui.Button("sell items", 220, 60, (300,400), function=self.sellItems)
-        self.button_back = ui.Button("close menu", 220, 60, (540,400), function=self.closeMenu)
+        self.button_buy = ui.Button("buy items", 220, 60, (60,500), function=self.buyItems)
+        self.button_sell = ui.Button("sell items", 220, 60, (300,500), function=self.sellItems)
+        self.button_back = ui.Button("leave shop", 220, 60, (540,500), function=self.closeMenu)
+
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+
     
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        surface.blit(self.text_surface, (75,50))
     
     def loadUI(self,surface):
         self.button_buy.draw(surface)
@@ -446,18 +467,23 @@ class ShopMenu(GameState):
 class Difficulty(GameState):
     
     def __init__(self, g):
-        self.name = "SELECT DIFFICULTY"
+        self.name = "Select difficulty"
         self.background = "#0c2a31"
         self.game = g
         self.button_easy = ui.Button("easy", 220, 60, (60,450), function=self.setEasyDifficulty)
         self.button_normal = ui.Button("normal", 220, 60, (300,450), function=self.setNormalDifficulty)
         self.button_hard = ui.Button("hard", 220, 60, (540,450), function=self.setHardDifficulty)
+
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
     
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        surface.blit(self.text_surface, (215, 200))
     
     def loadUI(self,surface):
         self.button_easy.draw(surface)
@@ -492,11 +518,20 @@ class RoomSelection(GameState):
         self.button_room_rd = ui.Button("???", 220, 60, (60,400), function=self.rdRoom)
         self.button_room_shop = ui.Button("shop", 220, 60, (540,400), function=self.shopRoom)
 
+
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+
+
+
+
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        surface.blit(self.text_surface, (230, 200))
     
     def loadUI(self,surface):
         self.button_room_rd.draw(surface)
@@ -522,7 +557,7 @@ class RoomSelection(GameState):
 class Victory(GameState):
     
     def __init__(self, g):
-        self.name = "VICTORY"
+        self.name = "VICTORY!!! Play again?"
         self.background = "#5A8B82"
         self.game = g
         self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.game.transitionToMenu)
@@ -534,12 +569,17 @@ class Victory(GameState):
         for ach in completed:
             start_pos += 40
             ui.drawText(surface, ach, (300,start_pos))
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+
 
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        surface.blit(self.text_surface, (175, 200))
     
     def loadUI(self,surface):
         self.button_restart.draw(surface)
@@ -599,14 +639,20 @@ class Reward(GameState):
         passiveItem.randomValueWideRange(10, 25, self.game.difficulty)
         self.item1 = activeItem.getItem()
         self.item2 = passiveItem.getItem()
-        self.button_item1 = ui.Button("get "+self.item1[1], 220, 60, (60,300), function=self.getItem1)
-        self.button_item2 = ui.Button("get "+self.item2[1], 220, 60, (540,300), function=self.getItem2)
+        self.button_item1 = ui.Button("Get "+self.item1[1]+" Item", 220, 60, (60,300), function=self.getItem1)
+        self.button_item2 = ui.Button("Get "+self.item2[1]+" Item", 220, 60, (540,300), function=self.getItem2)
+
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, (0, 0, 0))
     
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
+        #adjust text position here
+        surface.blit(self.text_surface, (90, 100))
     
     def loadUI(self,surface):
         self.button_item1.draw(surface)
