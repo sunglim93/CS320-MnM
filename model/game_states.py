@@ -137,6 +137,9 @@ class Loading(GameState):
 
     def getBackground(self):
         return self.background
+    
+    def loadBackground(self, surface):
+        surface.fill(self.background)
 
     def ai_image(self):
         with open('game.config') as fp:
@@ -307,9 +310,10 @@ class Boss(GameState):
         self.name = "BOSS BATTLE"
         self.background = "#590019"
         self.game = g
-        self.cur = 100
-        self.healthbar = ui.HealthBar(self.cur, 100, (50,50))
-        self.button_attack = ui.Button("attack", 220, 60, (300,300), function=self.sliderQTE)
+        self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty), hp=200, atk=15)
+        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
+        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (500,50))
+        self.button_attack = ui.Button("attack", 220, 60, (300, 450), function=self.sliderQTE)
 
     def getName(self):
         return self.name
@@ -318,9 +322,16 @@ class Boss(GameState):
         surface.fill(self.background)
     
     def loadUI(self,surface):
-        self.healthbar.update(self.cur, 100)
+        self.healthbar.update(self.game.player.getHP(), self.game.player.getMaxHP())
         self.healthbar.draw(surface)
+        self.enemy_healthbar.update(self.enemy.getHP(), self.enemy.getMaxHP())
+        self.enemy_healthbar.draw(surface)
         self.button_attack.draw(surface)
+        self.game.player.drawPlayer(surface, 100, 300)
+        self.enemy.drawBoss(surface, 600, 300)
+        self.game.player_turn = True
+        self.game.player_attack = 0
+        self.enemy_attack = 0
         pass
 
     # when a player presses the attack button:
@@ -333,9 +344,20 @@ class Boss(GameState):
     #     - go to victory screen
     def sliderQTE(self):
         numHits = QTE.handleTimeSliderQTE(3)
-        self.cur -= 10*numHits
-        if (self.cur <= 0):
-            self.game.resetEncounters()
+        total_damage = self.game.player.generateDamage()*numHits
+        self.enemy.takeDamage(total_damage)
+        # GAME STAT
+        self.game.stats.set_damage_delt(total_damage)
+        enemy_dmg = self.enemy.generateDamage()
+        self.game.player.takeDamage(enemy_dmg)
+        # GAME STAT
+        self.game.stats.set_damage_taken(enemy_dmg)
+        if (self.game.player.getHP() <= 0):
+            self.cur = 0
+            # GAME STAT
+            self.game.stats.set_battles_lost()
+            self.game.transitionToDefeat()
+        if (self.enemy.getHP() <= 0):
             # GAME STAT
             self.game.stats.set_bosses_defeated()
             self.game.stats.set_battles_won()
@@ -344,7 +366,7 @@ class Boss(GameState):
     def handleActions(self, event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_h:
-                self.cur -= 10
+                self.enemy.takeDamage(10)
             if event.key == pg.K_SPACE:
                 self.game.transitionToLoad()
 
@@ -485,7 +507,11 @@ class RoomSelection(GameState):
         pass
 
     def rdRoom(self):
-        self.game.transitionToCombat() if rd.random() > 0.5 else self.game.transitionToShop()
+        if rd.random() > 0.5:
+            self.game.transitionToLoad()
+        else:
+            self.game.transitionToShop()
+        #self.game.transitionToLoad() if rd.random() > 0.5 else self.game.transitionToShop()
 
     def shopRoom(self):
         self.game.transitionToShop()
@@ -503,8 +529,8 @@ class Victory(GameState):
 
     def displayAchievements(self, surface):
         completed = self.game.stats.achievements.getCompletedAchievements()
-        start_pos = 200
-        ui.drawText(surface, "Achievements", (300,start_pos))
+        start_pos = 140
+        ui.drawText(surface, "Achievements:", (300,start_pos))
         for ach in completed:
             start_pos += 40
             ui.drawText(surface, ach, (300,start_pos))
@@ -535,8 +561,8 @@ class Defeat(GameState):
 
     def displayAchievements(self, surface):
         completed = self.game.stats.achievements.getCompletedAchievements()
-        start_pos = 200
-        ui.drawText(surface, "Achievements", (300,start_pos))
+        start_pos = 140
+        ui.drawText(surface, "Achievements:", (300,start_pos))
         for ach in completed:
             start_pos += 40
             ui.drawText(surface, ach, (300,start_pos))
@@ -548,7 +574,7 @@ class Defeat(GameState):
         surface.fill(self.background)
     
     def loadUI(self,surface):
-        ui.drawText(surface, "YOU DIED", (400,200))
+        ui.drawText(surface, "YOU DIED", (350,100))
         self.button_restart.draw(surface)
         # Display all completed achievements
         self.displayAchievements(surface)

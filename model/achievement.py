@@ -156,6 +156,6 @@ class Achievement_Master():
         accessed from init only
         '''
         if not self.__initialized:
-            self._gameplayAchievements.append(Achievement("Cheated Death", (None, 100, None, None, 0)))
+            self._gameplayAchievements.append(Achievement("Cheated Death", (None, 99, None, None, 0)))
             self._gameplayAchievements.append(Achievement("Enemy Dodger", (75, 0, None, None, None)))
             self._gameplayAchievements.append(Achievement("Straight A Fighter", (None, None, None, 6, None)))

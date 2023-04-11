@@ -76,6 +76,16 @@ class Enemy:
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
+    def drawBoss(self, surface, x, y):
+        self.x = x
+        self.y = y
+        self.rect = pg.Rect(self.x, self.y, 50, 50)
+        self.sprite = pg.Surface((32, 32))
+        self.sprite.fill((255, 0, 0))
+        self.image = pg.image.load(f"assets/purpleBoss.png")
+        self.size = pg.transform.scale(self.image, (128, 128))
+        surface.blit(self.size, self.rect)
+
     def generateDamage(self):
         return rd.randrange(self.atk_low, self.atk_high)
 
