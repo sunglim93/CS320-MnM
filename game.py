@@ -19,6 +19,7 @@ class Game():
         self.run = True
         self.difficulty = 0
         self.numEncounters = 0
+        self.numBossEncounters = 0
         self.player = classes.Player("Armored Soul")
         self.stats = achievement.GameStats()
         self.difficultyMods = { #dictionary containing modifiers
