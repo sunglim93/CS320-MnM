@@ -384,8 +384,8 @@ class Shop(GameState):
         self.name = "Welcome to the shop!"
         self.background = "#04395e"
         self.game = g
-        self.button_enter = ui.Button("enter shop", 220, 60, (300,250), function=self.enterShop)
-        self.button_leave = ui.Button("leave shop", 220, 60, (300,400), function=self.leaveShop)
+        self.button_enter = ui.Button("Enter shop", 220, 60, (300,250), function=self.enterShop)
+        self.button_leave = ui.Button("Leave shop", 220, 60, (300,400), function=self.leaveShop)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
@@ -423,9 +423,9 @@ class ShopMenu(GameState):
         self.name = "What would you like to buy?"
         self.background = "#04395e"
         self.game = g
-        self.button_buy = ui.Button("buy items", 220, 60, (60,500), function=self.buyItems)
-        self.button_sell = ui.Button("sell items", 220, 60, (300,500), function=self.sellItems)
-        self.button_back = ui.Button("leave shop", 220, 60, (540,500), function=self.closeMenu)
+        self.button_buy = ui.Button("Buy items", 220, 60, (60,500), function=self.buyItems)
+        self.button_sell = ui.Button("Sell items", 220, 60, (300,500), function=self.sellItems)
+        self.button_back = ui.Button("Leave shop menu", 220, 60, (540,500), function=self.closeMenu)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
@@ -468,9 +468,9 @@ class Difficulty(GameState):
         self.name = "Select difficulty"
         self.background = "#0c2a31"
         self.game = g
-        self.button_easy = ui.Button("easy", 220, 60, (60,450), function=self.setEasyDifficulty)
-        self.button_normal = ui.Button("normal", 220, 60, (300,450), function=self.setNormalDifficulty)
-        self.button_hard = ui.Button("hard", 220, 60, (540,450), function=self.setHardDifficulty)
+        self.button_easy = ui.Button("Easy", 220, 60, (60,450), function=self.setEasyDifficulty)
+        self.button_normal = ui.Button("Normal", 220, 60, (300,450), function=self.setNormalDifficulty)
+        self.button_hard = ui.Button("Hard", 220, 60, (540,450), function=self.setHardDifficulty)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
@@ -513,9 +513,9 @@ class RoomSelection(GameState):
         self.name = "Select a path"
         self.background = "#0c2a31"
         self.game = g
-        self.button_room_rd = ui.Button("???", 220, 60, (60,400), function=self.rdRoom)
-        self.button_combat = ui.Button("next battle", 220, 60, (300,400), function=self.loadCombat)
-        self.button_room_shop = ui.Button("shop", 220, 60, (540,400), function=self.shopRoom)
+        self.button_room_rd = ui.Button("???", 220, 60, (60,400), function=self.randomRoom)
+        self.button_combat = ui.Button("Next Battle", 220, 60, (300,400), function=self.loadCombat)
+        self.button_room_shop = ui.Button("Shop", 220, 60, (540,400), function=self.shopRoom)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
@@ -540,8 +540,16 @@ class RoomSelection(GameState):
     def loadCombat(self):
         self.game.transitionToLoad()
 
-    def rdRoom(self):
-        self.game.transitionToLoad() if rd.random() > 0.5 else self.game.transitionToShop()
+    def randomRoom(self):
+        random_value = rd.random()
+        self.game.transitionToLoad() 
+        if random_value > 0.5:
+            self.game.transitionToLoad()
+        else if random_value <= 0.07:
+            self.game.transitionToBoss()
+        else:
+            self.game.transitionToShop()
+
 
     def shopRoom(self):
         self.game.transitionToShop()
@@ -555,7 +563,7 @@ class Victory(GameState):
         self.name = "VICTORY!!! Play again?"
         self.background = "#5A8B82"
         self.game = g
-        self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.playAgain)
+        self.button_restart = ui.Button("Restart", 220, 60, (300,460), function=self.playAgain)
         
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
@@ -599,7 +607,7 @@ class Defeat(GameState):
         self.background = "#00060e"
         self.game = g
         self.game.player.setHP()
-        self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.playAgain)
+        self.button_restart = ui.Button("Restart", 220, 60, (300,460), function=self.playAgain)
 
     def displayAchievements(self, surface):
         completed = self.game.stats.achievements.getCompletedAchievements()
@@ -648,8 +656,8 @@ class Reward(GameState):
         foodItem.randomValueWideRange(5, 10, self.game.difficulty)
         self.item1 = attackItem.getItem()
         self.item2 = foodItem.getItem()
-        self.button_item1 = ui.Button(self.item1[1], 220, 60, (60,300), function=self.getItem1)
-        self.button_item2 = ui.Button(self.item2[1], 220, 60, (540,300), function=self.getItem2)
+        self.button_item1 = ui.Button("Get " + self.item1[1], 220, 60, (60,300), function=self.getItem1)
+        self.button_item2 = ui.Button("Get " + self.item2[1], 220, 60, (540,300), function=self.getItem2)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
