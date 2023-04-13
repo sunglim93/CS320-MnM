@@ -355,6 +355,30 @@ class Boss(Combat, GameState):
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
         self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
 
+    def useItem1(self):
+        # if item is empty chicking does nothing
+        if self.name1 != "Empty":
+            if self.game.player.item1[0] == "Consumable":
+                # add hp back to player according to item, then make item disappear
+                self.game.player.hp += self.game.player.item1[2][0]
+                if self.game.player.hp > self.game.player.max_hp:
+                    self.game.player.hp = self.game.player.max_hp
+            #elif self.game.player.item1[0] == "Defense":
+            self.name1 = "Empty"
+            self.item1 = ui.Button(self.name1, 220, 60, (50, 110), function=self.useItem1)
+
+    def useItem2(self):
+        # if item is empty chicking does nothing
+        if self.name2 != "Empty":
+            if self.game.player.item2[0] == "Consumable":
+                # add hp back to player according to item, then make item disappear
+                self.game.player.hp += self.game.player.item2[2][0]
+                if self.game.player.hp > self.game.player.max_hp:
+                    self.game.player.hp = self.game.player.max_hp
+            #elif self.game.player.item1[0] == "Defense":
+            self.name2 = "Empty"
+            self.item2 = ui.Button(self.name2, 220, 60, (280, 110), function=self.useItem2)
+
     def sliderQTE(self):
         numHits = QTE.handleTimeSliderQTE(3)
         total_damage = self.game.player.generateDamage()*numHits
