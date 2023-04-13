@@ -662,7 +662,6 @@ class Reward(GameState):
         self.item2 = foodItem.getItem()
         self.button_item1 = ui.Button("Get " + self.item1[1], 220, 60, (60,300), function=self.getItem1)
         self.button_item2 = ui.Button("Get " + self.item2[1], 220, 60, (540,300), function=self.getItem2)
-
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
         self.text_surface = self.textFont.render(self.name, False, (0, 0, 0))
@@ -761,6 +760,7 @@ class Buy(GameState):
 
 
 class Treasure(GameState):
+
     def __init__(self, g):
         self.name = "You've encountered a chest"
         self.background = "#251d2b"
@@ -796,8 +796,8 @@ class Treasure(GameState):
 
 
 class GetTreasure(GameState):
-    def __init__(self, g):
 
+    def __init__(self, g):
         self.background = "#251d2b"
         self.game = g
         # create a random item
@@ -818,7 +818,6 @@ class GetTreasure(GameState):
         self.button_leave = ui.Button("Leave " + self.item[1], 220, 60, (40,400), function=self.loadCombat)
         self.image = pg.image.load(f"assets/chest_opened.png")
         self.size = pg.transform.scale(self.image, (130,110))
-
         self.name = "Chest contained " + self.item[1]
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",40)
@@ -829,7 +828,6 @@ class GetTreasure(GameState):
         if self.item[0] == "Attack":
             self.game.player.addItem(0, self.item)
             self.game.transitionToLoad()
-
         else: 
             self.game.player.addItem(random.choice([1,2]), self.item)
             self.game.transitionToLoad()

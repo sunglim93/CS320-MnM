@@ -15,8 +15,7 @@ class Game():
 
     def __init__(self):
         # By default the game is initialized to the Main state
-        # self.cur_state = game_states.Menu(self)
-        self.cur_state = game_states.RoomSelection(self)        
+        self.cur_state = game_states.Menu(self)
         self.run = True
         self.difficulty = 0
         self.numEncounters = 0
