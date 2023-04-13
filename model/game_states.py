@@ -654,7 +654,7 @@ class Defeat(GameState):
         self.background = "#00060e"
         self.game = g
         self.game.player.setHP()
-        self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.self.playAgain)
+        self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.playAgain)
 
     def displayAchievements(self, surface):
         completed = self.game.stats.achievements.getCompletedAchievements()
