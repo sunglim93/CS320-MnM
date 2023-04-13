@@ -54,6 +54,9 @@ class Game():
 
     def getColor(self, color):
         return self.colors[color]
+    
+    def getPalette(self):
+        return self.colors
 
     def increaseEncounters(self):
         self.numEncounters += 1

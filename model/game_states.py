@@ -43,7 +43,7 @@ class Menu(GameState):
         self.name = "MENU"
         pg.font.init()
         self.MenuFont = pg.font.Font("assets/alagard.ttf",64)
-        self.background = pg.image.load('assets/menu.png')
+        self.background = ui.adapt_image('assets/menu.png',g.getPalette())
         self.background = pg.transform.scale(self.background,(pg.display.get_surface().get_size()))
         self.button_start = ui.Button("START", 200, 40, (300,300), function=self.game.transitionToLoad)
         self.button_settings = ui.Button("SETTINGS", 200, 40, (300,360), function=self.game.transitionToDifficulty)
@@ -56,6 +56,7 @@ class Menu(GameState):
         return self.name
     
     def loadBackground(self, surface):
+
         surface.blit(self.background,(0,0))
     
     def loadUI(self,surface):

@@ -1,4 +1,5 @@
 import pygame
+from PIL import Image
 from pygame.locals import *
 from pygame import mixer
 
@@ -11,6 +12,31 @@ mixer.init()
 def drawText(surface, text, pos, text_col="#bce7fc"):
     img = UI_font.render(text, True, text_col)
     surface.blit(img,(pos))
+
+
+def adapt_image(img_file, palette):
+    def_palette = Image.open('assets/sprite-0002.png').getcolors()
+    render_img = Image.open(img_file)
+    pixels = render_img.load()
+    for i in range(render_img.size[0]):
+        for j in range (render_img.size[1]):
+            if pixels[i,j] == def_palette[0][1]:
+                pixels[i,j] = palette['lightTwo']
+            elif pixels[i,j] == def_palette[1][1]: 
+                pixels[i,j] = palette['lightOne']
+            elif pixels[i,j] == def_palette[2][1]: 
+                pixels[i,j] = palette['midThree']
+            elif pixels[i,j] == def_palette[3][1]: 
+                pixels[i,j] = palette['midTwo']
+            elif pixels[i,j] == def_palette[4][1]: 
+                pixels[i,j] = palette['midOne']
+            elif pixels[i,j] == def_palette[5][1]: 
+                pixels[i,j] = palette['baseThree']
+            elif pixels[i,j] == def_palette[6][1]: 
+                pixels[i,j] = palette['baseTwo']
+            elif pixels[i,j] == def_palette[7][1]: 
+                pixels[i,j] = palette['baseOne']
+    return pygame.image.fromstring(render_img.tobytes(),render_img.size,render_img.mode).convert()
 
 
 class Button():
