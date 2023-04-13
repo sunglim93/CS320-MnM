@@ -380,7 +380,6 @@ class Boss(Combat, GameState):
                 self.game.transitionToVictory()
             else:
                 self.game.transitionToReward()
-            #self.game.transitionToVictory()
 
 
 # Class for handling the shop features
@@ -548,12 +547,12 @@ class RoomSelection(GameState):
 
     def randomRoom(self):
         random_value = rd.random()
-        if random_value > 0.5:
-            self.game.transitionToLoad()
-        elif random_value <= 0.1:
+        if random_value >= 0.75:
+            self.game.transitionToTreasure()       
+        elif random_value <= 0.05:
             self.game.transitionToBoss()
         else:
-            self.game.transitionToShop()
+            self.game.transitionToLoad()
 
     def shopRoom(self):
         self.game.transitionToShop()
@@ -754,6 +753,107 @@ class Buy(GameState):
         self.button_item2.draw(surface)
         self.button_item3.draw(surface)
         self.button_cancel.draw(surface)
+
+    def handleActions(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                self.game.transitionToLoad()
+
+
+class Treasure(GameState):
+    def __init__(self, g):
+        self.name = "You've encountered a chest"
+        self.background = "#251d2b"
+        self.game = g
+        self.button_combat = ui.Button("Leave Chest", 220, 60, (530,320), function=self.loadCombat)
+        self.button_open_chest = ui.Button("Open Chest", 220, 60, (40,320), function=self.treasureRoom)
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",50)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.image = pg.image.load(f"assets/chest_closed.png")
+        self.size = pg.transform.scale(self.image, (120,100))
+
+    def getName(self):
+        return self.name
+    
+    def loadBackground(self, surface):
+        surface.fill(self.background)
+        surface.blit(self.text_surface, (85, 75))
+        surface.blit(self.size, (320, 210))
+    
+    def loadUI(self,surface):
+        self.button_combat.draw(surface)
+        self.button_open_chest.draw(surface)
+
+    def handleActions(self, event):
+        pass
+
+    def loadCombat(self):
+        self.game.transitionToLoad()
+
+    def treasureRoom(self):
+        self.game.transitionToGetTreasure()
+
+
+class GetTreasure(GameState):
+    def __init__(self, g):
+
+        self.background = "#251d2b"
+        self.game = g
+        # create a random item
+        difMod = 1+ (self.game.numBossEncounters/10)
+        random_value = rd.random()
+        if random_value >= 0.7:
+            attackItem = item.Item()
+            attackItem.randomAbility("Attack")
+            attackItem.randomValueWideRange(20*difMod, 27*difMod, self.game.difficulty)
+            self.item = attackItem.getItem()
+        else:
+            foodItem1 = item.Item()
+            foodItem1.randomAbility("Consumable")
+            foodItem1.randomValueWideRange(8*difMod, 14*difMod, self.game.difficulty)
+            self.item = foodItem1.getItem()
+
+        self.button_item1 = ui.Button("Take " + self.item[1], 220, 60, (530,400), function=self.getItem)
+        self.button_leave = ui.Button("Leave " + self.item[1], 220, 60, (40,400), function=self.loadCombat)
+        self.image = pg.image.load(f"assets/chest_opened.png")
+        self.size = pg.transform.scale(self.image, (130,110))
+
+        self.name = "Chest contained " + self.item[1]
+        pg.font.init()
+        self.textFont = pg.font.Font("assets/alagard.ttf",40)
+        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+
+    def getItem(self):
+        # trade out weapon
+        if self.item[0] == "Attack":
+            self.game.player.addItem(0, self.item)
+            self.game.transitionToLoad()
+
+        else: 
+            self.game.player.addItem(random.choice([1,2]), self.item)
+            self.game.transitionToLoad()
+
+    def getName(self):
+        return self.name
+
+    def loadBackground(self, surface):
+        surface.fill(self.background)
+        #adjust text position here
+        surface.blit(self.text_surface, (85, 75))
+        surface.blit(self.size, (320, 210))
+    
+    def loadUI(self,surface):
+        self.button_item1.draw(surface)
+        self.button_leave.draw(surface)
+
+    def tradeItem1(self):
+        # trade out weapon
+        self.game.player.addItem(0, self.item)
+        self.game.transitionToLoad()
+
+    def loadCombat(self):
+        self.game.transitionToLoad()
 
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:

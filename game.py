@@ -15,7 +15,8 @@ class Game():
 
     def __init__(self):
         # By default the game is initialized to the Main state
-        self.cur_state = game_states.Menu(self)
+        # self.cur_state = game_states.Menu(self)
+        self.cur_state = game_states.RoomSelection(self)        
         self.run = True
         self.difficulty = 0
         self.numEncounters = 0
@@ -83,6 +84,10 @@ class Game():
         self.cur_state = game_states.Reward(self)
     def transitionToBuy(self):
         self.cur_state = game_states.Buy(self)
+    def transitionToTreasure(self):
+        self.cur_state = game_states.Treasure(self)
+    def transitionToGetTreasure(self):
+        self.cur_state = game_states.GetTreasure(self)
 
     #allows main loop to check the game is still running
     def running(self):
