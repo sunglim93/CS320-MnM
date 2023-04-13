@@ -250,11 +250,11 @@ class Combat(GameState):
         self.game = g
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50))
-        self.button_attack = ui.Button(self.game.player.weapon[1], 220, 60, (300, 450), function=self.sliderQTE)
+        self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), function=self.sliderQTE)
         #item bars
-        self.name1 = self.game.player.item1[1] if self.game.player.item1 else "Empty"
+        self.name1 = "Eat " + self.game.player.item1[1] if self.game.player.item1 else "Empty"
         self.item1 = ui.Button(self.name1, 220, 60, (50, 110), function=self.useItem1)
-        self.name2 = self.game.player.item2[1] if self.game.player.item2 else "Empty"
+        self.name2 = "Eat " + self.game.player.item2[1] if self.game.player.item2 else "Empty"
         self.item2 = ui.Button(self.name2, 220, 60, (280, 110), function=self.useItem2)
     
     def getName(self):
@@ -335,79 +335,26 @@ class Combat(GameState):
                 self.game.transitionToLoad()
 
 # Class for handling boss battle
-class Boss(GameState):
+class Boss(Combat, GameState):
     
     def __init__(self, g):
+        Combat.__init__(self, g)
         self.name = "BOSS"
         self.background = "#590019"
-        self.game = g
+        #self.game = g
         self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty), hp=200, atk=15)
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50))
-        self.button_attack = ui.Button(self.game.player.weapon[1], 220, 60, (300, 450), function=self.sliderQTE)
-        self.name1 = self.game.player.item1[1] if self.game.player.item1 else "Empty"
+        self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), function=self.sliderQTE)
+        self.name1 = "Eat " + self.game.player.item1[1] if self.game.player.item1 else "Empty"
         self.item1 = ui.Button(self.name1, 220, 60, (50, 110), function=self.useItem1)
-        self.name2 = self.game.player.item2[1] if self.game.player.item2 else "Empty"
+        self.name2 = "Eat " + self.game.player.item2[1] if self.game.player.item2 else "Empty"
         self.item2 = ui.Button(self.name2, 220, 60, (280, 110), function=self.useItem2)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
         self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
 
-    def getName(self):
-        return self.name
-    
-    def loadBackground(self, surface):
-        surface.fill(self.background)
-        surface.blit(self.text_surface, (370, 50))
-    
-    def loadUI(self,surface):
-        self.healthbar.update(self.game.player.getHP(), self.game.player.getMaxHP())
-        self.healthbar.draw(surface)
-        self.enemy_healthbar.update(self.enemy.getHP(), self.enemy.getMaxHP())
-        self.enemy_healthbar.draw(surface)
-        self.button_attack.draw(surface)
-        self.game.player.drawPlayer(surface, 100, 300)
-        self.enemy.drawBoss(surface, 600, 300)
-        self.game.player_turn = True
-        self.game.player_attack = 0
-        self.enemy_attack = 0
-        self.item1.draw(surface)
-        self.item2.draw(surface)
-        pass
-
-    def useItem1(self):
-        # if item is empty chicking does nothing
-        if self.name1 != "Empty":
-            if self.game.player.item1[0] == "Consumable":
-                # add hp back to player according to item, then make item disappear
-                self.game.player.hp += self.game.player.item1[2][0]
-                if self.game.player.hp > self.game.player.max_hp:
-                    self.game.player.hp = self.game.player.max_hp
-            #elif self.game.player.item1[0] == "Defense":
-            self.name1 = "Empty"
-            self.item1 = ui.Button(self.name1, 220, 60, (50, 110), function=self.useItem1)
-
-    def useItem2(self):
-        # if item is empty chicking does nothing
-        if self.name2 != "Empty":
-            if self.game.player.item2[0] == "Consumable":
-                # add hp back to player according to item, then make item disappear
-                self.game.player.hp += self.game.player.item2[2][0]
-                if self.game.player.hp > self.game.player.max_hp:
-                    self.game.player.hp = self.game.player.max_hp
-            #elif self.game.player.item1[0] == "Defense":
-            self.name2 = "Empty"
-            self.item2 = ui.Button(self.name2, 220, 60, (280, 110), function=self.useItem2)
-
-    # when a player presses the attack button:
-    #   - corresponding QTE event will play for attack (will implement other attacks/QTEs later)
-    #   - hp is decreased based on damage (damage is set to a fixed amount for now)
-    #   - (player taking damage from enemy will be implemented later)
-    #   - after enemy dies:
-    #     - reset total number of combat encounters
-    #     - (will be implementing a pick up item screen later)
-    #     - go to victory screen
     def sliderQTE(self):
         numHits = QTE.handleTimeSliderQTE(3)
         total_damage = self.game.player.generateDamage()*numHits
@@ -428,13 +375,6 @@ class Boss(GameState):
             self.game.stats.set_bosses_defeated()
             self.game.stats.set_battles_won()
             self.game.transitionToVictory()
-
-    def handleActions(self, event):
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_h:
-                self.enemy.takeDamage(10)
-            if event.key == pg.K_SPACE:
-                self.game.transitionToLoad()
 
 
 # Class for handling the shop features
@@ -574,6 +514,7 @@ class RoomSelection(GameState):
         self.background = "#0c2a31"
         self.game = g
         self.button_room_rd = ui.Button("???", 220, 60, (60,400), function=self.rdRoom)
+        self.button_combat = ui.Button("next battle", 220, 60, (300,400), function=self.loadCombat)
         self.button_room_shop = ui.Button("shop", 220, 60, (540,400), function=self.shopRoom)
 
         pg.font.init()
@@ -589,11 +530,15 @@ class RoomSelection(GameState):
     
     def loadUI(self,surface):
         self.button_room_rd.draw(surface)
+        self.button_combat.draw(surface)
         self.button_room_shop.draw(surface)
         pass
 
     def handleActions(self, event):
         pass
+
+    def loadCombat(self):
+        self.game.transitionToLoad()
 
     def rdRoom(self):
         self.game.transitionToLoad() if rd.random() > 0.5 else self.game.transitionToShop()
