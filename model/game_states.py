@@ -11,6 +11,7 @@ import random
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from io import BytesIO
 from model import item
+
 #import requests
 #import openai
 
@@ -39,6 +40,7 @@ class GameState():
 class Menu(GameState):
     
     def __init__(self, g):
+        print("MENU SHOULD NOT BE INSTANTIATED")
         self.game = g
         self.name = "MENU"
         pg.font.init()
@@ -49,6 +51,7 @@ class Menu(GameState):
         self.button_settings = ui.Button("SETTINGS", 200, 40, (300,360), function=self.game.transitionToDifficulty)
         self.button_quit = ui.Button("QUIT", 200, 40, (300,420), function=self.game.quit)
 
+        #self.game.audio.play_theme_music(-1)
         self.text = "Metal & Magic"
         self.text_surface = self.MenuFont.render(self.text,False,"#bce7fc")
     
@@ -63,23 +66,44 @@ class Menu(GameState):
         self.button_settings.draw(surface)
         self.button_quit.draw(surface)
         surface.blit(self.text_surface,(200,100))
+
         pass
 
     def handleActions(self, event):
         pass
 
     def draw(self, screen):
-        img = self.font.render(self.name, True, self.color)
-        screen.blit(img, (160, 250))
+        pass
+        #screen.blit(self.background, (0, 100))
+        #img = self.font.render(self.name, True, self.color)
+       # screen.blit(img, (160, 550))
 
 # Class for handling the audio of the game
 class Audio(GameState):
 
     def __init__(self):
         pygame.mixer.init()
-        self.sounds = {}
-        self.music = {}
+        self.damage_sound = pygame.mixer.Sound("assets/damage.wav")
+        self.button_sound = pygame.mixer.Sound("assets/buttonpress.wav")
+
+        #pygame.mixer.music.load("assets/score.m4a")
+        #pygame.mixer.music.load("assets/cerberus.m4a")
+        self.theme_music = None
+
         self.current_room = None
+
+    def play_damage_sound(self):
+        self.damage_sound.play()
+
+    def play_button_sound(self):
+        self.button_sound.play()
+
+    def play_theme_music(self, loop=-1):
+        pygame.mixer.music.load("assets/cerberus.wav")
+        pygame.mixer.music.play(loop)
+
+    def stop_theme_music(self):
+        pygame.mixer.music.stop()
 
     def load_sound_effect(self, sound_file, sound_id):
         sound = pygame.mixer.Sound(sound_file)
@@ -216,6 +240,11 @@ class Loading(GameState):
         self.surface = surface
         self.load_cache_or_remote()
         pygame.display.set_caption("Metal and Magic")
+
+        self.background = pg.image.load('assets/menu.png')
+        self.background = pg.transform.scale(self.background, (pg.display.get_surface().get_size()))
+        self.surface.blit(self.background,(0,0))
+
         surface.blit(self.image, ( (800 - 512) // 2, (600-512) // 2))
         font = pygame.font.Font("assets/alagard.ttf", 33)
 
@@ -224,10 +253,12 @@ class Loading(GameState):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                if self.game.getEncounters() < 3:
-                    self.game.transitionToCombat()
-                else:
-                    self.game.transitionToBoss()
+                print("HELLO"+str(self.progress))
+                if self.progress == 100:
+                    if self.game.getEncounters() < 3:
+                        self.game.transitionToCombat()
+                    else:
+                        self.game.transitionToBoss()
 
     def update(self):
         self.healthbar.update(self.progress, 100)
@@ -290,7 +321,8 @@ class Combat(GameState):
     def handleActions(self, event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
-                self.game.transitionToLoad()
+                print("combat")
+                #self.game.transitionToLoad()
 
 # Class for handling boss battle
 class Boss(GameState):
@@ -335,7 +367,8 @@ class Boss(GameState):
             if event.key == pg.K_h:
                 self.cur -= 10
             if event.key == pg.K_SPACE:
-                self.game.transitionToLoad()
+                pass
+                #self.game.transitionToLoad()
 
 
 # Class for handling the shop features
@@ -435,6 +468,7 @@ class Difficulty(GameState):
     def handleActions(self, event):
         pass
 
+    # WHITE BOX CANDIDATED
     def setEasyDifficulty(self):
         self.game.setDifficulty(0)
         self.game.transitionToMenu()
@@ -555,6 +589,7 @@ class Reward(GameState):
         self.button_item1.draw(surface)
         self.button_item2.draw(surface)
 
+    # WHITE BOX TEST CANDIDATES
     def getItem1(self):
         # put item 1 into player class inventory
         self.game.player.items.append(self.item1)

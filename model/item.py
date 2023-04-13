@@ -23,10 +23,14 @@ class Item():
     assortment of random/specific methods for random ability name or values vs specific
     type must be a valid choice from Item Master, ability does not need to be valid
     '''
-    def __init__(self):
+    def __init__(self, random_state=None):
         self.type = ""
         self.ability = ""
         self.values = []
+        if random_state:
+            seed(random_state)
+        else:
+            seed()
 
     def createSpecificItem(self, typeStr, ability, values):
         ''' Create Specific Items
@@ -67,7 +71,7 @@ class Item():
         top of curve is always the middle of range
         no difficulty specified follows normal gaussean distibution
         '''
-        seed()
+
 
         # set default gaussean values within range
         mu = (min+max)/2
@@ -99,7 +103,7 @@ class Item():
         top of curve shifts towards max range with higher difficulty
         no difficulty specified follows normal gaussean distibution
         '''
-        seed()
+
 
         # set default gaussean values within range
         mu = (min+max)/2

@@ -33,6 +33,7 @@ class Button():
 
         # create the rectangles that make up the button
         self.top_rect = pygame.Rect(pos, (width, height))
+
         self.bot_rect = pygame.Rect(pos, (width, height))
         self.top_rect_original_width = width
         self.top_rect_original_height = height
