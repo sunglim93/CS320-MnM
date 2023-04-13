@@ -544,11 +544,10 @@ class RoomSelection(GameState):
         random_value = rd.random()
         if random_value > 0.5:
             self.game.transitionToLoad()
-        else if random_value <= 0.07:
+        elif random_value <= 0.1:
             self.game.transitionToBoss()
         else:
             self.game.transitionToShop()
-
 
     def shopRoom(self):
         self.game.transitionToShop()
