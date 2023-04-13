@@ -50,7 +50,7 @@ class Menu(GameState):
         self.button_quit = ui.Button("QUIT", 200, 40, (300,420), function=self.game.quit)
 
         self.text = "Metal & Magic"
-        self.text_surface = self.MenuFont.render(self.text,False,"#bce7fc")
+        self.text_surface = self.MenuFont.render(self.text,False,g.getColor("midThree"))
     
     def getName(self):
         return self.name
@@ -124,8 +124,7 @@ class Loading(GameState):
     def __init__(self, g):
         self.name = "MENU"
         self.progress = 0
-        self.background = "#0c2a31"
-        self.color = "#bce7fc"
+        self.background = g.getColor('baseOne')
         self.font = pygame.font.Font("assets/alagard.ttf", 40)
         self.game = g
         self.button_start = ui.Button("start", 220, 60, (300, 300), function=self.game.transitionToLoad)
@@ -245,7 +244,7 @@ class Combat(GameState):
     def __init__(self, g):
         self.name = "COMBAT"
         self.combatFont = pg.font.Font("assets/alagard.ttf",24)
-        self.background = "#9a4ccf"
+        self.background = g.getColor('baseTwo')
         self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty)) #init enemy with appropriate difficulty mods
         self.game = g
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
@@ -339,7 +338,7 @@ class Boss(GameState):
     
     def __init__(self, g):
         self.name = "BOSS"
-        self.background = "#590019"
+        self.background = g.getColor('baseOne')
         self.game = g
         self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty), hp=200, atk=15)
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
@@ -352,7 +351,7 @@ class Boss(GameState):
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
 
     def getName(self):
         return self.name
@@ -442,14 +441,14 @@ class Shop(GameState):
     
     def __init__(self, g):
         self.name = "Welcome to the shop!"
-        self.background = "#04395e"
+        self.background = g.getColor('baseThree')
         self.game = g
         self.button_enter = ui.Button("enter shop", 220, 60, (300,250), function=self.enterShop)
         self.button_leave = ui.Button("leave shop", 220, 60, (300,400), function=self.leaveShop)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
 
     def getName(self):
         return self.name
@@ -481,7 +480,7 @@ class ShopMenu(GameState):
     
     def __init__(self, g):
         self.name = "What would you like to buy?"
-        self.background = "#04395e"
+        self.background = g.getColor('baseThree')
         self.game = g
         self.button_buy = ui.Button("buy items", 220, 60, (60,500), function=self.buyItems)
         self.button_sell = ui.Button("sell items", 220, 60, (300,500), function=self.sellItems)
@@ -489,7 +488,7 @@ class ShopMenu(GameState):
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor['midThree'])
 
     
     def getName(self):
@@ -526,7 +525,7 @@ class Difficulty(GameState):
     
     def __init__(self, g):
         self.name = "Select difficulty"
-        self.background = "#0c2a31"
+        self.background = g.getColor('baseTwo')
         self.game = g
         self.button_easy = ui.Button("easy", 220, 60, (60,450), function=self.setEasyDifficulty)
         self.button_normal = ui.Button("normal", 220, 60, (300,450), function=self.setNormalDifficulty)
@@ -534,7 +533,7 @@ class Difficulty(GameState):
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
     
     def getName(self):
         return self.name
@@ -571,14 +570,14 @@ class RoomSelection(GameState):
     
     def __init__(self, g):
         self.name = "Select a path"
-        self.background = "#0c2a31"
+        self.background = g.getColor('baseTwo')
         self.game = g
         self.button_room_rd = ui.Button("???", 220, 60, (60,400), function=self.rdRoom)
         self.button_room_shop = ui.Button("shop", 220, 60, (540,400), function=self.shopRoom)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
 
     def getName(self):
         return self.name
@@ -608,13 +607,13 @@ class Victory(GameState):
     
     def __init__(self, g):
         self.name = "VICTORY!!! Play again?"
-        self.background = "#5A8B82"
+        self.background = g.getColor('midTwo')
         self.game = g
         self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.playAgain)
         
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
 
     def displayAchievements(self, surface):
         completed = self.game.stats.achievements.getCompletedAchievements()
@@ -651,7 +650,7 @@ class Defeat(GameState):
 
     def __init__(self, g):
         self.name = "Defeat"
-        self.background = "#00060e"
+        self.background = g.getColor('baseOne')
         self.game = g
         self.game.player.setHP()
         self.button_restart = ui.Button("restart", 220, 60, (300,460), function=self.self.playAgain)
@@ -692,7 +691,7 @@ class Reward(GameState):
     
     def __init__(self, g):
         self.name = "ENEMY DIED. Select an item."
-        self.background = "#BC88DF"
+        self.background = g.getColor('baseTwo')
         self.game = g
         # initialize items
         attackItem = item.Item()
@@ -740,7 +739,7 @@ class Reward(GameState):
 class Buy(GameState):
     def __init__(self, g):
         self.name = "Choose an Item"
-        self.background = "#04395e"
+        self.background = g.getColor('baseTwo')
         self.game = g
         # create 3 random items
         attackItem = item.Item()
@@ -762,7 +761,7 @@ class Buy(GameState):
         self.button_cancel = ui.Button("Leave Shop", 220, 60, (300,500), function=self.cancel)
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
 
     def tradeItem1(self):
         # trade out weapon

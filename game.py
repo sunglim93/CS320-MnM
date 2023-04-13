@@ -1,4 +1,5 @@
 import pygame
+from PIL import Image
 from pygame.locals import *
 from pygame import mixer 
 from model import game_states
@@ -15,6 +16,18 @@ class Game():
 
     def __init__(self):
         # By default the game is initialized to the Main state
+        pal = Image.open('assets/sprite-0002.png').getcolors()
+        print(pal)
+        self.colors = {
+            'lightTwo' : pal[0][1],
+            'lightOne' : pal[1][1],
+            'midThree' : pal[2][1],
+            'midTwo' : pal[3][1],
+            'midOne' : pal[4][1],
+            'baseThree' : pal[5][1],
+            'baseTwo' : pal[6][1],
+            'baseOne' : pal[7][1],
+        }
         self.cur_state = game_states.Menu(self)
         self.run = True
         self.difficulty = 0
@@ -26,6 +39,7 @@ class Game():
             1 : 1.0, #medium
             2 : 1.5 #hard
         }
+        
 
     # difficulty settings
     def setDifficulty(self, difficulty):
@@ -37,6 +51,9 @@ class Game():
     # keep track of battles that the player has encountered
     def getEncounters(self):
         return self.numEncounters
+
+    def getColor(self, color):
+        return self.colors[color]
 
     def increaseEncounters(self):
         self.numEncounters += 1
