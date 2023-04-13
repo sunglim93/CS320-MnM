@@ -542,7 +542,6 @@ class RoomSelection(GameState):
 
     def randomRoom(self):
         random_value = rd.random()
-        self.game.transitionToLoad() 
         if random_value > 0.5:
             self.game.transitionToLoad()
         else if random_value <= 0.07:
