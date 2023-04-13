@@ -427,7 +427,13 @@ class Boss(GameState):
             # GAME STAT
             self.game.stats.set_bosses_defeated()
             self.game.stats.set_battles_won()
-            self.game.transitionToVictory()
+            self.game.numEncounters = 0
+            self.game.numBossEncounters += 1
+            if self.game.numBossEncounters == 3:
+                self.game.transitionToVictory()
+            else:
+                self.game.transitionToReward()
+            #self.game.transitionToVictory()
 
     def handleActions(self, event):
         if event.type == pg.KEYDOWN:
@@ -695,12 +701,13 @@ class Reward(GameState):
         self.background = "#BC88DF"
         self.game = g
         # initialize items
+        difMod = 1+ (self.game.numBossEncounters/10)
         attackItem = item.Item()
         attackItem.randomAbility("Attack")
-        attackItem.randomValueWideRange(17, 23, self.game.difficulty)
+        attackItem.randomValueWideRange(17*difMod, 23*difMod, self.game.difficulty)
         foodItem = item.Item()
         foodItem.randomAbility("Consumable")
-        foodItem.randomValueWideRange(5, 10, self.game.difficulty)
+        foodItem.randomValueWideRange(5*difMod, 10*difMod, self.game.difficulty)
         self.item1 = attackItem.getItem()
         self.item2 = foodItem.getItem()
         self.button_item1 = ui.Button(self.item1[1], 220, 60, (60,300), function=self.getItem1)
@@ -743,15 +750,16 @@ class Buy(GameState):
         self.background = "#04395e"
         self.game = g
         # create 3 random items
+        difMod = 1+ (self.game.numBossEncounters/10)
         attackItem = item.Item()
         attackItem.randomAbility("Attack")
-        attackItem.randomValueWideRange(20, 27, self.game.difficulty)
+        attackItem.randomValueWideRange(20*difMod, 27*difMod, self.game.difficulty)
         foodItem1 = item.Item()
         foodItem1.randomAbility("Consumable")
-        foodItem1.randomValueWideRange(8, 14, self.game.difficulty)
+        foodItem1.randomValueWideRange(8*difMod, 14*difMod, self.game.difficulty)
         foodItem2 = item.Item()
         foodItem2.randomAbility("Consumable")
-        foodItem2.randomValueWideRange(8, 14, self.game.difficulty)
+        foodItem2.randomValueWideRange(8*difMod, 14*difMod, self.game.difficulty)
         self.item1 = attackItem.getItem()
         self.item2 = foodItem1.getItem()
         self.item3 = foodItem2.getItem()

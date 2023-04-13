@@ -161,8 +161,8 @@ class Achievement_Master():
         '''
         if not self.__initialized:
             self._gameplayAchievements.append(Achievement("Finished World 1", (None, None, 1, None, None)))
-            #self._gameplayAchievements.append(Achievement("Finished World 2", (None, None, 2, None, None)))
-            #self._gameplayAchievements.append(Achievement("Finished World 3", (None, None, 3, None, None)))
+            self._gameplayAchievements.append(Achievement("Finished World 2", (None, None, 2, None, None)))
+            self._gameplayAchievements.append(Achievement("Finished World 3", (None, None, 3, None, None)))
 
     def __initializeHiddenAchievements(self):
         ''' Initialize Hidden Achievements
