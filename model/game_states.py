@@ -341,7 +341,6 @@ class Boss(Combat, GameState):
         Combat.__init__(self, g)
         self.name = "BOSS"
         self.background = "#590019"
-        #self.game = g
         self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty), hp=200, atk=15)
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50))
@@ -354,6 +353,24 @@ class Boss(Combat, GameState):
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
         self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+
+    def loadBackground(self, surface):
+        surface.fill(self.background)
+        surface.blit(self.text_surface, (370, 50))
+
+    def loadUI(self,surface):
+        self.healthbar.update(self.game.player.getHP(), self.game.player.getMaxHP())
+        self.healthbar.draw(surface)
+        self.enemy_healthbar.update(self.enemy.getHP(), self.enemy.getMaxHP())
+        self.enemy_healthbar.draw(surface)
+        self.button_attack.draw(surface)
+        self.game.player.drawPlayer(surface, 100, 300)
+        self.enemy.drawBoss(surface, 600, 300)
+        self.game.player_turn = True
+        self.game.player_attack = 0
+        self.enemy_attack = 0
+        self.item1.draw(surface)
+        self.item2.draw(surface)
 
     def useItem1(self):
         # if item is empty chicking does nothing
