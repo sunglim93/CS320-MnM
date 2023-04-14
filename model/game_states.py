@@ -19,7 +19,7 @@ from model import item
 # to ensure functionality
 class GameState():
 
-    # When instanciating one of the following
+    # When instantiating one of the following
     # GameState classes, you should pass the current
     # Game class.
     def getName(self):
@@ -46,9 +46,10 @@ class Menu(GameState):
         self.background = pg.image.load('assets/menu.png')
         self.background = pg.transform.scale(self.background,(pg.display.get_surface().get_size()))
         self.button_start = ui.Button("START", 200, 40, (300,300), function=self.game.transitionToLoad)
-        self.button_settings = ui.Button("SETTINGS", 200, 40, (300,360), function=self.game.transitionToDifficulty)
+        self.button_settings = ui.Button("SETTINGS", 200, 40, (300,360), function=self.game.transitionToSettings)
         self.button_quit = ui.Button("QUIT", 200, 40, (300,420), function=self.game.quit)
-
+        pygame.mixer.music.set_volume(0)
+        self.game.audio.play_theme_music(-1)
         self.text = "Metal & Magic"
         self.text_surface = self.MenuFont.render(self.text,False,"#bce7fc")
     
@@ -77,9 +78,27 @@ class Audio(GameState):
 
     def __init__(self):
         pygame.mixer.init()
-        self.sounds = {}
-        self.music = {}
+        self.damage_sound = pygame.mixer.Sound("assets/damage.wav")
+        self.button_sound = pygame.mixer.Sound("assets/buttonpress.wav")
+
+        #pygame.mixer.music.load("assets/score.m4a")
+        #pygame.mixer.music.load("assets/cerberus.m4a")
+        self.theme_music = None
+
         self.current_room = None
+
+    def play_damage_sound(self):
+        self.damage_sound.play()
+
+    def play_button_sound(self):
+        self.button_sound.play()
+
+    def play_theme_music(self, loop=-1):
+        pygame.mixer.music.load("assets/cerberus.wav")
+        pygame.mixer.music.play(loop)
+
+    def stop_theme_music(self):
+        pygame.mixer.music.stop()
 
     def load_sound_effect(self, sound_file, sound_id):
         sound = pygame.mixer.Sound(sound_file)
@@ -100,9 +119,6 @@ class Audio(GameState):
             pygame.mixer.music.set_volume(0.0)
             pygame.mixer.music.play(loop)
             self.current_room = room_id
-            # I was thinking of implementing a loop where the music gradually increases
-            # once a new room is accessed instead of the music immediately being thrown
-            # at the player
             for i in range(10):
                 pygame.mixer.music.set_volume(0.1 * i)
                 pygame.time.wait(100)
@@ -118,7 +134,10 @@ class Audio(GameState):
     def resume_music(self):
             pygame.mixer.music.unpause()
 
-# Class for handling the loading screen
+#class VolumeBar(GameState):
+
+
+ # Class for handling the loading screen
 class Loading(GameState):
     
     def __init__(self, g):
@@ -227,10 +246,12 @@ class Loading(GameState):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                if self.game.getEncounters() < 3:
-                    self.game.transitionToCombat()
-                else:
-                    self.game.transitionToBoss()
+                #print("HELLO" + str(self.progress))
+                if self.progress == 100:
+                    if self.game.getEncounters() < 3:
+                        self.game.transitionToCombat()
+                    else:
+                        self.game.transitionToBoss()
 
     def update(self):
         self.healthbar.update(self.progress, 100)
@@ -332,7 +353,9 @@ class Combat(GameState):
     def handleActions(self, event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
-                self.game.transitionToLoad()
+                pass
+                #print("combat")
+                #self.game.transitionToLoad()
 
 # Class for handling boss battle
 class Boss(Combat, GameState):
@@ -459,7 +482,8 @@ class Shop(GameState):
     def handleActions(self, event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
-                self.game.transitionToLoad()
+                pass
+                #self.game.transitionToLoad()
 
 
 # Class for handling the player entering shop
@@ -504,19 +528,27 @@ class ShopMenu(GameState):
     def handleActions(self, event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
-                self.game.transitionToLoad()
+                pass
+                #self.game.transitionToLoad()
 
 
 # Class for handling difficulty selection
-class Difficulty(GameState):
+class Settings(GameState):
     
     def __init__(self, g):
         self.name = "Select difficulty"
         self.background = "#0c2a31"
         self.game = g
+        self.bg = pygame.image.load("assets/vol_bar.png")
+        self.knob = pygame.image.load("assets/vol_knob.png")
+
         self.button_easy = ui.Button("Easy", 220, 60, (60,450), function=self.setEasyDifficulty)
         self.button_normal = ui.Button("Normal", 220, 60, (300,450), function=self.setNormalDifficulty)
         self.button_hard = ui.Button("Hard", 220, 60, (540,450), function=self.setHardDifficulty)
+
+        self.volumes = [0, 0.25, 0.5, 0.75, 0.99]
+        self.knob_state = 0
+        self.knob_pos = (100, 50)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
@@ -533,10 +565,30 @@ class Difficulty(GameState):
         self.button_easy.draw(surface)
         self.button_normal.draw(surface)
         self.button_hard.draw(surface)
-        pass
+        surface.blit(self.bg, (100, 50))
+        pos = [self.knob_pos[0] + self.knob_state * 60, self.knob_pos[1]]
+        surface.blit(self.knob, pos)
+
 
     def handleActions(self, event):
-        pass
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                print("LEFT ")
+                if self.knob_state > 0 :
+                    self.knob_state -= 1
+
+            elif event.key == pygame.K_RIGHT:
+                print("RIGHT")
+                if self.knob_state < 4:
+                    self.knob_state += 1
+
+           # if self.knob_state == 0:
+               # pygame.mixer.music.set_volume(0)
+            #else:
+               # pygame.mixer.music.set_volume(1 / self.knob_state)
+            pygame.mixer.music.set_volume(self.volumes[self.knob_state])
+            print(self.volumes[self.knob_state])
 
     def setEasyDifficulty(self):
         self.game.setDifficulty(0)

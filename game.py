@@ -5,6 +5,7 @@ from model import game_states
 from controller import QTE
 from model import classes
 from model import achievement
+from model.game_states import Audio
 
 # The Game class handles all the transitions and states the game
 # can be in. This is how the main function will interract with 
@@ -12,7 +13,7 @@ from model import achievement
 #                                                       -Travis
 
 class Game():
-
+    audio = Audio()
     def __init__(self):
         # By default the game is initialized to the Main state
         self.cur_state = game_states.Menu(self)
@@ -67,8 +68,8 @@ class Game():
         self.cur_state = game_states.Shop(self)
 
     # allows main loop to check the game is still running
-    def transitionToDifficulty(self):
-        self.cur_state = game_states.Difficulty(self)
+    def transitionToSettings(self):
+        self.cur_state = game_states.Settings(self)
     def transitionToRoomSelection(self):
         self.cur_state = game_states.RoomSelection(self)
     def transitionToShopMenu(self):
