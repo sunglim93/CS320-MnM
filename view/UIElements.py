@@ -52,7 +52,7 @@ class Button():
     # (optional)
     # elevation - the distance the button collapses when pressed
     # function - a function pointer that will be called when the button is pressed
-    def __init__(self,text, width, height, pos, elevation=6, function=default_action):
+    def __init__(self,text, width, height, pos, palette, elevation=6, function=default_action):
 
         # button by default is not pressed
         self.pressed = False
@@ -62,8 +62,8 @@ class Button():
         self.bot_rect = pygame.Rect(pos, (width, height))
         self.top_rect_original_width = width
         self.top_rect_original_height = height
-        self.top_color = "#dab785"
-        self.bot_color = "#d6896f"
+        self.top_color = palette['lightTwo']
+        self.bot_color = palette['lightOne']
 
         # elevation is the distance between the top and button rectangles
         self.elevation = elevation
@@ -72,7 +72,7 @@ class Button():
 
         # creates the text object that will be displayed with the button
         self.text = text
-        self.text_surface = UI_font.render(text,False,"#00060e")
+        self.text_surface = UI_font.render(text,False,palette['baseOne'])
         self.text_rect = self.text_surface.get_rect(center = self.top_rect.center)
 
         # set function pointer
