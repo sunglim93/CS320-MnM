@@ -11,7 +11,7 @@ pygame.display.set_caption("Metal and Magic")
 FPS = 60
 
 clock = pygame.time.Clock()
-FONT = pygame.font.Font(os.path.join('..','assets', 'alagard.ttf'), 52)
+FONT = pygame.font.Font(os.path.join('..','assets', 'alagard.ttf'), 80)
 
 def renderLetters(text, letterList):
     for letter in text:
@@ -64,8 +64,6 @@ def handleMashQTE():
     progressBarRect = pygame.Rect(WIDTH // 2 - sliderLength // 2, HEIGHT // 2 - sliderHeight // 2, progressBarLength, sliderHeight)
     bgRect = pygame.Rect(sliderRect.left, sliderRect.top - sliderHeight // 2, sliderLength, sliderHeight * 2)
     while quick:
-        if event.type == pygame.QUIT:
-                quick = False
         #decrement timer for each tick
         timer -= clock.tick(FPS)
         #decrement progress bar so that the player has to fight progress bar decay
@@ -88,6 +86,8 @@ def handleMashQTE():
 
         #mash the left mouse button to make progress
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quick = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 #add to progress bar whenever the lmb is pressed
                 progressBarLength += mashLength
@@ -125,8 +125,6 @@ def handleMashAlternateQTE():
     progressBarRect = pygame.Rect(WIDTH // 2 - sliderLength // 2, HEIGHT // 2 - sliderHeight // 2, progressBarLength, sliderHeight)
     bgRect = pygame.Rect(sliderRect.left, sliderRect.top - sliderHeight // 2, sliderLength, sliderHeight * 2)
     while quick:
-        if event.type == pygame.QUIT:
-                quick = False
         #decrement timer for each tick
         timer -= clock.tick(FPS)
         #decrement progress bar so that the player has to fight progress bar decay
@@ -149,6 +147,8 @@ def handleMashAlternateQTE():
 
         #mash the left mouse button to make progress
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quick = False
             #make it so that player can start mashing with either mouse button
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and flag == 3:
                 progressBarLength += mashLength
@@ -241,8 +241,6 @@ def handleTimeSliderQTE(numHits):
         sliderZones.append(pygame.Rect(randomList[i], sliderRect.top - offset, zoneWidth, zoneHeight))
     
     while quick:
-        if event.type == pygame.QUIT:
-                quick = False
         clock.tick(FPS)
         pygame.draw.rect(WIN, 'orange', bgRect)
         #move slider back and forth
@@ -266,6 +264,8 @@ def handleTimeSliderQTE(numHits):
         just turn the key press to True to "consume" the key press for that
         region. Repeat until all 3 regions have been checked.'''
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quick = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if (buttonRect.center[0] >= sliderRect.left 
                     and buttonRect.center[0] <= sliderZones[0].right):
@@ -277,7 +277,7 @@ def handleTimeSliderQTE(numHits):
                     and buttonRect.center[0] <= sliderRect.right):
                     success += checkSlider(buttonRect, sliderZones[2], keyPresses, rectColors, 2)		
 
-#press z within the correct zone to succeed QTE
+#press mouse button within the correct zone to succeed QTE
 def handleSliderQTE():
     quick = True
     sliderWidth = 200
@@ -292,9 +292,7 @@ def handleSliderQTE():
     #3 seconds to finish QTE, will change with difficulty
     timeDuration = 3000 
     timer = timeDuration
-    while quick:
-        if event.type == pygame.QUIT:
-                quick = False	
+    while quick:	
         pygame.draw.rect(WIN, 'orange', bgRect)
         #tick timer
         timer -= clock.tick(FPS) 
@@ -316,6 +314,8 @@ def handleSliderQTE():
             pygame.display.update()
             quick = False
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quick = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if buttonRect.center[0] <= sliderZone.right and buttonRect.center[0] >= sliderZone.left:
                     pygame.draw.rect(WIN, 'green', sliderZone)
@@ -376,38 +376,68 @@ def handleComboQTE():
     bgRectWidth = 500
     bgRectHeight = 200
     bgRect = pygame.Rect((WIDTH - bgRectWidth) // 2 , (HEIGHT - bgRectHeight)// 2, bgRectWidth, bgRectHeight )
+    colorList = ['black','black','black','black','black']
     while quick:
         #draw screen, timer, and letters here
-        drawLetters(letterList)
-        drawCursor(curr)
+        # drawLetters(letterList)
+        # drawCursor(curr)
         timer -= clock.tick(FPS)
-        barWidth = (timer / timeDuration) * 400
-        pygame.draw.rect(WIN, 'red', (0,0,barWidth,50))
+        barWidth = (timer / timeDuration) * bgRectWidth
         pygame.draw.rect(WIN, 'orange', bgRect)
+        pygame.draw.rect(WIN, 'red', (bgRect.left,bgRect.bottom - 20,barWidth,20))
+        i = 0
+        x = bgRect.left + 25
+        y = bgRect.center[1] - 40
+        while i < len(text):
+            textSurface = FONT.render(text[i], True, colorList[i])
+            WIN.blit(textSurface, (x, y))
+            x += 100
+            i += 1
         pygame.display.update()
         pygame.time.delay(FPS)
         if timer <= 0:
             #failure message
             print("Failed! Ran out of time!")
-            # WIN.fill((255,0,0)) 
             WIN.blit(FONT.render("Failure...", True, 'white'), (100,100))
             pygame.display.update()
             quick = False
         events = pygame.event.get()
         for event in events:
+            if event.type == pygame.QUIT:
+                quick = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == combo[curr]:
+                    colorList[curr] = 'green'
                     curr += 1
                     if curr == len(combo):
+                        colorList[curr-1] = 'green'
+                        i = 0
+                        x = bgRect.left + 25
+                        y = bgRect.center[1] - 40
+                        while i < len(text):
+                            textSurface = FONT.render(text[i], True, colorList[i])
+                            WIN.blit(textSurface, (x, y))
+                            x += 100
+                            i += 1
+                        pygame.display.update()
                         print("Success!")
                         quick = False
                         return True
-                    
                 else:
+                    colorList[curr] = 'red'
+                    i = 0
+                    x = bgRect.left + 25
+                    y = bgRect.center[1] - 40
+                    while i < len(text):
+                        textSurface = FONT.render(text[i], True, colorList[i])
+                        WIN.blit(textSurface, (x, y))
+                        x += 100
+                        i += 1
+                    pygame.display.update()
                     print("Failed! Wrong combo!")
                     quick = False
                     return False
-
+            #kept this stuff in case we needed to add in kb combos
             # if event.type == pygame.KEYDOWN:
             #     if event.key == combo[curr]:
             #         curr += 1
