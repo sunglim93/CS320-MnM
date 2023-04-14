@@ -328,12 +328,17 @@ def handleSliderQTE():
 def handleComboQTE():
     choices = ['L', 'R']
     # directions = ["UP", "DOWN", "LEFT", "RIGHT"]
+    #text list will hold the actual text
     text = [] 
+    #combo list will hold the button values to compare with
     combo = []
-    #randomize a list of 5 letters
+    #randomize a list of 5 letters or buttons
     for i in range(5):
+        #use random to randomize a list of L and R
         button = random.choice(choices)
+        #append to list
         text.append(button)
+        #if button is L, append button 1 and if it is R, append button 2
         if button == 'L':
             combo.append(1)
         if button == 'R':
@@ -376,11 +381,14 @@ def handleComboQTE():
     bgRectWidth = 500
     bgRectHeight = 200
     bgRect = pygame.Rect((WIDTH - bgRectWidth) // 2 , (HEIGHT - bgRectHeight)// 2, bgRectWidth, bgRectHeight )
+    #color list for blitting to the screen. Will update as player completes the combo
     colorList = ['black','black','black','black','black']
+
     while quick:
         #draw screen, timer, and letters here
         # drawLetters(letterList)
         # drawCursor(curr)
+        #for timer visualization purposes
         timer -= clock.tick(FPS)
         barWidth = (timer / timeDuration) * bgRectWidth
         pygame.draw.rect(WIN, 'orange', bgRect)
@@ -388,17 +396,29 @@ def handleComboQTE():
         i = 0
         x = bgRect.left + 25
         y = bgRect.center[1] - 40
+        #iterate thru the list and blit each letter
         while i < len(text):
             textSurface = FONT.render(text[i], True, colorList[i])
             WIN.blit(textSurface, (x, y))
             x += 100
             i += 1
         pygame.display.update()
-        pygame.time.delay(FPS)
         if timer <= 0:
             #failure message
             print("Failed! Ran out of time!")
-            WIN.blit(FONT.render("Failure...", True, 'white'), (100,100))
+            #change all text to red to indicate time out
+            j = 0
+            while j < len(colorList):
+                colorList[j] = 'red'
+                j += 1
+            i = 0
+            x = bgRect.left + 25
+            y = bgRect.center[1] - 40
+            while i < len(text):
+                textSurface = FONT.render(text[i], True, colorList[i])
+                WIN.blit(textSurface, (x, y))
+                x += 100
+                i += 1
             pygame.display.update()
             quick = False
         events = pygame.event.get()
@@ -406,9 +426,11 @@ def handleComboQTE():
             if event.type == pygame.QUIT:
                 quick = False
             if event.type == pygame.MOUSEBUTTONDOWN:
+                #if the input is correct, change color of letter to green
                 if event.button == combo[curr]:
                     colorList[curr] = 'green'
                     curr += 1
+                    #if the end of the combo is reached, end the QTE
                     if curr == len(combo):
                         colorList[curr-1] = 'green'
                         i = 0
@@ -424,6 +446,7 @@ def handleComboQTE():
                         quick = False
                         return True
                 else:
+                    #if an incorrect input is received, change the current letter to red and end the QTE
                     colorList[curr] = 'red'
                     i = 0
                     x = bgRect.left + 25
