@@ -76,7 +76,7 @@ class Menu(GameState):
 
 # Class for handling the audio of the game
 class Audio(GameState):
-    button_sound = None;
+    button_sound = None
 
 
     def __init__(self):
