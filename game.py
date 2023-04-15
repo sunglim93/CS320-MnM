@@ -17,7 +17,7 @@ class Game():
     audio = Audio()
     def __init__(self):
         # By default the game is initialized to the Main state
-        pal = Image.open('assets/sprite-0002.png').getcolors()
+        pal = Image.open('assets/sprite-0003.png').getcolors()
         print(pal)
         self.colors = {
             'lightTwo' : pal[0][1],
@@ -34,7 +34,7 @@ class Game():
         self.difficulty = 0
         self.numEncounters = 0
         self.numBossEncounters = 0
-        self.player = classes.Player("Armored Soul")
+        self.player = classes.Player("Armored Soul", self)
         self.stats = achievement.GameStats()
         self.difficultyMods = { #dictionary containing modifiers
             0 : 0.5, #easy

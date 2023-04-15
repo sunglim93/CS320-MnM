@@ -36,6 +36,12 @@ def adapt_image(img_file, palette):
                 pixels[i,j] = palette['baseTwo']
             elif pixels[i,j] == def_palette[7][1]: 
                 pixels[i,j] = palette['baseOne']
+            elif pixels[i,j] == (0,0,0,0):
+                pixels[i,j] = (0,0,0,0)
+
+    if img_file == 'assets/player.png':
+        print("saved")
+        render_img.save('adapted_player.png')
     return pygame.image.fromstring(render_img.tobytes(),render_img.size,render_img.mode).convert()
 
 

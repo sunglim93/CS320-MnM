@@ -1,8 +1,10 @@
 import random as rd
 import pygame as pg
+from view import UIElements as ui
 
 class Player:
-    def __init__(self, name, hp=100, atk=20):
+    def __init__(self, name, g, hp=100, atk=20):
+        self.image = ui.adapt_image('assets/player.png', g.getPalette())
         self.name = name
         self.max_hp = hp
         self.hp = hp
@@ -55,7 +57,6 @@ class Player:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load(f"assets/player.png")
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
