@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 from pygame import mixer
+from model import game_states as game_states
 
 # Declare default font for UI elements
 pygame.font.init()
@@ -84,7 +85,11 @@ class Button():
             # if button is clicked (pressed and released) fire function and
             # change elevation to indicate button click to user
             if pygame.mouse.get_pressed()[0] and not self.pressed:
-                mixer.Sound('assets/buttonpress.wav').play()
+                #button_press_sfx = mixer.Sound('assets/buttonpress.wav')
+                audio = game_states.Audio()
+                audio.button_sound.set_volume(0.25)
+                audio.button_sound.play()
+
                 self.dynamic_elevation = 3
                 self.pressed = True
                 self.function()
