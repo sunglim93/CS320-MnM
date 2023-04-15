@@ -540,6 +540,7 @@ class Settings(GameState):
     
     def __init__(self, g):
         self.name = "Select difficulty"
+        self.volName = "Select Volume"
         self.background = g.getColor('baseTwo')
         self.game = g
         self.bg = pygame.image.load("assets/vol_bar.png")
@@ -556,6 +557,7 @@ class Settings(GameState):
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
         self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
+        self.text_volume_surface = self.textFont.render(self.volName,False, g.getColor('midThree'))
     
     def getName(self):
         return self.name
