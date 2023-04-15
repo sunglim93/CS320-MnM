@@ -76,6 +76,8 @@ class Menu(GameState):
 
 # Class for handling the audio of the game
 class Audio(GameState):
+    button_sound = None;
+
 
     def __init__(self):
         pygame.mixer.init()
@@ -549,7 +551,7 @@ class Settings(GameState):
 
         self.volumes = [0, 0.25, 0.5, 0.75, 0.99]
         self.knob_state = 0
-        self.knob_pos = (100, 50)
+        self.knob_pos = (265, 50)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
@@ -560,13 +562,15 @@ class Settings(GameState):
     
     def loadBackground(self, surface):
         surface.fill(self.background)
-        surface.blit(self.text_surface, (215, 200))
+        surface.blit(self.text_surface, (215, 350))
+        surface.blit(self.text_volume_surface, (265, 90))
+
     
     def loadUI(self,surface):
         self.button_easy.draw(surface)
         self.button_normal.draw(surface)
         self.button_hard.draw(surface)
-        surface.blit(self.bg, (100, 50))
+        surface.blit(self.bg, (265, 50))
         pos = [self.knob_pos[0] + self.knob_state * 60, self.knob_pos[1]]
         surface.blit(self.knob, pos)
 
@@ -576,7 +580,7 @@ class Settings(GameState):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 print("LEFT ")
-                if self.knob_state > 0 :
+                if self.knob_state > 0:
                     self.knob_state -= 1
 
             elif event.key == pygame.K_RIGHT:
@@ -590,10 +594,13 @@ class Settings(GameState):
                # pygame.mixer.music.set_volume(1 / self.knob_state)
             pygame.mixer.music.set_volume(self.volumes[self.knob_state])
             print(self.volumes[self.knob_state])
+            print(pygame.mixer.music.get_volume())
 
     def setEasyDifficulty(self):
         self.game.setDifficulty(0)
         self.game.transitionToMenu()
+        print(self.volumes[self.knob_state])
+        print(pygame.mixer.music.get_volume())
 
     def setNormalDifficulty(self):
         self.game.setDifficulty(1)
