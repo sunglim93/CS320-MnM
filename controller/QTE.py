@@ -411,15 +411,7 @@ def handleComboQTE():
             while j < len(colorList):
                 colorList[j] = 'red'
                 j += 1
-            i = 0
-            x = bgRect.left + 25
-            y = bgRect.center[1] - 40
-            while i < len(text):
-                textSurface = FONT.render(text[i], True, colorList[i])
-                WIN.blit(textSurface, (x, y))
-                x += 100
-                i += 1
-            pygame.display.update()
+            blitText(WIN, FONT, text, colorList, bgRect)
             quick = False
         events = pygame.event.get()
         for event in events:
@@ -433,30 +425,14 @@ def handleComboQTE():
                     #if the end of the combo is reached, end the QTE
                     if curr == len(combo):
                         colorList[curr-1] = 'green'
-                        i = 0
-                        x = bgRect.left + 25
-                        y = bgRect.center[1] - 40
-                        while i < len(text):
-                            textSurface = FONT.render(text[i], True, colorList[i])
-                            WIN.blit(textSurface, (x, y))
-                            x += 100
-                            i += 1
-                        pygame.display.update()
+                        blitText(WIN, FONT, text, colorList, bgRect)
                         print("Success!")
                         quick = False
                         return True
                 else:
                     #if an incorrect input is received, change the current letter to red and end the QTE
                     colorList[curr] = 'red'
-                    i = 0
-                    x = bgRect.left + 25
-                    y = bgRect.center[1] - 40
-                    while i < len(text):
-                        textSurface = FONT.render(text[i], True, colorList[i])
-                        WIN.blit(textSurface, (x, y))
-                        x += 100
-                        i += 1
-                    pygame.display.update()
+                    blitText(WIN, FONT, text, colorList, bgRect)
                     print("Failed! Wrong combo!")
                     quick = False
                     return False
@@ -479,6 +455,19 @@ def handleComboQTE():
             #         WIN.blit(FONT.render("Failure...", True, 'white'), (100,100))
             #         pygame.display.update()
             #         quick = False
+
+#helper function for handleComboQTE() to blit the updated text colors onto the screen
+def blitText(WIN, FONT, text, colorList, bgRect):
+    i = 0
+    x = bgRect.left + 25
+    y = bgRect.center[1] - 40
+    #iterate thru the list and blit each letter
+    while i < len(text):
+        textSurface = FONT.render(text[i], True, colorList[i])
+        WIN.blit(textSurface, (x, y))
+        x += 100
+        i += 1
+    pygame.display.update()
 
 def main():
     WIN.fill((255,255,255))
@@ -503,6 +492,8 @@ def main():
                     handleTimeSliderQTE(3)
                 if event.key == pygame.K_TAB:
                     handleMashAlternateQTE()
+                if event.key == pygame.K_SPACE:
+                    handleMashQTE()
     pygame.quit()
 
 if __name__ == "__main__":
