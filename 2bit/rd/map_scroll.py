@@ -1,9 +1,13 @@
 import pygame as pg
 import random as rd
 
+color_tuple_0 = (rd.randint(1, 254),rd.randint(1, 254),rd.randint(1, 254))
+color_tuple_1 = (rd.randint(1, 254),rd.randint(1, 254),rd.randint(1, 254))
+color_tuple_2 = (rd.randint(1, 254),rd.randint(1, 254),rd.randint(1, 254))
+
 # Initialize pg and set screen size
 pg.init()
-screen_size = (1600, 900)
+screen_size = (1000, 750)
 screen = pg.display.set_mode(screen_size)
 
 class Player:
@@ -107,12 +111,12 @@ while running:
         viewport_pos[1] = map_size[1] - viewport_size[1]
 
     # Draw background
-    screen.fill((255, 255, 255))
+    screen.fill((color_tuple_0))
 
     # Draw walls
     for wall in walls:
         wall_rect = pg.Rect(wall.x - viewport_pos[0], wall.y - viewport_pos[1], wall.width, wall.height)
-        screen.fill((0, 0, 0), wall_rect)
+        screen.fill((color_tuple_1), wall_rect)
 
     # Draw player
     player.rect.topleft = (player.pos[0] - viewport_pos[0], player.pos[1] - viewport_pos[1])

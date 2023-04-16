@@ -50,6 +50,7 @@ class Enemy:
             self.y -= self.speed
         self.rect = pg.Rect(self.x, self.y, 50, 50)
 
+won = False
 player = Player()
 enemy = Enemy()
 player_rect = pg.Rect(player.x, player.y, 64, 64)
@@ -70,6 +71,14 @@ while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+        if player.rect.colliderect(goal):
+            won = True
+            enemy.speed = 0
+        if won:
+            font = pg.font.Font(None, 100)
+            text = font.render("You Won!", True, (255, 255, 255))
+            screen.blit(text, (600, 600))
+
         keys = pg.key.get_pressed()
         if keys[pg.K_UP]:
             player.y -= 5

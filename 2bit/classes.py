@@ -89,10 +89,6 @@ class Player:
                     self.effects.remove(effect)
         return damage_popup
 
-    def isPoisoned(self):
-        """Checks if the enemy has an active poison effect."""
-        return any(effect["effect"] == "Poison" for effect in self.effects)
-
 class Enemy:
     def __init__(self, name, x, y, hp, mp, atk, df, magic):
         self.name = name
@@ -169,10 +165,6 @@ class Enemy:
             if effect["effect"] == "Poison" and effect["duration"] > 0:
                 poison_damage_popup = f"{self.name} takes {effect['strength']} poison damage!"
         return poison_damage_popup
-
-    def isPoisoned(self):
-        """Checks if the enemy has an active poison effect."""
-        return any(effect["effect"] == "Poison" for effect in self.effects)
 
 class Spell:
     def __init__(self, name, cost, damage, spell_type, effect=None, effect_strength=None, effect_duration=None, is_healing=False):

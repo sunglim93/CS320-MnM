@@ -122,7 +122,7 @@ def combat():
                             continue
 
             if turn == 1:
-                time.sleep(0.8)    
+                time.sleep(1.2)    
                 pg.draw.rect(window.res, (0,0,0), clear_text)
                 if enemy.getHP() == 0:
                     ui.displayPopUp(window, font, TEXT_COL, enemy.name + " has been defeated! " + player.name
