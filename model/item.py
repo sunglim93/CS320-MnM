@@ -17,7 +17,7 @@ class Item():
     ''' Item Class
     type is the item type name string that must be a valid Item Master type
     ability is the item's ability name string specified or randomly chosed based on type
-    value is a list of numbers specified directly or randomly chosen from given range, 
+    value is a number specified directly or randomly chosen from given range, 
     the value is meant to be flexible for many types of items
 
     assortment of random/specific methods for random ability name or values vs specific
@@ -29,7 +29,7 @@ class Item():
     def __init__(self):
         self.__type = ""
         self.__ability = ""
-        self.__values = []
+        self.__values = 0
 
     def createSpecificItem(self, typeStr, ability, values):
         ''' Create Specific Items
@@ -37,17 +37,11 @@ class Item():
         type must be valid
         values can be a list of numerical values or a number
         '''
-        if type(values) is list or type(values) is int or type(values) is float:
+        if type(values) is int or type(values) is float:
             if typeStr in _item_types:
                 self.__type = typeStr
                 self.__ability = ability
-                if type(values) is list:
-                    if typeStr == "Attack" or typeStr == "Defense":
-                        self.__values.append(round(values[0]))
-                    else:
-                        self.__values.extend(round(values))
-                else:
-                    self.__values.append(round(values))
+                self.__values = round(values)
 
     def chooseAbility(self, typeStr, ability):
         ''' Choose Ability
@@ -98,10 +92,7 @@ class Item():
         while randNum > max or randNum < min:
             randNum = gauss(mu, sigma)
 
-        if (self.__type == "Attack" or self.__type == "Defense") and len(self.__values) != 0:
-            self.__values[0]=round(randNum)
-        else:
-            self.__values.append(round(randNum))
+        self.__values = round(randNum)
 
     def randomValueTopOfRange(self, min, max, difficulty=None):
         ''' Random Value Top of Range
@@ -133,10 +124,7 @@ class Item():
         while randNum > max or randNum < min:
             randNum = gauss(mu, sigma)
 
-        if (self.__type == "Attack" or self.__type == "Defense") and len(self.__values) != 0:
-            self.__values[0]=round(randNum)
-        else:
-            self.__values.append(round(randNum))
+        self.__values = round(randNum)
 
     def getItem(self):
         ''' Get Item

@@ -49,7 +49,7 @@ class Menu(GameState):
         self.button_settings = ui.Button("SETTINGS", 200, 40, (300,360), function=self.game.transitionToSettings)
         self.button_quit = ui.Button("QUIT", 200, 40, (300,420), function=self.game.quit)
         #pygame.mixer.music.set_volume(Settings.volume[Settings.knob_state])
-        #self.game.audio.play_theme_music(-1)
+        self.game.audio.play_theme_music(-1)
         self.text = "Metal & Magic"
         self.text_surface = self.MenuFont.render(self.text,False,"#bce7fc")
     
@@ -275,12 +275,12 @@ class Combat(GameState):
             self.game.player.setMaxHP(hp=100)
             self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty), hp=150, atk=10, world=0) #init enemy with appropriate difficulty mods
         elif self.game.numBossEncounters == 1:
-            self.background = "#9562fc"
+            self.background = "#9a4ccf"
             self.game.player.setWorld(world=1)
             self.game.player.setMaxHP(hp=125)
             self.enemy = classes.Enemy("Radioactive Crab",g.difficultyMods.get(g.difficulty), hp=200, atk=13, world=1)
         else:
-            self.background = "#27e8de"
+            self.background = "#9a4ccf"
             self.game.player.setWorld(world=2)
             self.game.player.setMaxHP(hp=150)
             self.enemy = classes.Enemy("Floating Monkey",g.difficultyMods.get(g.difficulty), hp=250, atk=17, world=2)
@@ -318,7 +318,7 @@ class Combat(GameState):
         if self.name1 != "Empty":
             if self.game.player.item1[0] == "Consumable":
                 # add hp back to player according to item, then make item disappear
-                self.game.player.heal(self.game.player.item1[2][0])
+                self.game.player.heal(self.game.player.item1[2])
             #elif self.game.player.item1[0] == "Defense":
             self.name1 = "Empty"
             self.game.player.removeItem(1)
@@ -329,7 +329,7 @@ class Combat(GameState):
         if self.name2 != "Empty":
             if self.game.player.item2[0] == "Consumable":
                 # add hp back to player according to item, then make item disappear
-                self.game.player.heal(self.game.player.item2[2][0])
+                self.game.player.heal(self.game.player.item2[2])
             #elif self.game.player.item1[0] == "Defense":
             self.name2 = "Empty"
             self.game.player.removeItem(2)
@@ -382,7 +382,7 @@ class Boss(Combat, GameState):
             self.game.player.setMaxHP(hp=100)
             self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty), hp=200, atk=15, world=0)
         elif self.game.numBossEncounters == 1:
-            self.background = "#569e12"
+            self.background = "#590019"
             self.game.player.setWorld(world=1)
             self.game.player.setMaxHP(hp=125)
             self.enemy = classes.Enemy("Wasteland Boss",g.difficultyMods.get(g.difficulty), hp=250, atk=20, world=1)
@@ -426,7 +426,7 @@ class Boss(Combat, GameState):
         if self.name1 != "Empty":
             if self.game.player.item1[0] == "Consumable":
                 # add hp back to player according to item, then make item disappear
-                self.game.player.heal(self.game.player.item1[2][0])
+                self.game.player.heal(self.game.player.item1[2])
             #elif self.game.player.item1[0] == "Defense":
             self.name1 = "Empty"
             self.game.player.removeItem(1)
@@ -437,7 +437,7 @@ class Boss(Combat, GameState):
         if self.name2 != "Empty":
             if self.game.player.item2[0] == "Consumable":
                 # add hp back to player according to item, then make item disappear
-                self.game.player.heal(self.game.player.item2[2][0])
+                self.game.player.heal(self.game.player.item2[2])
             #elif self.game.player.item1[0] == "Defense":
             self.name2 = "Empty"
             self.game.player.removeItem(2)

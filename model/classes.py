@@ -8,11 +8,11 @@ class Player:
         self.max_hp = hp
         self.hp = hp
         # weapon gets an attack item whick controls the atk values
-        self.weapon = ("Attack", "Rusty Dagger", [atk])
+        self.weapon = ("Attack", "Rusty Dagger", atk)
         # item1 and item2 get defense or consumables, start out empty
         self.item1 = None
         self.item2 = None
-        self.atk = self.weapon[2][0]
+        self.atk = self.weapon[2]
         self.atk_low = self.atk - 10
         self.atk_high = self.atk + 10
         self.actions = ["Attack"]
@@ -30,9 +30,9 @@ class Player:
         # attack item goes in weapon slot, change attack values
         if item[0] == "Attack":
             self.weapon = item
-            self.atk = item[2][0]
-            self.atk_low = item[2][0]-10
-            self.atk_high = item[2][0]+10
+            self.atk = item[2]
+            self.atk_low = item[2]-10
+            self.atk_high = item[2]+10
         #if item[0] == "Defense":
         # other items go in pos 1 or 2
         elif pos == 1:
@@ -47,7 +47,7 @@ class Player:
         # reset weapon to original and remove extra items
         self.removeItem(1)
         self.removeItem(2)
-        self.weapon = ("Active", "Rusty Dagger", [15])
+        self.weapon = ("Active", "Rusty Dagger", 15)
         self.atk = 15
         self.atk_low = 5
         self.atk_high = 25
@@ -61,9 +61,9 @@ class Player:
         if self.world == 0:
             self.image = pg.image.load(f"assets/player.png")
         elif self.world == 1:
-            self.image = pg.image.load(f"assets/wastearmor.png")
+            self.image = pg.image.load(f"assets/wastearmor2.png")
         else:
-            self.image = pg.image.load(f"assets/floatarmor.png")
+            self.image = pg.image.load(f"assets/floatarmor2.png")
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
@@ -124,9 +124,9 @@ class Enemy:
         if self.world == 0:
             self.image = pg.image.load(f"assets/bones-0001.png")
         elif self.world == 1:
-            self.image = pg.image.load(f"assets/crab.png")
+            self.image = pg.image.load(f"assets/crab2.png")
         else:
-            self.image = pg.image.load(f"assets/monkey.png")
+            self.image = pg.image.load(f"assets/monkey2.png")
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
@@ -137,11 +137,11 @@ class Enemy:
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
         if self.world == 0:
-            self.image = pg.image.load(f"assets/purpleBoss.png")
+            self.image = pg.image.load(f"assets/greenboss2.png")
         elif self.world == 1:
-            self.image = pg.image.load(f"assets/wasteBoss.png")
+            self.image = pg.image.load(f"assets/wasteboss2.png")
         else:
-            self.image = pg.image.load(f"assets/floatBoss.png")
+            self.image = pg.image.load(f"assets/floatboss2.png")
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
