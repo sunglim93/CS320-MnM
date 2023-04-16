@@ -2,8 +2,9 @@ import random as rd
 import pygame as pg
 
 class Player:
-    def __init__(self, name, hp=100, atk=20):
+    def __init__(self, name, hp=100, atk=15, world=0):
         self.name = name
+        self.world = world
         self.max_hp = hp
         self.hp = hp
         # weapon gets an attack item whick controls the atk values
@@ -41,13 +42,15 @@ class Player:
 
     def resetPlayer(self):
         # restore hp to full
+        self.setMaxHP()
         self.setHP()
         # reset weapon to original and remove extra items
         self.removeItem(1)
         self.removeItem(2)
-        self.weapon = ("Active", "Rusty Dagger", [20])
-        self.atk_low = 10
-        self.atk_high = 30
+        self.weapon = ("Active", "Rusty Dagger", [15])
+        self.atk = 15
+        self.atk_low = 5
+        self.atk_high = 25
 
     def drawPlayer(self, surface, x, y):
         self.x = x
@@ -55,7 +58,12 @@ class Player:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load(f"assets/player.png")
+        if self.world == 0:
+            self.image = pg.image.load(f"assets/player.png")
+        elif self.world == 1:
+            self.image = pg.image.load(f"assets/wastearmor.png")
+        else:
+            self.image = pg.image.load(f"assets/floatarmor.png")
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
@@ -86,12 +94,19 @@ class Player:
             print(str(i) + ":", item)
             i += 1
     
+    def setMaxHP(self, hp=100):
+        self.max_hp = hp
+
     def setHP(self):
         self.hp = self.max_hp
 
+    def setWorld(self, world=0):
+        self.world = world
+
 class Enemy:
-    def __init__(self, name, difficultyMod, hp=150, atk=10, weapon="claws"):
+    def __init__(self, name, difficultyMod, hp=150, atk=10, weapon="claws", world=0):
         self.name = name
+        self.world = world
         self.max_hp = int(hp*difficultyMod) #modify hp and atk according to difficulty
         self.hp = self.max_hp
         self.atk = int(atk*difficultyMod)
@@ -106,7 +121,12 @@ class Enemy:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load(f"assets/bones-0001.png")
+        if self.world == 0:
+            self.image = pg.image.load(f"assets/bones-0001.png")
+        elif self.world == 1:
+            self.image = pg.image.load(f"assets/crab.png")
+        else:
+            self.image = pg.image.load(f"assets/monkey.png")
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
@@ -116,7 +136,12 @@ class Enemy:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load(f"assets/purpleBoss.png")
+        if self.world == 0:
+            self.image = pg.image.load(f"assets/purpleBoss.png")
+        elif self.world == 1:
+            self.image = pg.image.load(f"assets/wasteBoss.png")
+        else:
+            self.image = pg.image.load(f"assets/floatBoss.png")
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 

@@ -43,8 +43,14 @@ class Game():
     def increaseEncounters(self):
         self.numEncounters += 1
 
+    def increaseBossEncounters(self):
+        self.numBossEncounters += 1
+
     def resetEncounters(self):
         self.numEncounters = 0
+
+    def resetBossEncounters(self):
+        self.numBossEncounters = 0
 
     # allows the current state to be changed
     def set_state(self, new_state=0):
