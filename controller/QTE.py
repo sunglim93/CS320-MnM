@@ -42,7 +42,7 @@ def checkSlider(buttonRect, sliderZone, keyPresses, rectColors, i): #helper func
 		rectColors[i] = 'red'
 		return 0 #this helper func is for the handleTimeSliderQTE()
 
-def handleTimeSliderQTE(numHits): #for multi-hit attacks; every success will translate to a hit
+def handleTimeSliderQTE(numHits, palette): #for multi-hit attacks; every success will translate to a hit
 	quick = True
 	sliderLength = 500
 	sliderHeight = 36
@@ -53,7 +53,7 @@ def handleTimeSliderQTE(numHits): #for multi-hit attacks; every success will tra
 	
 	success = 0 #var to hold all the successes in the QTE
 	keyPresses = [False, False, False] #keep track of key presses for each slider region
-	rectColors = ['blue', 'blue', 'blue']
+	rectColors = [palette['lightOne'], palette['lightOne'], palette['lightOne']]
 	sliderZones = [] #list to hold all the slider zones to be created
 	speed = 4 #speed of the slider, can change for higher difficulties
 	randomRanges = []
@@ -80,15 +80,15 @@ def handleTimeSliderQTE(numHits): #for multi-hit attacks; every success will tra
 	
 	while quick:
 		clock.tick(FPS)
-		pygame.draw.rect(WIN, 'orange', bgRect)
+		pygame.draw.rect(WIN, palette['baseThree'], bgRect)
 		buttonRect.x += speed #move slider
 		if buttonRect.right >= sliderRect.right: #end loop once button reaches the end of the slider
 			quick = False
 			return success #returns the num of successes for the attack
-		pygame.draw.rect(WIN, 'black', sliderRect) #draw slider
+		pygame.draw.rect(WIN, palette['baseOne'], sliderRect) #draw slider
 		for i in range(numHits): #draw slider zones
 			pygame.draw.rect(WIN, rectColors[i], sliderZones[i])
-		pygame.draw.rect(WIN, 'red', buttonRect) #draw slider button
+		pygame.draw.rect(WIN, palette['baseTwo'], buttonRect) #draw slider button
 		pygame.display.update()
 		'''When the left mouse button press is detected, check the position of the 
 		slider button. Check if the button is in range of the slider zone

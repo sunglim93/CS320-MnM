@@ -17,8 +17,7 @@ class Game():
     audio = Audio()
     def __init__(self):
         # By default the game is initialized to the Main state
-        pal = Image.open('assets/sprite-0003.png').getcolors()
-        print(pal)
+        pal = Image.open('assets/sprite-0002.png').getcolors()
         self.colors = {
             'lightTwo' : pal[0][1],
             'lightOne' : pal[1][1],

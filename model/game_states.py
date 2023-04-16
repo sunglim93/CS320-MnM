@@ -332,7 +332,7 @@ class Combat(GameState):
     #     - (will be implementing a pick up item screen later)
     #     - go to room selection screen
     def sliderQTE(self):
-        numHits = QTE.handleTimeSliderQTE(3)
+        numHits = QTE.handleTimeSliderQTE(3, self.game.getPalette())
         total_damage = self.game.player.generateDamage()*numHits
         self.enemy.takeDamage(total_damage)
         # GAME STAT
@@ -423,7 +423,7 @@ class Boss(Combat, GameState):
             self.item2 = ui.Button(self.name2, 220, 60, (280, 110), self.game.getPalette(), function=self.useItem2)
 
     def sliderQTE(self):
-        numHits = QTE.handleTimeSliderQTE(3)
+        numHits = QTE.handleTimeSliderQTE(3,self.game.getPalette())
         total_damage = self.game.player.generateDamage()*numHits
         self.enemy.takeDamage(total_damage)
         # GAME STAT
