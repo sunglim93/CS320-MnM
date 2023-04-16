@@ -269,7 +269,7 @@ class Combat(GameState):
         self.name = "COMBAT"
         self.combatFont = pg.font.Font("assets/alagard.ttf",24)
         self.background = g.getColor('baseTwo')
-        self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty)) #init enemy with appropriate difficulty mods
+        self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty),g.getPalette()) #init enemy with appropriate difficulty mods
         self.game = g
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50))
@@ -367,7 +367,7 @@ class Boss(Combat, GameState):
         self.name = "BOSS"
         self.background = g.getColor('baseOne')
         self.game = g
-        self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty), hp=200, atk=15)
+        self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty),g.getPalette(), hp=200, atk=15)
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50))
         self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), g.getPalette(), function=self.sliderQTE)

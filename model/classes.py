@@ -91,8 +91,10 @@ class Player:
         self.hp = self.max_hp
 
 class Enemy:
-    def __init__(self, name, difficultyMod, hp=150, atk=10, weapon="claws"):
+    def __init__(self, name, difficultyMod, palette, hp=150, atk=10, weapon="claws"):
+        self.palette = palette
         self.name = name
+        self.image = ui.adapt_image("assets/bones-0001.png",palette)
         self.max_hp = int(hp*difficultyMod) #modify hp and atk according to difficulty
         self.hp = self.max_hp
         self.atk = int(atk*difficultyMod)
@@ -107,7 +109,6 @@ class Enemy:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load(f"assets/bones-0001.png")
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
@@ -117,7 +118,7 @@ class Enemy:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load(f"assets/purpleBoss.png")
+        self.image = ui.adapt_image("assets/greenBoss_smol.png",self.palette)
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
