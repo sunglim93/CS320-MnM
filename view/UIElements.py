@@ -155,8 +155,9 @@ class HealthBar():
         self.height = height
         self.width = width
         # delcaring the rectangles for display
-        self.base_color = palette['baseTwo']
+        self.base_color = palette['midOne']
         self.cur_color = palette['lightOne']
+        self.text_color = palette['midThree']
         self.rect_base = pygame.Rect(self.pos, (self.width, self.height))
         self.rect_cur = pygame.Rect(self.pos, ((self.cur/self.max)*(self.width-3), self.height-3))
         # declaring the text object to display current values
@@ -173,7 +174,7 @@ class HealthBar():
             self.max = max
             self.rect_cur = pygame.Rect(self.pos, ((cur/max)*(self.width-3), self.height-3))
             self.text = str(cur) + " / " + str(max)
-            self.text_surface = UI_font.render(self.text,False,"#bce7fc")
+            self.text_surface = UI_font.render(self.text,False,self.text_color)
             self.text_rect = self.text_surface.get_rect(center = self.rect_base.center)
 
         
