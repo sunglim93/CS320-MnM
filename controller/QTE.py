@@ -31,17 +31,17 @@ def drawCursor(curr):
     WIN.blit((FONT.render('V', True, 'red')), (x+(100 * curr),y))
 
 #helper func to check if the cursor is within the sliderZone or not
-def checkSlider(buttonRect, sliderZone, keyPresses, rectColors, i): 
+def checkSlider(buttonRect, sliderZone, keyPresses, rectColors, i, palette): 
     if (buttonRect.center[0] <= sliderZone.right 
         and buttonRect.center[0] >= sliderZone.left
         and not keyPresses[i]):
         #on success, change color to green and consume keypress
-        rectColors[i] = 'green' 
+        rectColors[i] = palette['baseThree']
         keyPresses[i] = True
         return 1
     else:
         keyPresses[i] = True
-        rectColors[i] = 'red'
+        rectColors[i] = palette['baseOne']
         return 0 
     #this helper func is for the handleTimeSliderQTE()
 
@@ -192,7 +192,7 @@ def handleMashAlternateQTE():
         progressBarRect.left = sliderRect.left
 
 #for multi-hit attacks; every success will translate to a hit
-def handleTimeSliderQTE(numHits): 
+def handleTimeSliderQTE(numHits, palette): 
     quick = True
     sliderLength = 500
     sliderHeight = 36
@@ -207,7 +207,7 @@ def handleTimeSliderQTE(numHits):
     success = 0 
     #keep track of key presses for each slider region
     keyPresses = [False, False, False] 
-    rectColors = ['blue', 'blue', 'blue']
+    rectColors = [palette['midOne'], palette['midOne'], palette['midOne']]
     #list to hold all the slider zones to be created
     sliderZones = []
     #speed of the slider, can change for higher difficulties
@@ -242,7 +242,7 @@ def handleTimeSliderQTE(numHits):
     
     while quick:
         clock.tick(FPS)
-        pygame.draw.rect(WIN, 'orange', bgRect)
+        pygame.draw.rect(WIN, palette['lightTwo'], bgRect)
         #move slider back and forth
         buttonRect.x += speed 
         #end loop once button reaches the end of the slider
@@ -250,12 +250,12 @@ def handleTimeSliderQTE(numHits):
             quick = False
             #returns the num of successes for the attack
             return success 
-        pygame.draw.rect(WIN, 'black', sliderRect) #draw slider
+        pygame.draw.rect(WIN, palette['baseOne'], sliderRect) #draw slider
         #draw slider zones
         for i in range(numHits): 
             pygame.draw.rect(WIN, rectColors[i], sliderZones[i])
         #draw slider button
-        pygame.draw.rect(WIN, 'red', buttonRect) 
+        pygame.draw.rect(WIN, palette['midTwo'], buttonRect) 
         pygame.display.update()
         '''When the left mouse button press is detected, check the position of the 
         slider button. Check if the button is in range of the slider zone
@@ -269,13 +269,13 @@ def handleTimeSliderQTE(numHits):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if (buttonRect.center[0] >= sliderRect.left 
                     and buttonRect.center[0] <= sliderZones[0].right):
-                    success += checkSlider(buttonRect, sliderZones[0], keyPresses, rectColors, 0)
+                    success += checkSlider(buttonRect, sliderZones[0], keyPresses, rectColors, 0, palette)
                 if (buttonRect.center[0] >= sliderZones[0].right 
                     and buttonRect.center[0] <= sliderZones[1].right):
-                    success += checkSlider(buttonRect, sliderZones[1], keyPresses, rectColors, 1)
+                    success += checkSlider(buttonRect, sliderZones[1], keyPresses, rectColors, 1, palette)
                 if (buttonRect.center[0] >= sliderZones[1].right 
                     and buttonRect.center[0] <= sliderRect.right):
-                    success += checkSlider(buttonRect, sliderZones[2], keyPresses, rectColors, 2)		
+                    success += checkSlider(buttonRect, sliderZones[2], keyPresses, rectColors, 2, palette)		
 
 #press mouse button within the correct zone to succeed QTE
 def handleSliderQTE():
