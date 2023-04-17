@@ -43,20 +43,21 @@ class Menu(GameState):
         self.name = "MENU"
         pg.font.init()
         self.MenuFont = pg.font.Font("assets/alagard.ttf",64)
-        self.background = pg.image.load('assets/menu.png')
+        self.background = ui.adapt_image('assets/menu.png',g.getPalette())
         self.background = pg.transform.scale(self.background,(pg.display.get_surface().get_size()))
-        self.button_start = ui.Button("START", 200, 40, (300,300), function=self.game.transitionToLoad)
-        self.button_settings = ui.Button("SETTINGS", 200, 40, (300,360), function=self.game.transitionToSettings)
-        self.button_quit = ui.Button("QUIT", 200, 40, (300,420), function=self.game.quit)
-        #pygame.mixer.music.set_volume(Settings.volume[Settings.knob_state])
+        self.button_start = ui.Button("START", 200, 40, (300,300), g.getPalette(), function=self.game.transitionToLoad)
+        self.button_settings = ui.Button("SETTINGS", 200, 40, (300,360), g.getPalette(), function=self.game.transitionToSettings)
+        self.button_quit = ui.Button("QUIT", 200, 40, (300,420), g.getPalette(), function=self.game.quit)
+        pygame.mixer.music.set_volume(0)
         self.game.audio.play_theme_music(-1)
         self.text = "Metal & Magic"
-        self.text_surface = self.MenuFont.render(self.text,False,"#bce7fc")
+        self.text_surface = self.MenuFont.render(self.text,False,g.getColor("midThree"))
     
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
+
         surface.blit(self.background,(0,0))
     
     def loadUI(self,surface):
@@ -75,7 +76,7 @@ class Menu(GameState):
 
 # Class for handling the audio of the game
 class Audio(GameState):
-    button_sound = None;
+    button_sound = None
 
 
     def __init__(self):
@@ -145,13 +146,12 @@ class Loading(GameState):
     def __init__(self, g):
         self.name = "MENU"
         self.progress = 0
-        self.background = "#0c2a31"
-        self.color = "#bce7fc"
+        self.background = g.getColor('baseOne')
         self.font = pygame.font.Font("assets/alagard.ttf", 40)
         self.game = g
-        self.button_start = ui.Button("start", 220, 60, (300, 300), function=self.game.transitionToLoad)
+        self.button_start = ui.Button("start", 220, 60, (300, 300),g.getPalette(), function=self.game.transitionToLoad)
         self.image = None
-        self.healthbar = ui.HealthBar(0, 100, (220, 150))
+        self.healthbar = ui.HealthBar(0, 100, (220, 150), g.getPalette())
 
     def getName(self):
         return self.name
@@ -268,17 +268,17 @@ class Combat(GameState):
     def __init__(self, g):
         self.name = "COMBAT"
         self.combatFont = pg.font.Font("assets/alagard.ttf",24)
-        self.background = "#9a4ccf"
-        self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty)) #init enemy with appropriate difficulty mods
+        self.background = g.getColor('baseTwo')
+        self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty),g.getPalette()) #init enemy with appropriate difficulty mods
         self.game = g
-        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
-        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50))
-        self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), function=self.sliderQTE)
+        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50),g.getPalette())
+        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50), g.getPalette())
+        self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), g.getPalette(), function=self.sliderQTE)
         #item bars
         self.name1 = "Eat " + self.game.player.item1[1] if self.game.player.item1 else "Empty"
-        self.item1 = ui.Button(self.name1, 220, 60, (50, 110), function=self.useItem1)
+        self.item1 = ui.Button(self.name1, 220, 60, (50, 110), g.getPalette(), function=self.useItem1)
         self.name2 = "Eat " + self.game.player.item2[1] if self.game.player.item2 else "Empty"
-        self.item2 = ui.Button(self.name2, 220, 60, (280, 110), function=self.useItem2)
+        self.item2 = ui.Button(self.name2, 220, 60, (280, 110), g.getPalette(), function=self.useItem2)
     
     def getName(self):
         return self.name
@@ -310,7 +310,7 @@ class Combat(GameState):
                     self.game.player.hp = self.game.player.max_hp
             #elif self.game.player.item1[0] == "Defense":
             self.name1 = "Empty"
-            self.item1 = ui.Button(self.name1, 220, 60, (50, 110), function=self.useItem1)
+            self.item1 = ui.Button(self.name1, 220, 60, (50, 110), self.game.getPalette(), function=self.useItem1)
 
     def useItem2(self):
         # if item is empty chicking does nothing
@@ -322,7 +322,7 @@ class Combat(GameState):
                     self.game.player.hp = self.game.player.max_hp
             #elif self.game.player.item1[0] == "Defense":
             self.name2 = "Empty"
-            self.item2 = ui.Button(self.name2, 220, 60, (280, 110), function=self.useItem2)
+            self.item2 = ui.Button(self.name2, 220, 60, (280, 110), self.game.getPalette(), function=self.useItem2)
 
     # when a player presses the attack button:
     #   - corresponding QTE event will play for attack (will implement other attacks/QTEs later)
@@ -332,7 +332,7 @@ class Combat(GameState):
     #     - (will be implementing a pick up item screen later)
     #     - go to room selection screen
     def sliderQTE(self):
-        numHits = QTE.handleTimeSliderQTE(3)
+        numHits = QTE.handleTimeSliderQTE(3, self.game.getPalette())
         total_damage = self.game.player.generateDamage()*numHits
         self.enemy.takeDamage(total_damage)
         # GAME STAT
@@ -365,19 +365,20 @@ class Boss(Combat, GameState):
     def __init__(self, g):
         Combat.__init__(self, g)
         self.name = "BOSS"
-        self.background = "#590019"
-        self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty), hp=200, atk=15)
-        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
-        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50))
-        self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), function=self.sliderQTE)
+        self.background = g.getColor('baseOne')
+        self.game = g
+        self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty),g.getPalette(), hp=200, atk=15)
+        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50),g.getPalette())
+        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50),g.getPalette())
+        self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), g.getPalette(), function=self.sliderQTE)
         self.name1 = "Eat " + self.game.player.item1[1] if self.game.player.item1 else "Empty"
-        self.item1 = ui.Button(self.name1, 220, 60, (50, 110), function=self.useItem1)
+        self.item1 = ui.Button(self.name1, 220, 60, (50, 110), g.getPalette(), function=self.useItem1)
         self.name2 = "Eat " + self.game.player.item2[1] if self.game.player.item2 else "Empty"
-        self.item2 = ui.Button(self.name2, 220, 60, (280, 110), function=self.useItem2)
+        self.item2 = ui.Button(self.name2, 220, 60, (280, 110), g.getPalette(), function=self.useItem2)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
 
     def loadBackground(self, surface):
         surface.fill(self.background)
@@ -407,7 +408,7 @@ class Boss(Combat, GameState):
                     self.game.player.hp = self.game.player.max_hp
             #elif self.game.player.item1[0] == "Defense":
             self.name1 = "Empty"
-            self.item1 = ui.Button(self.name1, 220, 60, (50, 110), function=self.useItem1)
+            self.item1 = ui.Button(self.name1, 220, 60, (50, 110), self.game.getPalette(), function=self.useItem1)
 
     def useItem2(self):
         # if item is empty chicking does nothing
@@ -419,10 +420,11 @@ class Boss(Combat, GameState):
                     self.game.player.hp = self.game.player.max_hp
             #elif self.game.player.item1[0] == "Defense":
             self.name2 = "Empty"
-            self.item2 = ui.Button(self.name2, 220, 60, (280, 110), function=self.useItem2)
+            self.item2 = ui.Button(self.name2, 220, 60, (280, 110), self.game.getPalette(), function=self.useItem2)
+
 
     def sliderQTE(self):
-        numHits = QTE.handleTimeSliderQTE(3)
+        numHits = QTE.handleTimeSliderQTE(3,self.game.getPalette())
         total_damage = self.game.player.generateDamage()*numHits
         self.enemy.takeDamage(total_damage)
         # GAME STAT
@@ -453,14 +455,14 @@ class Shop(GameState):
     
     def __init__(self, g):
         self.name = "Welcome to the shop!"
-        self.background = "#04395e"
+        self.background = g.getColor('baseThree')
         self.game = g
-        self.button_enter = ui.Button("Enter shop", 220, 60, (300,250), function=self.enterShop)
-        self.button_leave = ui.Button("Leave shop", 220, 60, (300,400), function=self.leaveShop)
+        self.button_enter = ui.Button("Enter shop", 220, 60, (300,250), g.getPalette(), function=self.enterShop)
+        self.button_leave = ui.Button("Leave shop", 220, 60, (300,400), g.getPalette(), function=self.leaveShop)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
 
     def getName(self):
         return self.name
@@ -493,15 +495,15 @@ class ShopMenu(GameState):
     
     def __init__(self, g):
         self.name = "What would you like to buy?"
-        self.background = "#04395e"
+        self.background = g.getColor('baseThree')
         self.game = g
-        self.button_buy = ui.Button("Buy items", 220, 60, (60,500), function=self.buyItems)
-        self.button_sell = ui.Button("Sell items", 220, 60, (300,500), function=self.sellItems)
-        self.button_back = ui.Button("Leave shop menu", 220, 60, (540,500), function=self.closeMenu)
+        self.button_buy = ui.Button("Buy items", 220, 60, (60,500), g.getPalette(), function=self.buyItems)
+        self.button_sell = ui.Button("Sell items", 220, 60, (300,500), g.getPalette(), function=self.sellItems)
+        self.button_back = ui.Button("Leave shop menu", 220, 60, (540,500), g.getPalette(), function=self.closeMenu)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor['midThree'])
 
     
     def getName(self):
@@ -539,15 +541,19 @@ class Settings(GameState):
     
     def __init__(self, g):
         self.name = "Select difficulty"
-        self.volName = "Select volume"
-        self.background = "#0c2a31"
+        self.volName = "Select Volume"
+        self.background = g.getColor('baseTwo')
         self.game = g
         self.bg = pygame.image.load("assets/vol_bar.png")
         self.knob = pygame.image.load("assets/vol_knob.png")
+        self.load_palettes = False
+        self.button_load_palettes = ui.Button("Change Palette", 220, 60, (300,500), g.getPalette(), function=self.set_palette_menu)
+        self.button_save_palettes = ui.Button("Save", 220,60, (300,500), g.getPalette(), function=self.save_palette_func)
+        self.possibile_palettes = []
 
-        self.button_easy = ui.Button("Easy", 220, 60, (60,450), function=self.setEasyDifficulty)
-        self.button_normal = ui.Button("Normal", 220, 60, (300,450), function=self.setNormalDifficulty)
-        self.button_hard = ui.Button("Hard", 220, 60, (540,450), function=self.setHardDifficulty)
+        self.button_easy = ui.Button("Easy", 220, 60, (60,400), g.getPalette(), function=self.setEasyDifficulty)
+        self.button_normal = ui.Button("Normal", 220, 60, (300,400), g.getPalette(), function=self.setNormalDifficulty)
+        self.button_hard = ui.Button("Hard", 220, 60, (540,400), g.getPalette(), function=self.setHardDifficulty)
 
         self.volumes = [0, 0.25, 0.5, 0.75, 0.99]
         self.knob_state = 0
@@ -555,29 +561,46 @@ class Settings(GameState):
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
-        self.text_volume_surface = self.textFont.render(self.volName, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
+        self.text_volume_surface = self.textFont.render(self.volName,False, g.getColor('midThree'))
     
     def getName(self):
         return self.name
     
     def loadBackground(self, surface):
         surface.fill(self.background)
-        surface.blit(self.text_surface, (215, 350))
-        surface.blit(self.text_volume_surface, (265, 90))
+        if self.load_palettes:
+            pass
+        else: 
+            surface.blit(self.text_surface, (215, 300))
+            surface.blit(self.text_volume_surface, (265, 50))
 
+    def set_palette_menu(self):
+        pos_pals = os.listdir("assets/palettes/")
+        but_level = 100
+        for pal in pos_pals:
+                pal_but = ui.Button(pal, 220, 60, (300,but_level),self.game.getPalette(),function=self.game.load_palette,parameter=pal)
+                self.possibile_palettes.append(pal_but)
+                but_level += 100
+        self.load_palettes = True
+    
+    def save_palette_func(self):
+        self.load_palettes = False
     
     def loadUI(self,surface):
-        self.button_easy.draw(surface)
-        self.button_normal.draw(surface)
-        self.button_hard.draw(surface)
-        surface.blit(self.bg, (265, 50))
-        pos = [self.knob_pos[0] + self.knob_state * 60, self.knob_pos[1]]
-        surface.blit(self.knob, pos)
-
+        if self.load_palettes:
+            for but in self.possibile_palettes:
+                but.draw(surface)
+        else:
+            self.button_easy.draw(surface)
+            self.button_normal.draw(surface)
+            self.button_hard.draw(surface)
+            self.button_load_palettes.draw(surface)
+            surface.blit(self.bg, (265, 50))
+            pos = [self.knob_pos[0] + self.knob_state * 60, self.knob_pos[1]]
+            surface.blit(self.knob, pos)
 
     def handleActions(self, event):
-
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 print("LEFT ")
@@ -618,15 +641,15 @@ class RoomSelection(GameState):
     
     def __init__(self, g):
         self.name = "Select a path"
-        self.background = "#0c2a31"
+        self.background = g.getColor('baseTwo')
         self.game = g
-        self.button_room_rd = ui.Button("???", 220, 60, (60,400), function=self.randomRoom)
-        self.button_combat = ui.Button("Next Battle", 220, 60, (300,400), function=self.loadCombat)
-        self.button_room_shop = ui.Button("Shop", 220, 60, (540,400), function=self.shopRoom)
+        self.button_room_rd = ui.Button("???", 220, 60, (60,400), g.getPalette(), function=self.randomRoom)
+        self.button_combat = ui.Button("Next Battle", 220, 60, (300,400), g.getPalette(), function=self.loadCombat)
+        self.button_room_shop = ui.Button("Shop", 220, 60, (540,400), g.getPalette(), function=self.shopRoom)
 
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
 
     def getName(self):
         return self.name
@@ -666,13 +689,13 @@ class Victory(GameState):
     
     def __init__(self, g):
         self.name = "VICTORY!!! Play again?"
-        self.background = "#5A8B82"
+        self.background = g.getColor('midTwo')
         self.game = g
-        self.button_restart = ui.Button("Restart", 220, 60, (300,460), function=self.playAgain)
+        self.button_restart = ui.Button("Restart", 220, 60, (300,460), g.getPalette(), function=self.playAgain)
         
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
 
     def displayAchievements(self, surface):
         completed = self.game.stats.achievements.getCompletedAchievements()
@@ -709,10 +732,10 @@ class Defeat(GameState):
 
     def __init__(self, g):
         self.name = "Defeat"
-        self.background = "#00060e"
+        self.background = g.getColor('baseOne')
         self.game = g
         self.game.player.setHP()
-        self.button_restart = ui.Button("Restart", 220, 60, (300,460), function=self.playAgain)
+        self.button_restart = ui.Button("Restart", 220, 60, (300,460), g.getPalette(), function=self.playAgain)
 
     def displayAchievements(self, surface):
         completed = self.game.stats.achievements.getCompletedAchievements()
@@ -750,7 +773,7 @@ class Reward(GameState):
     
     def __init__(self, g):
         self.name = "ENEMY DIED. Select an item."
-        self.background = "#BC88DF"
+        self.background = g.getColor('baseTwo')
         self.game = g
         # initialize items
         difMod = 1+ (self.game.numBossEncounters/10)
@@ -762,8 +785,8 @@ class Reward(GameState):
         foodItem.randomValueWideRange(5*difMod, 10*difMod, self.game.difficulty)
         self.item1 = attackItem.getItem()
         self.item2 = foodItem.getItem()
-        self.button_item1 = ui.Button("Get " + self.item1[1], 220, 60, (60,300), function=self.getItem1)
-        self.button_item2 = ui.Button("Get " + self.item2[1], 220, 60, (540,300), function=self.getItem2)
+        self.button_item1 = ui.Button("Get " + self.item1[1], 220, 60, (60,300), g.getPalette(), function=self.getItem1)
+        self.button_item2 = ui.Button("Get " + self.item2[1], 220, 60, (540,300), g.getPalette(), function=self.getItem2)
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
         self.text_surface = self.textFont.render(self.name, False, (0, 0, 0))
@@ -798,7 +821,7 @@ class Reward(GameState):
 class Buy(GameState):
     def __init__(self, g):
         self.name = "Choose an Item"
-        self.background = "#04395e"
+        self.background = g.getColor('baseTwo')
         self.game = g
         # create 3 random items
         difMod = 1+ (self.game.numBossEncounters/10)
@@ -814,14 +837,14 @@ class Buy(GameState):
         self.item1 = attackItem.getItem()
         self.item2 = foodItem1.getItem()
         self.item3 = foodItem2.getItem()
-        self.button_item1 = ui.Button(self.item1[1], 220, 60, (60,300), function=self.tradeItem1)
-        self.button_item2 = ui.Button(self.item2[1], 220, 60, (300,300), function=self.tradeItem2)
-        self.button_item3 = ui.Button(self.item3[1], 220, 60, (540,300), function=self.tradeItem3)
+        self.button_item1 = ui.Button(self.item1[1], 220, 60, (60,300), g.getPalette(), function=self.tradeItem1)
+        self.button_item2 = ui.Button(self.item2[1], 220, 60, (300,300), g.getPalette(), function=self.tradeItem2)
+        self.button_item3 = ui.Button(self.item3[1], 220, 60, (540,300), g.getPalette(), function=self.tradeItem3)
 
-        self.button_cancel = ui.Button("Leave Shop", 220, 60, (300,500), function=self.cancel)
+        self.button_cancel = ui.Button("Leave Shop", 220, 60, (300,500), g.getPalette(), function=self.cancel)
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
-        self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
+        self.text_surface = self.textFont.render(self.name, False, g.getColor('midThree'))
 
     def tradeItem1(self):
         # trade out weapon
@@ -867,8 +890,8 @@ class Treasure(GameState):
         self.name = "You've encountered a chest"
         self.background = "#251d2b"
         self.game = g
-        self.button_combat = ui.Button("Leave Chest", 220, 60, (530,320), function=self.loadCombat)
-        self.button_open_chest = ui.Button("Open Chest", 220, 60, (40,320), function=self.treasureRoom)
+        self.button_combat = ui.Button("Leave Chest", 220, 60, (530,320), g.getPalette(), function=self.loadCombat)
+        self.button_open_chest = ui.Button("Open Chest", 220, 60, (40,320), g.getPalette(), function=self.treasureRoom)
         pg.font.init()
         self.textFont = pg.font.Font("assets/alagard.ttf",50)
         self.text_surface = self.textFont.render(self.name, False, "#bce7fc")
@@ -916,8 +939,8 @@ class GetTreasure(GameState):
             foodItem1.randomValueWideRange(8*difMod, 14*difMod, self.game.difficulty)
             self.item = foodItem1.getItem()
 
-        self.button_item1 = ui.Button("Take " + self.item[1], 220, 60, (530,400), function=self.getItem)
-        self.button_leave = ui.Button("Leave " + self.item[1], 220, 60, (40,400), function=self.loadCombat)
+        self.button_item1 = ui.Button("Take " + self.item[1], 220, 60, (530,400), g.getPalette(), function=self.getItem)
+        self.button_leave = ui.Button("Leave " + self.item[1], 220, 60, (40,400), g.getPalette(), function=self.loadCombat)
         self.image = pg.image.load(f"assets/chest_opened.png")
         self.size = pg.transform.scale(self.image, (130,110))
         self.name = "Chest contained " + self.item[1]
