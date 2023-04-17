@@ -151,7 +151,7 @@ class Loading(GameState):
         self.game = g
         self.button_start = ui.Button("start", 220, 60, (300, 300),g.getPalette(), function=self.game.transitionToLoad)
         self.image = None
-        self.healthbar = ui.HealthBar(0, 100, (220, 150))
+        self.healthbar = ui.HealthBar(0, 100, (220, 150), g.getPalette())
 
     def getName(self):
         return self.name
@@ -271,8 +271,8 @@ class Combat(GameState):
         self.background = g.getColor('baseTwo')
         self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty),g.getPalette()) #init enemy with appropriate difficulty mods
         self.game = g
-        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
-        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50))
+        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50),g.getPalette())
+        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50), g.getPalette())
         self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), g.getPalette(), function=self.sliderQTE)
         #item bars
         self.name1 = "Eat " + self.game.player.item1[1] if self.game.player.item1 else "Empty"
@@ -368,8 +368,8 @@ class Boss(Combat, GameState):
         self.background = g.getColor('baseOne')
         self.game = g
         self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty),g.getPalette(), hp=200, atk=15)
-        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50))
-        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50))
+        self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50),g.getPalette())
+        self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50),g.getPalette())
         self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), g.getPalette(), function=self.sliderQTE)
         self.name1 = "Eat " + self.game.player.item1[1] if self.game.player.item1 else "Empty"
         self.item1 = ui.Button(self.name1, 220, 60, (50, 110), g.getPalette(), function=self.useItem1)
@@ -421,6 +421,7 @@ class Boss(Combat, GameState):
             #elif self.game.player.item1[0] == "Defense":
             self.name2 = "Empty"
             self.item2 = ui.Button(self.name2, 220, 60, (280, 110), self.game.getPalette(), function=self.useItem2)
+
 
     def sliderQTE(self):
         numHits = QTE.handleTimeSliderQTE(3,self.game.getPalette())
@@ -545,10 +546,14 @@ class Settings(GameState):
         self.game = g
         self.bg = pygame.image.load("assets/vol_bar.png")
         self.knob = pygame.image.load("assets/vol_knob.png")
+        self.load_palettes = False
+        self.button_load_palettes = ui.Button("Change Palette", 220, 60, (300,500), g.getPalette(), function=self.set_palette_menu)
+        self.button_save_palettes = ui.Button("Save", 220,60, (300,500), g.getPalette(), function=self.save_palette_func)
+        self.possibile_palettes = []
 
-        self.button_easy = ui.Button("Easy", 220, 60, (60,450), g.getPalette(), function=self.setEasyDifficulty)
-        self.button_normal = ui.Button("Normal", 220, 60, (300,450), g.getPalette(), function=self.setNormalDifficulty)
-        self.button_hard = ui.Button("Hard", 220, 60, (540,450), g.getPalette(), function=self.setHardDifficulty)
+        self.button_easy = ui.Button("Easy", 220, 60, (60,400), g.getPalette(), function=self.setEasyDifficulty)
+        self.button_normal = ui.Button("Normal", 220, 60, (300,400), g.getPalette(), function=self.setNormalDifficulty)
+        self.button_hard = ui.Button("Hard", 220, 60, (540,400), g.getPalette(), function=self.setHardDifficulty)
 
         self.volumes = [0, 0.25, 0.5, 0.75, 0.99]
         self.knob_state = 0
@@ -564,21 +569,35 @@ class Settings(GameState):
     
     def loadBackground(self, surface):
         surface.fill(self.background)
-        surface.blit(self.text_surface, (215, 350))
-        surface.blit(self.text_volume_surface, (265, 90))
+        surface.blit(self.text_surface, (215, 300))
+        surface.blit(self.text_volume_surface, (265, 50))
 
+    def set_palette_menu(self):
+        pos_pals = os.listdir("assets/palettes/")
+        but_level = 100
+        for pal in pos_pals:
+                pal_but = ui.Button(pal, 220, 60, (300,but_level),self.game.getPalette(),function=self.game.load_palette,parameter=pal)
+                self.possibile_palettes.append(pal_but)
+                but_level += 100
+        self.load_palettes = True
+    
+    def save_palette_func(self):
+        self.load_palettes = False
     
     def loadUI(self,surface):
-        self.button_easy.draw(surface)
-        self.button_normal.draw(surface)
-        self.button_hard.draw(surface)
-        surface.blit(self.bg, (265, 50))
-        pos = [self.knob_pos[0] + self.knob_state * 60, self.knob_pos[1]]
-        surface.blit(self.knob, pos)
-
+        if self.load_palettes:
+            for but in self.possibile_palettes:
+                but.draw(surface)
+        else:
+            self.button_easy.draw(surface)
+            self.button_normal.draw(surface)
+            self.button_hard.draw(surface)
+            self.button_load_palettes.draw(surface)
+            surface.blit(self.bg, (265, 50))
+            pos = [self.knob_pos[0] + self.knob_state * 60, self.knob_pos[1]]
+            surface.blit(self.knob, pos)
 
     def handleActions(self, event):
-
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 print("LEFT ")

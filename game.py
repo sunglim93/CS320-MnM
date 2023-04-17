@@ -17,7 +17,7 @@ class Game():
     audio = Audio()
     def __init__(self):
         # By default the game is initialized to the Main state
-        pal = Image.open('assets/sprite-0002.png').getcolors()
+        pal = Image.open('assets/palettes/sprite-0002.png').getcolors()
         self.colors = {
             'lightTwo' : pal[0][1],
             'lightOne' : pal[1][1],
@@ -40,7 +40,19 @@ class Game():
             1 : 1.0, #medium
             2 : 1.5 #hard
         }
-        
+    
+    def load_palette(self,pal_name):
+        pal = Image.open('assets/palettes/'+pal_name).getcolors()
+        self.colors = {
+            'lightTwo' : pal[0][1],
+            'lightOne' : pal[1][1],
+            'midThree' : pal[2][1],
+            'midTwo' : pal[3][1],
+            'midOne' : pal[4][1],
+            'baseThree' : pal[5][1],
+            'baseTwo' : pal[6][1],
+            'baseOne' : pal[7][1],
+        }
 
     # difficulty settings
     def setDifficulty(self, difficulty):

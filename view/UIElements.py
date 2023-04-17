@@ -16,7 +16,7 @@ def drawText(surface, text, pos, text_col="#bce7fc"):
 
 
 def adapt_image(img_file, palette):
-    def_palette = Image.open('assets/sprite-0002.png').getcolors()
+    def_palette = Image.open('assets/palettes/sprite-0002.png').getcolors()
     render_img = Image.open(img_file)
     pixels = render_img.load()
     for i in range(render_img.size[0]):
@@ -44,7 +44,7 @@ def adapt_image(img_file, palette):
 
 class Button():
     #If no aciton is passed to a button, this function will fire
-    def default_action(self):
+    def default_action():
         print("no action was assigned to button")
     
     #Constructor for a button takes the following parameters
@@ -55,11 +55,11 @@ class Button():
     # (optional)
     # elevation - the distance the button collapses when pressed
     # function - a function pointer that will be called when the button is pressed
-    def __init__(self,text, width, height, pos, palette, elevation=6, function=default_action):
+    def __init__(self,text, width, height, pos, palette, elevation=6, function=default_action, parameter=None):
 
         # button by default is not pressed
         self.pressed = False
-
+        self.parameters = parameter
         # create the rectangles that make up the button
         self.top_rect = pygame.Rect(pos, (width, height))
         self.bot_rect = pygame.Rect(pos, (width, height))
@@ -120,7 +120,10 @@ class Button():
 
                 self.dynamic_elevation = 3
                 self.pressed = True
-                self.function()
+                if self.parameters == None:
+                    self.function()
+                else:
+                    self.function(self.parameters)
 
             # otherwise, elevation is set to default
             if not pygame.mouse.get_pressed()[0]:
@@ -145,20 +148,20 @@ class HealthBar():
     #  30px by 200px HealthBar]
     # height - the height of the healthbar
     # width - the width of the healthbar
-    def __init__(self, cur, max, pos, height=30, width=200):
+    def __init__(self, cur, max, pos, palette, height=30, width=200):
         self.cur = cur
         self.max = max
         self.pos = pos
         self.height = height
         self.width = width
         # delcaring the rectangles for display
-        self.base_color = "#031d44"
-        self.cur_color = "#d6896f"
+        self.base_color = palette['baseTwo']
+        self.cur_color = palette['lightOne']
         self.rect_base = pygame.Rect(self.pos, (self.width, self.height))
         self.rect_cur = pygame.Rect(self.pos, ((self.cur/self.max)*(self.width-3), self.height-3))
         # declaring the text object to display current values
         self.text = str(cur) + " / " + str(max)
-        self.text_surface = UI_font.render(self.text,False,"#bce7fc")
+        self.text_surface = UI_font.render(self.text,False,palette['midThree'])
         self.text_rect = self.text_surface.get_rect(center = self.rect_base.center)
 
     # use the update method to update the max and min health during combat
