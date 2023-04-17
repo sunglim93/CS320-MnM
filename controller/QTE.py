@@ -11,7 +11,7 @@ pygame.display.set_caption("Metal and Magic")
 FPS = 60
 
 clock = pygame.time.Clock()
-FONT = pygame.font.Font(os.path.join('..','assets', 'alagard.ttf'), 80)
+FONT = pygame.font.Font(os.path.join('assets', 'alagard.ttf'), 80)
 
 def renderLetters(text, letterList):
     for letter in text:
