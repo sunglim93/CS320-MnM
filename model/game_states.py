@@ -270,17 +270,17 @@ class Combat(GameState):
         self.combatFont = pg.font.Font("assets/alagard.ttf",24)
         self.game = g
         if self.game.numBossEncounters == 0:
-            self.background = "#9a4ccf"
+            self.background = "#bce7fc"
             self.game.player.setWorld(world=0)
             self.game.player.setMaxHP(hp=100)
             self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty), hp=150, atk=10, world=0) #init enemy with appropriate difficulty mods
         elif self.game.numBossEncounters == 1:
-            self.background = "#9a4ccf"
+            self.background = "#70a288"
             self.game.player.setWorld(world=1)
             self.game.player.setMaxHP(hp=125)
             self.enemy = classes.Enemy("Radioactive Crab",g.difficultyMods.get(g.difficulty), hp=200, atk=13, world=1)
         else:
-            self.background = "#9a4ccf"
+            self.background = "#d6896f"
             self.game.player.setWorld(world=2)
             self.game.player.setMaxHP(hp=150)
             self.enemy = classes.Enemy("Floating Monkey",g.difficultyMods.get(g.difficulty), hp=250, atk=17, world=2)
@@ -377,17 +377,17 @@ class Boss(Combat, GameState):
         self.name = "BOSS"
         self.game = g
         if self.game.numBossEncounters == 0:
-            self.background = "#590019"
+            self.background = "#bce7fc"
             self.game.player.setWorld(world=0)
             self.game.player.setMaxHP(hp=100)
             self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty), hp=200, atk=15, world=0)
         elif self.game.numBossEncounters == 1:
-            self.background = "#590019"
+            self.background = "#70a288"
             self.game.player.setWorld(world=1)
             self.game.player.setMaxHP(hp=125)
             self.enemy = classes.Enemy("Wasteland Boss",g.difficultyMods.get(g.difficulty), hp=250, atk=20, world=1)
         else:
-            self.background = "#590019"
+            self.background = "#d6896f"
             self.game.player.setWorld(world=2)
             self.game.player.setMaxHP(hp=150)
             self.enemy = classes.Enemy("Floating Boss",g.difficultyMods.get(g.difficulty), hp=300, atk=25, world=2)
@@ -463,7 +463,7 @@ class Boss(Combat, GameState):
             self.game.stats.set_battles_won()
             self.game.resetEncounters()
             self.game.increaseBossEncounters()
-            self.game.player.heal(10*self.game.numBossEncounters)
+            self.game.player.heal( round(10*(self.game.numBossEncounters+1)*self.game.difficultyMods.get(self.game.difficulty)) )
             if self.game.numBossEncounters == 3:
                 self.game.transitionToVictory()
             else:
@@ -777,7 +777,7 @@ class Reward(GameState):
         self.background = "#BC88DF"
         self.game = g
         # initialize items
-        difMod = 1+ (3*self.game.numBossEncounters/10)
+        difMod = 1+ (5*(self.game.numBossEncounters+1)*g.difficultyMods.get(g.difficulty)/10)
         attackItem = item.Item()
         attackItem.randomAbility("Attack", world=self.game.numBossEncounters)
         attackItem.randomValueWideRange(17*difMod, 23*difMod, self.game.difficulty)
@@ -825,7 +825,7 @@ class Buy(GameState):
         self.background = "#04395e"
         self.game = g
         # create 3 random items
-        difMod = 1+ (3*self.game.numBossEncounters/10)
+        difMod = 1+ (5*(self.game.numBossEncounters+1)*g.difficultyMods.get(g.difficulty)/10)
         attackItem = item.Item()
         attackItem.randomAbility("Attack", world=self.game.numBossEncounters)
         attackItem.randomValueWideRange(20*difMod, 27*difMod, self.game.difficulty)
@@ -927,7 +927,7 @@ class GetTreasure(GameState):
         self.background = "#251d2b"
         self.game = g
         # create a random item
-        difMod = 1+ (3*self.game.numBossEncounters/10)
+        difMod = 1+ (5*(self.game.numBossEncounters+1)*g.difficultyMods.get(g.difficulty)/10)
         random_value = rd.random()
         if random_value >= 0.7:
             attackItem = item.Item()
