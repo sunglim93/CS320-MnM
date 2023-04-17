@@ -2,6 +2,18 @@ import pygame
 import os
 import time
 import random
+
+import unittest
+from unittest.mock import MagicMock, patch
+
+from game import Game
+from model.classes import Player, Enemy
+from model import item, classes, game_states
+
+# coverage run -m unittest qtest
+
+from model.game_states import Reward
+
 pygame.init()
 WIDTH, HEIGHT = 900, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -155,6 +167,9 @@ def main():
                 state.pop()
 
     pygame.quit()
+
+
+
 
 if __name__ == "__main__":
     main()
