@@ -5,11 +5,11 @@ from view import UIElements as ui
 class Player:
     def __init__(self, name, g, hp=100, atk=15, world=0):
         self.palette = g.getPalette()
-        self.image = ui.adapt_image('assets/player.png', self.palette)
         self.name = name
         self.world = world
         self.max_hp = hp
         self.hp = hp
+        self.image = ui.adapt_image('assets/player.png', self.palette)
         # weapon gets an attack item whick controls the atk values
         self.weapon = ("Attack", "Rusty Dagger", atk)
         # item1 and item2 get defense or consumables, start out empty
@@ -31,7 +31,12 @@ class Player:
         
     def update_sprite(self,pal):
         self.palette = pal
-        self.image = ui.adapt_image('assets/player.png', self.palette)
+        if self.world == 0:
+            self.image = ui.adapt_image('assets/player.png', self.palette)
+        elif self.world == 1:
+            self.image = ui.adapt_image('assets/wastearmor2.png', self.palette)
+        else:
+            self.image = ui.adapt_image('assets/floatarmor2.png', self.palette)
 
     def addItem(self, pos, item):
         # attack item goes in weapon slot, change attack values
@@ -65,12 +70,6 @@ class Player:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        if self.world == 0:
-            self.image = pg.image.load(f"assets/player.png")
-        elif self.world == 1:
-            self.image = pg.image.load(f"assets/wastearmor2.png")
-        else:
-            self.image = pg.image.load(f"assets/floatarmor2.png")
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
@@ -109,13 +108,28 @@ class Player:
 
     def setWorld(self, world=0):
         self.world = world
+        if world == 0:
+            self.image = ui.adapt_image('assets/player.png', self.palette)
+        elif world == 1:
+            self.image = ui.adapt_image('assets/wastearmor2.png', self.palette)
+        else:
+            self.image = ui.adapt_image('assets/floatarmor2.png', self.palette)
+
 
 class Enemy:
     def __init__(self, name, difficultyMod, palette, hp=150, atk=10, weapon="claws", world=0):
         self.name = name
         self.world = world
         self.palette = palette
-        self.image = ui.adapt_image("assets/bones-0001.png",palette)
+        if world == 0:
+            self.enemyImage = ui.adapt_image('assets/bones-0001.png', self.palette)
+            self.bossImage = ui.adapt_image('assets/greenboss2.png', self.palette)
+        elif world == 1:
+            self.enemyImage = ui.adapt_image('assets/crab2.png', self.palette)
+            self.bossImage = ui.adapt_image('assets/wasteboss2.png', self.palette)
+        else:
+            self.enemyImage = ui.adapt_image('assets/monkey2.png', self.palette)
+            self.bossImage = ui.adapt_image('assets/floatboss2.png', self.palette)
         self.max_hp = int(hp*difficultyMod) #modify hp and atk according to difficulty
         self.hp = self.max_hp
         self.atk = int(atk*difficultyMod)
@@ -130,13 +144,7 @@ class Enemy:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        if self.world == 0:
-            self.image = pg.image.load(f"assets/bones-0001.png")
-        elif self.world == 1:
-            self.image = pg.image.load(f"assets/crab2.png")
-        else:
-            self.image = pg.image.load(f"assets/monkey2.png")
-        self.size = pg.transform.scale(self.image, (128, 128))
+        self.size = pg.transform.scale(self.enemyImage, (128, 128))
         surface.blit(self.size, self.rect)
 
     def drawBoss(self, surface, x, y):
@@ -145,14 +153,7 @@ class Enemy:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        if self.world == 0:
-            self.image = pg.image.load(f"assets/greenboss2.png")
-        elif self.world == 1:
-            self.image = pg.image.load(f"assets/wasteboss2.png")
-        else:
-            self.image = pg.image.load(f"assets/floatboss2.png")
-        self.image = ui.adapt_image("assets/greenBoss_smol.png",self.palette)
-        self.size = pg.transform.scale(self.image, (128, 128))
+        self.size = pg.transform.scale(self.bossImage, (128, 128))
         surface.blit(self.size, self.rect)
 
     def generateDamage(self):

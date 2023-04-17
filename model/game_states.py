@@ -270,21 +270,20 @@ class Combat(GameState):
         self.combatFont = pg.font.Font("assets/alagard.ttf",24)
         self.game = g
         if self.game.numBossEncounters == 0:
-            self.background = "#bce7fc"
+            self.background = g.getColor('midThree')
             self.game.player.setWorld(world=0)
             self.game.player.setMaxHP(hp=100)
             self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty), g.getPalette(), hp=150, atk=10, world=0) #init enemy with appropriate difficulty mods
         elif self.game.numBossEncounters == 1:
-            self.background = "#70a288"
+            self.background = g.getColor('baseThree')
             self.game.player.setWorld(world=1)
             self.game.player.setMaxHP(hp=125)
             self.enemy = classes.Enemy("Radioactive Crab",g.difficultyMods.get(g.difficulty), g.getPalette(), hp=200, atk=13, world=1)
         else:
-            self.background = "#d6896f"
+            self.background = g.getColor('lightOne')
             self.game.player.setWorld(world=2)
             self.game.player.setMaxHP(hp=150)
             self.enemy = classes.Enemy("Floating Monkey",g.difficultyMods.get(g.difficulty) ,g.getPalette(), hp=250, atk=17, world=2)
-        self.background = g.getColor('baseTwo')
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50),g.getPalette())
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50), g.getPalette())
         self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), g.getPalette(), function=self.sliderQTE)
@@ -378,21 +377,20 @@ class Boss(Combat, GameState):
         self.name = "BOSS"
         self.game = g
         if self.game.numBossEncounters == 0:
-            self.background = "#bce7fc"
+            self.background = g.getColor('midThree')
             self.game.player.setWorld(world=0)
             self.game.player.setMaxHP(hp=100)
             self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty), g.getPalette(), hp=200, atk=15, world=0)
         elif self.game.numBossEncounters == 1:
-            self.background = "#70a288"
+            self.background = g.getColor('baseThree')
             self.game.player.setWorld(world=1)
             self.game.player.setMaxHP(hp=125)
             self.enemy = classes.Enemy("Wasteland Boss",g.difficultyMods.get(g.difficulty), g.getPalette(), hp=250, atk=20, world=1)
         else:
-            self.background = "#d6896f"
+            self.background = g.getColor('lightOne')
             self.game.player.setWorld(world=2)
             self.game.player.setMaxHP(hp=150)
             self.enemy = classes.Enemy("Floating Boss",g.difficultyMods.get(g.difficulty), g.getPalette(), hp=300, atk=25, world=2)
-        self.background = g.getColor('baseOne')
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50),g.getPalette())
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50),g.getPalette())
         self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), g.getPalette(), function=self.sliderQTE)
