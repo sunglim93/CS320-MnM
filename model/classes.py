@@ -4,7 +4,8 @@ from view import UIElements as ui
 
 class Player:
     def __init__(self, name, g, hp=100, atk=20):
-        self.image = ui.adapt_image('assets/player.png', g.getPalette())
+        self.palette = g.getPalette()
+        self.image = ui.adapt_image('assets/player.png', self.palette)
         self.name = name
         self.max_hp = hp
         self.hp = hp
@@ -26,6 +27,10 @@ class Player:
             self.item1 = None
         if pos == 2:
             self.item2 = None
+        
+    def update_sprite(self,pal):
+        self.palette = pal
+        self.image = ui.adapt_image('assets/player.png', self.palette)
 
     def addItem(self, pos, item):
         # attack item goes in weapon slot, change attack values

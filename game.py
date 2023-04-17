@@ -7,6 +7,7 @@ from controller import QTE
 from model import classes
 from model import achievement
 from model.game_states import Audio
+from view import UIElements as ui
 
 # The Game class handles all the transitions and states the game
 # can be in. This is how the main function will interract with 
@@ -17,7 +18,7 @@ class Game():
     audio = Audio()
     def __init__(self):
         # By default the game is initialized to the Main state
-        pal = Image.open('assets/palettes/sprite-0002.png').getcolors()
+        pal = Image.open('assets/palettes/Default.png').getcolors()
         self.colors = {
             'lightTwo' : pal[0][1],
             'lightOne' : pal[1][1],
@@ -53,6 +54,7 @@ class Game():
             'baseTwo' : pal[6][1],
             'baseOne' : pal[7][1],
         }
+        self.player.update_sprite(self.colors)
 
     # difficulty settings
     def setDifficulty(self, difficulty):

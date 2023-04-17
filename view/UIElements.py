@@ -16,7 +16,7 @@ def drawText(surface, text, pos, text_col="#bce7fc"):
 
 
 def adapt_image(img_file, palette):
-    def_palette = Image.open('assets/palettes/sprite-0002.png').getcolors()
+    def_palette = Image.open('assets/palettes/Default.png').getcolors()
     render_img = Image.open(img_file)
     pixels = render_img.load()
     for i in range(render_img.size[0]):

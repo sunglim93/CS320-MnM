@@ -569,8 +569,11 @@ class Settings(GameState):
     
     def loadBackground(self, surface):
         surface.fill(self.background)
-        surface.blit(self.text_surface, (215, 300))
-        surface.blit(self.text_volume_surface, (265, 50))
+        if self.load_palettes:
+            pass
+        else: 
+            surface.blit(self.text_surface, (215, 300))
+            surface.blit(self.text_volume_surface, (265, 50))
 
     def set_palette_menu(self):
         pos_pals = os.listdir("assets/palettes/")
