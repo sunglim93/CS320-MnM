@@ -57,7 +57,6 @@ class Menu(GameState):
         return self.name
     
     def loadBackground(self, surface):
-
         surface.blit(self.background,(0,0))
     
     def loadUI(self,surface):
@@ -262,6 +261,100 @@ class Loading(GameState):
         if self.progress < 100:
             self.progress += 1
 
+class Minigame(GameState):
+
+    def __init__(self, g):
+        self.name = "MINIGAME"
+        self.game = g
+        self.background = g.getColor('baseTwo')
+        self.background = ui.adapt_image('assets/minegame.png', g.getPalette())
+        self.background = pg.transform.scale(self.background, (pg.display.get_surface().get_size()))
+        self.player_img = ui.adapt_image("assets/player.png",g.getPalette())
+        self.player_img = pygame.transform.scale(self.player_img, (100, 100))  # scale down the player image
+
+        self.obstacle_img = ui.adapt_image("assets/greenBoss.png", g.getPalette())
+        self.obstacle_img = pygame.transform.scale(self.obstacle_img, (75, 75))  # scale down the player image
+        self.is_jumping = False
+        self.reward = None
+
+        self.player_x = 50
+        self.player_y = 300
+        self.player_dy = 0
+        self.jump_height = 15
+        self.obstacle_x = 800
+        self.obstacle_y = 312
+        self.obstacle_dx = 5
+        self.gravity = 0.5
+        self.game_start_time = time.time()  # get the start time of the game
+        self.game_duration = 5  # set game duration to 20 seconds
+        self.finish_line_x = 700  # set the x-coordinate of the finish line
+        self.game_over = False  # initialize game over to False
+        self.font = pygame.font.Font('assets/alagard.ttf', 32)  # set up font for text display
+        self.jump_count = 0
+        self.clock = pygame.time.Clock()
+
+    def getName(self):
+        return self.name
+
+    def loadBackground(self, surface):
+        #(self.background, surface)
+        #surface.fill(self.background)
+        #surface.blit(self.player_img, (0,0))
+        pass
+
+    def loadUI(self, surface):
+        surface.fill((255, 255, 255))
+        surface.blit(self.background, (0, 0))
+        surface.blit(self.player_img, (self.player_x, self.player_y))
+        surface.blit(self.obstacle_img, (self.obstacle_x, self.obstacle_y))
+        pygame.draw.line(surface, (0, 0, 0), (self.finish_line_x, 0), (self.finish_line_x, 600), 5)  # draw finish line
+        time_remaining = int(self.game_duration - (time.time() - self.game_start_time))  # calculate time remaining
+        time_text = self.font.render('Time: ' + str(time_remaining), True, (0, 0, 0))
+        surface.blit(time_text, (10, 10))  # display time remaining
+        #pg.display.flip()
+        #surface.blit(self.text_surface, (200, 100))
+        pass
+
+    def handleActions(self, event):
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LCTRL and not self.is_jumping:
+                if not self.game_over:
+                    if self.player_y >= 295:
+                        self.player_dy = -self.jump_height
+
+            #if event.key == pygame.K_ESCAPE:
+            #    self.game.transitionToRoomSelection()
+            # Update game state
+
+
+    def update(self):
+        if self.game_over:
+            return
+        self.player_y += self.player_dy
+        self.player_dy += self.gravity
+        if self.player_y > 300:
+            self.player_y = 300
+            self.player_dy = 0
+
+        self.obstacle_x -= self.obstacle_dx
+        if self.obstacle_x < -50:
+            self.obstacle_x = 800
+
+        # Check for collision
+
+        if (self.obstacle_x < self.player_x + 75
+                and self.obstacle_x > self.player_x
+                and self.player_y > 225):
+
+            self.game_over = True
+            self.game.transitionToRoomSelection()
+
+        # Check for game duration and finish line
+        if time.time() - self.game_start_time >= self.game_duration and self.player_x < self.finish_line_x:
+            print("you won")
+            self.game_over = True
+            self.game.transitionToReward()
 
 # Class for handling the combat scenarios
 class Combat(GameState):
@@ -447,7 +540,11 @@ class Boss(Combat, GameState):
             if self.game.numBossEncounters == 3:
                 self.game.transitionToVictory()
             else:
-                self.game.transitionToReward()
+                x = random.randint(0, 10)
+                if x <= 5:
+                    self.game.transitionToMinigame()
+                else:
+                    self.game.transitionToReward()
 
 
 # Class for handling the shop features
@@ -603,12 +700,12 @@ class Settings(GameState):
     def handleActions(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                print("LEFT ")
+                #print("LEFT ")
                 if self.knob_state > 0:
                     self.knob_state -= 1
 
             elif event.key == pygame.K_RIGHT:
-                print("RIGHT")
+                #print("RIGHT")
                 if self.knob_state < 4:
                     self.knob_state += 1
 
