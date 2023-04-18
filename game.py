@@ -117,6 +117,8 @@ class Game():
         self.cur_state = game_states.Victory(self)
     def transitionToBoss(self):
         self.cur_state = game_states.Boss(self)
+    def transitionToMinigame(self):
+        self.cur_state = game_states.Minigame(self)
     def transitionToDefeat(self):
         self.cur_state = game_states.Defeat(self)
     def transitionToReward(self):

@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 from pygame import mixer
 import game
+import random
 
 #initializing the game state and such
 pygame.init()
