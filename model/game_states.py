@@ -272,7 +272,7 @@ class Minigame(GameState):
         self.player_img = ui.adapt_image("assets/player.png",g.getPalette())
         self.player_img = pygame.transform.scale(self.player_img, (100, 100))  # scale down the player image
 
-        self.obstacle_img = ui.adapt_image("assets/greenBoss.png", g.getPalette())
+        self.obstacle_img = ui.adapt_image("assets/greenBoss_smol.png", g.getPalette())
         self.obstacle_img = pygame.transform.scale(self.obstacle_img, (75, 75))  # scale down the player image
         self.is_jumping = False
         self.reward = None
@@ -286,7 +286,7 @@ class Minigame(GameState):
         self.obstacle_dx = 5
         self.gravity = 0.5
         self.game_start_time = time.time()  # get the start time of the game
-        self.game_duration = 5  # set game duration to 20 seconds
+        self.game_duration = 20  # set game duration to 20 seconds
         self.finish_line_x = 700  # set the x-coordinate of the finish line
         self.game_over = False  # initialize game over to False
         self.font = pygame.font.Font('assets/alagard.ttf', 32)  # set up font for text display

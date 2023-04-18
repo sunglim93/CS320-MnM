@@ -6,13 +6,14 @@ After pressing the attack button, a quick time event will pop up that determines
 
 The game will transition as follows:
 	1. main menu
-	2. difficulty selection
+	2. settings selection -> difficulty levels and volume bar
 	3. loading screen
 	4. combat
 	5. room selection
 	6. shop or another combat encounter
 	7. after 3 combat encounters->boss screen
-	8. victory screen
-	9. restart
+	8. After the boss room is complete there's a chance the player may get a minigame room. If the player completes the minigame room without failing, they'll be sent to a reward state.
+	9. victory screen
+	10. restart
 
 When a player selects the ??? path, they may encounter another combat screen even if they have had 3 encounters. This will continue until the player randomly encounters/chooses the shop screen. After leaving the shop, the player will then encounter a boss battle.
