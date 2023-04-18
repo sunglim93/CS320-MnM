@@ -361,9 +361,22 @@ class Combat(GameState):
     def __init__(self, g):
         self.name = "COMBAT"
         self.combatFont = pg.font.Font("assets/alagard.ttf",24)
-        self.background = g.getColor('baseTwo')
-        self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty),g.getPalette()) #init enemy with appropriate difficulty mods
         self.game = g
+        if self.game.numBossEncounters == 0:
+            self.background = g.getColor('midThree')
+            self.game.player.setWorld(world=0)
+            self.game.player.setMaxHP(hp=100)
+            self.enemy = classes.Enemy("Wretch",g.difficultyMods.get(g.difficulty), g.getPalette(), hp=150, atk=10, world=0) #init enemy with appropriate difficulty mods
+        elif self.game.numBossEncounters == 1:
+            self.background = g.getColor('baseThree')
+            self.game.player.setWorld(world=1)
+            self.game.player.setMaxHP(hp=125)
+            self.enemy = classes.Enemy("Radioactive Crab",g.difficultyMods.get(g.difficulty), g.getPalette(), hp=200, atk=13, world=1)
+        else:
+            self.background = g.getColor('lightOne')
+            self.game.player.setWorld(world=2)
+            self.game.player.setMaxHP(hp=150)
+            self.enemy = classes.Enemy("Floating Monkey",g.difficultyMods.get(g.difficulty) ,g.getPalette(), hp=250, atk=17, world=2)
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50),g.getPalette())
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50), g.getPalette())
         self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), g.getPalette(), function=self.sliderQTE)
@@ -398,11 +411,10 @@ class Combat(GameState):
         if self.name1 != "Empty":
             if self.game.player.item1[0] == "Consumable":
                 # add hp back to player according to item, then make item disappear
-                self.game.player.hp += self.game.player.item1[2][0]
-                if self.game.player.hp > self.game.player.max_hp:
-                    self.game.player.hp = self.game.player.max_hp
+                self.game.player.heal(self.game.player.item1[2])
             #elif self.game.player.item1[0] == "Defense":
             self.name1 = "Empty"
+            self.game.player.removeItem(1)
             self.item1 = ui.Button(self.name1, 220, 60, (50, 110), self.game.getPalette(), function=self.useItem1)
 
     def useItem2(self):
@@ -410,11 +422,10 @@ class Combat(GameState):
         if self.name2 != "Empty":
             if self.game.player.item2[0] == "Consumable":
                 # add hp back to player according to item, then make item disappear
-                self.game.player.hp += self.game.player.item2[2][0]
-                if self.game.player.hp > self.game.player.max_hp:
-                    self.game.player.hp = self.game.player.max_hp
+                self.game.player.heal(self.game.player.item2[2])
             #elif self.game.player.item1[0] == "Defense":
             self.name2 = "Empty"
+            self.game.player.removeItem(2)
             self.item2 = ui.Button(self.name2, 220, 60, (280, 110), self.game.getPalette(), function=self.useItem2)
 
     # when a player presses the attack button:
@@ -435,11 +446,10 @@ class Combat(GameState):
         # GAME STAT
         self.game.stats.set_damage_taken(enemy_dmg)
         if (self.game.player.getHP() <= 0):
-            self.cur = 0
             # GAME STAT
             self.game.stats.set_battles_lost()
             self.game.transitionToDefeat()
-        if (self.enemy.getHP() <= 0):
+        elif (self.enemy.getHP() <= 0):
             # GAME STAT
             self.game.stats.set_battles_won()
             self.game.increaseEncounters()
@@ -458,9 +468,22 @@ class Boss(Combat, GameState):
     def __init__(self, g):
         Combat.__init__(self, g)
         self.name = "BOSS"
-        self.background = g.getColor('baseOne')
         self.game = g
-        self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty),g.getPalette(), hp=200, atk=15)
+        if self.game.numBossEncounters == 0:
+            self.background = g.getColor('midThree')
+            self.game.player.setWorld(world=0)
+            self.game.player.setMaxHP(hp=100)
+            self.enemy = classes.Enemy("Skeleton Boss",g.difficultyMods.get(g.difficulty), g.getPalette(), hp=200, atk=15, world=0)
+        elif self.game.numBossEncounters == 1:
+            self.background = g.getColor('baseThree')
+            self.game.player.setWorld(world=1)
+            self.game.player.setMaxHP(hp=125)
+            self.enemy = classes.Enemy("Wasteland Boss",g.difficultyMods.get(g.difficulty), g.getPalette(), hp=250, atk=20, world=1)
+        else:
+            self.background = g.getColor('lightOne')
+            self.game.player.setWorld(world=2)
+            self.game.player.setMaxHP(hp=150)
+            self.enemy = classes.Enemy("Floating Boss",g.difficultyMods.get(g.difficulty), g.getPalette(), hp=300, atk=25, world=2)
         self.healthbar = ui.HealthBar(self.game.player.getHP(), self.game.player.getMaxHP(), (50,50),g.getPalette())
         self.enemy_healthbar = ui.HealthBar(self.enemy.getHP(), self.enemy.getMaxHP(), (550,50),g.getPalette())
         self.button_attack = ui.Button("Use " + self.game.player.weapon[1], 220, 60, (300, 450), g.getPalette(), function=self.sliderQTE)
@@ -496,11 +519,10 @@ class Boss(Combat, GameState):
         if self.name1 != "Empty":
             if self.game.player.item1[0] == "Consumable":
                 # add hp back to player according to item, then make item disappear
-                self.game.player.hp += self.game.player.item1[2][0]
-                if self.game.player.hp > self.game.player.max_hp:
-                    self.game.player.hp = self.game.player.max_hp
+                self.game.player.heal(self.game.player.item1[2])
             #elif self.game.player.item1[0] == "Defense":
             self.name1 = "Empty"
+            self.game.player.removeItem(1)
             self.item1 = ui.Button(self.name1, 220, 60, (50, 110), self.game.getPalette(), function=self.useItem1)
 
     def useItem2(self):
@@ -508,11 +530,10 @@ class Boss(Combat, GameState):
         if self.name2 != "Empty":
             if self.game.player.item2[0] == "Consumable":
                 # add hp back to player according to item, then make item disappear
-                self.game.player.hp += self.game.player.item2[2][0]
-                if self.game.player.hp > self.game.player.max_hp:
-                    self.game.player.hp = self.game.player.max_hp
+                self.game.player.heal(self.game.player.item2[2])
             #elif self.game.player.item1[0] == "Defense":
             self.name2 = "Empty"
+            self.game.player.removeItem(2)
             self.item2 = ui.Button(self.name2, 220, 60, (280, 110), self.game.getPalette(), function=self.useItem2)
 
 
@@ -527,16 +548,16 @@ class Boss(Combat, GameState):
         # GAME STAT
         self.game.stats.set_damage_taken(enemy_dmg)
         if (self.game.player.getHP() <= 0):
-            self.cur = 0
             # GAME STAT
             self.game.stats.set_battles_lost()
             self.game.transitionToDefeat()
-        if (self.enemy.getHP() <= 0):
+        elif (self.enemy.getHP() <= 0):
             # GAME STAT
             self.game.stats.set_bosses_defeated()
             self.game.stats.set_battles_won()
-            self.game.numEncounters = 0
-            self.game.numBossEncounters += 1
+            self.game.resetEncounters()
+            self.game.increaseBossEncounters()
+            self.game.player.heal( round(10*(self.game.numBossEncounters+1)*self.game.difficultyMods.get(self.game.difficulty)) )
             if self.game.numBossEncounters == 3:
                 self.game.transitionToVictory()
             else:
@@ -806,6 +827,7 @@ class Victory(GameState):
         # reset game stats, achivements, player items and health, and encounters
         self.game.stats.resetStatsAndAchievements()
         self.game.resetEncounters()
+        self.game.resetBossEncounters()
         self.game.player.resetPlayer()
         self.game.transitionToMenu()
 
@@ -846,6 +868,7 @@ class Defeat(GameState):
         # reset game stats, achivements, player items and health, and encounters
         self.game.stats.resetStatsAndAchievements()
         self.game.resetEncounters()
+        self.game.resetBossEncounters()
         self.game.player.resetPlayer()
         self.game.transitionToMenu()
 
@@ -873,13 +896,13 @@ class Reward(GameState):
         self.background = g.getColor('baseTwo')
         self.game = g
         # initialize items
-        difMod = 1+ (self.game.numBossEncounters/10)
+        difMod = 1+ (5*(self.game.numBossEncounters+1)*g.difficultyMods.get(g.difficulty)/10)
         attackItem = item.Item()
-        attackItem.randomAbility("Attack")
+        attackItem.randomAbility("Attack", world=self.game.numBossEncounters)
         attackItem.randomValueWideRange(17*difMod, 23*difMod, self.game.difficulty)
         foodItem = item.Item()
-        foodItem.randomAbility("Consumable")
-        foodItem.randomValueWideRange(5*difMod, 10*difMod, self.game.difficulty)
+        foodItem.randomAbility("Consumable", world=self.game.numBossEncounters)
+        foodItem.randomValueWideRange(10*difMod, 15*difMod, self.game.difficulty)
         self.item1 = attackItem.getItem()
         self.item2 = foodItem.getItem()
         self.button_item1 = ui.Button("Get " + self.item1[1], 220, 60, (60,300), g.getPalette(), function=self.getItem1)
@@ -921,16 +944,16 @@ class Buy(GameState):
         self.background = g.getColor('baseTwo')
         self.game = g
         # create 3 random items
-        difMod = 1+ (self.game.numBossEncounters/10)
+        difMod = 1+ (5*(self.game.numBossEncounters+1)*g.difficultyMods.get(g.difficulty)/10)
         attackItem = item.Item()
-        attackItem.randomAbility("Attack")
+        attackItem.randomAbility("Attack", world=self.game.numBossEncounters)
         attackItem.randomValueWideRange(20*difMod, 27*difMod, self.game.difficulty)
         foodItem1 = item.Item()
-        foodItem1.randomAbility("Consumable")
-        foodItem1.randomValueWideRange(8*difMod, 14*difMod, self.game.difficulty)
+        foodItem1.randomAbility("Consumable", world=self.game.numBossEncounters)
+        foodItem1.randomValueWideRange(12*difMod, 18*difMod, self.game.difficulty)
         foodItem2 = item.Item()
-        foodItem2.randomAbility("Consumable")
-        foodItem2.randomValueWideRange(8*difMod, 14*difMod, self.game.difficulty)
+        foodItem2.randomAbility("Consumable", world=self.game.numBossEncounters)
+        foodItem2.randomValueWideRange(12*difMod, 18*difMod, self.game.difficulty)
         self.item1 = attackItem.getItem()
         self.item2 = foodItem1.getItem()
         self.item3 = foodItem2.getItem()
@@ -1023,17 +1046,17 @@ class GetTreasure(GameState):
         self.background = "#251d2b"
         self.game = g
         # create a random item
-        difMod = 1+ (self.game.numBossEncounters/10)
+        difMod = 1+ (5*(self.game.numBossEncounters+1)*g.difficultyMods.get(g.difficulty)/10)
         random_value = rd.random()
         if random_value >= 0.7:
             attackItem = item.Item()
-            attackItem.randomAbility("Attack")
-            attackItem.randomValueWideRange(20*difMod, 27*difMod, self.game.difficulty)
+            attackItem.randomAbility("Attack", world=self.game.numBossEncounters)
+            attackItem.randomValueTopOfRange(22*difMod, 29*difMod, self.game.difficulty)
             self.item = attackItem.getItem()
         else:
             foodItem1 = item.Item()
-            foodItem1.randomAbility("Consumable")
-            foodItem1.randomValueWideRange(8*difMod, 14*difMod, self.game.difficulty)
+            foodItem1.randomAbility("Consumable", world=self.game.numBossEncounters)
+            foodItem1.randomValueTopOfRange(11*difMod, 16*difMod, self.game.difficulty)
             self.item = foodItem1.getItem()
 
         self.button_item1 = ui.Button("Take " + self.item[1], 220, 60, (530,400), g.getPalette(), function=self.getItem)
