@@ -190,7 +190,7 @@ class Spell:
         return self.is_healing
 
 fire_blast = Spell("Fire Blast", 20, 30, "Flame")
-shock_blast = Spell("Shocking Blast", 30, 50, "Electricity")
+shock_blast = Spell("Shocking Blast", 30, 80, "Electricity")
 ice_blast = Spell("Ice Blast", 25, 35, "Ice", effect="Slow", effect_strength=0.5, effect_duration=3)
 poison_dart = Spell("Poison Dart", 15, 30, "Poison", effect="Poison", effect_strength=2, effect_duration=5)
 healing_light = Spell("Healing Light", 10, 60, "Healing", effect="Heal", is_healing=True)
@@ -200,7 +200,7 @@ energy_drain = Spell("Energy Drain", 30, 10, "Dark", effect="Drain", effect_stre
 
 SPELL_LIST = [
     Spell("Fire Blast", 20, 30, "Flame"),
-    Spell("Shocking Blast", 30, 50, "Electricity"),
+    Spell("Shocking Blast", 30, 80, "Electricity"),
     Spell("Ice Blast", 25, 35, "Ice", effect="Slow", effect_strength=0.5, effect_duration=3),
     Spell("Poison Dart", 15, 20, "Poison", effect="Poison", effect_strength=2, effect_duration=5),
     Spell("Healing Light", 10, 60, "Healing", effect="Heal", is_healing=True),
