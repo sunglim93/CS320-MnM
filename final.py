@@ -9,6 +9,17 @@ import time
 window_width = 800
 window_height = 600
 
+<<<<<<< Updated upstream
+=======
+class GameState:
+    def __init__(self, state_name, state_function):
+        self.state_name = state_name
+        self.state_function = state_function
+
+    def run(self, *args, **kwargs):
+        return self.state_function(*args, **kwargs)
+
+>>>>>>> Stashed changes
 class Rectangle:
     """A class for areas or goal states in the game."""
     def __init__(self, pos):
@@ -120,18 +131,44 @@ def checkPlayerCollideGoal(window, window_size, goal, player, enemy):
     if goal.collides_with(player.rect):
         font = pg.font.Font(None, 100)
         TEXT_COL = ("#bce7fc")
+<<<<<<< Updated upstream
         font = pg.font.Font("alagard.ttf", 40)
+=======
+        font = pg.font.Font("assets/alagard.ttf", 40)
+>>>>>>> Stashed changes
         text = font.render("ZONE COMPLETE!", True, (255, 255, 255))
         window.blit(text, (window_size[0] // 2 - text.get_width() // 2, window_size[1] // 2 - text.get_height() // 2))
         return True
     return False
 
+<<<<<<< Updated upstream
 def drawMinimap(minimap, map_size, minimap_size, player, enemy):
     player_rect_minimap = pg.Rect(player.pos[0] * minimap_size[0] // map_size[0], player.pos[1] * minimap_size[1] // map_size[1], 5, 5)
     pg.draw.rect(minimap, (255, 0, 0), player_rect_minimap)
 
     enemy_rect_minimap = pg.Rect(enemy.pos[0] * minimap_size[0] // map_size[0], enemy.pos[1] * minimap_size[1] // map_size[1], 5, 5)
     pg.draw.rect(minimap, (0, 0, 255), enemy_rect_minimap)
+=======
+def drawMinimap(minimap, map_size, minimap_size, player, enemy, enemy_defeated, walls):
+    minimap.fill((0, 0, 0))
+
+    # Draw walls on minimap
+    for wall in walls:
+        wall_rect_minimap = pg.Rect(wall.x * minimap_size[0] // map_size[0], wall.y * minimap_size[1] // map_size[1],
+                                     wall.width * minimap_size[0] // map_size[0], wall.height * minimap_size[1] // map_size[1])
+        pg.draw.rect(minimap, (128, 128, 128), wall_rect_minimap)
+
+    # Draw player on minimap
+    player_rect_minimap = pg.Rect(player.pos[0] * minimap_size[0] // map_size[0], player.pos[1] * minimap_size[1] // map_size[1], 5, 5)
+    pg.draw.rect(minimap, (255, 0, 0), player_rect_minimap)
+
+    # Draw enemy on minimap if not defeated
+    if not enemy_defeated:
+        enemy_rect_minimap = pg.Rect(enemy.pos[0] * minimap_size[0] // map_size[0], enemy.pos[1] * minimap_size[1] // map_size[1], 5, 5)
+        pg.draw.rect(minimap, (0, 0, 255), enemy_rect_minimap)
+
+
+>>>>>>> Stashed changes
 
 def createWindow(window_height, window_width):
     return ui.Window(window_height, window_width, "Metal & Magic")
@@ -207,7 +244,10 @@ def createGrid(map_size, wall_size, player, enemy, prob):
                     wall_grid[i][j+1] = 1
     return wall_grid
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 def createWalls(wall_grid, wall_size):
     walls = []
     for i in range(len(wall_grid)):
@@ -233,7 +273,11 @@ def combat(enemy):
 
     window = createWindow(window_width, window_height)
     TEXT_COL = ("#bce7fc")
+<<<<<<< Updated upstream
     font = pg.font.Font("alagard.ttf",20)
+=======
+    font = pg.font.Font("assets/alagard.ttf",20)
+>>>>>>> Stashed changes
 
     fire_blast, shocking_blast, poison_dart, healing_light = createSpells()
 
@@ -331,7 +375,11 @@ def combat(enemy):
                             continue
 
                     if turn == 1:
+<<<<<<< Updated upstream
                         time.sleep(1.2)    
+=======
+                        time.sleep(0.5)    
+>>>>>>> Stashed changes
                         pg.draw.rect(window.res, (0,0,0), clear_text)
                         if enemy.getHP() == 0:
                             ui.displayPopUp(window, font, TEXT_COL, enemy.name + " has been defeated! " + player.name
@@ -363,7 +411,12 @@ def combat(enemy):
                             ui.displayPopUp(window, font, TEXT_COL,"GAME OVER!", window.width/2 - 250, window.height/2 - 50, 500, 100)
                         turn = 0
     return enemy_defeated
+<<<<<<< Updated upstream
     
+=======
+
+combat_state = GameState("combat", combat)   
+>>>>>>> Stashed changes
 
 # Initialize pg and set window size
 pg.init()
@@ -381,9 +434,23 @@ color_tuple_2 = (rd.randint(1, 254),rd.randint(1, 254),rd.randint(1, 254))
 player = Player()
 enemy = Enemy(player.pos)
 goal = Rectangle([window_size[0] - 300, window_size[1] - 300])
+<<<<<<< Updated upstream
 player_rect = pg.Rect(player.pos[0], player.pos[1], player.size.get_width(), player.size.get_height())
 enemy_rect = pg.Rect(player.pos[0], player.pos[1], player.size.get_width(), player.size.get_height())
 
+=======
+
+player_rect = pg.Rect(player.pos[0], player.pos[1], player.size.get_width(), player.size.get_height())
+enemy_rect = pg.Rect(player.pos[0], player.pos[1], player.size.get_width(), player.size.get_height())
+
+extra_hp_item = gc.Item(name="Helm of Constitution", pos=(window_size[0] - 50, window_size[1] - 50), item_type="healing", effect=None, effect_strength=20, effect_duration=None, description="Grants the player 20 extra hit points.")
+
+item_image = pg.image.load("assets/chest.png")
+item_sprite = pg.transform.scale(item_image, (32, 32))
+item_rect = pg.Rect(extra_hp_item.pos[0], extra_hp_item.pos[1], 32, 32)
+
+
+>>>>>>> Stashed changes
 # Set map size
 map_size = setMapSize(4000, 4000)
 
@@ -407,18 +474,39 @@ walls = createWalls(wall_grid, wall_size)
 color_tuple_2 = (rd.randint(1, 254),rd.randint(1, 254),rd.randint(1, 254))
 draw_wall_rects(wall_grid, wall_size, minimap, color_tuple_2)
 
+<<<<<<< Updated upstream
 
 # Main game loop
 running = True
 combat_mode = False
 goal_reached = False
+=======
+original_window_size = window_size
+original_minimap_size = minimap_size
+
+running = True
+combat_mode = False
+goal_reached = False
+enemy_defeated = False  
+
+item_obtained = False
+item_obtained_message = f"Item obtained: {extra_hp_item.name}!"
+message_duration = 2000  # 2000 milliseconds = 2 seconds
+message_timer = pg.USEREVENT + 1
+>>>>>>> Stashed changes
 
 while running:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
+<<<<<<< Updated upstream
 
     goal_reached = checkPlayerCollideGoal(window, window_size, goal, player, enemy)
+=======
+        elif event.type == message_timer:
+            pg.time.set_timer(message_timer, 0)  # Stop the timer
+
+>>>>>>> Stashed changes
     # Update viewport position
     viewport_pos = updateViewportPos(viewport_pos, player, viewport_size)
     viewport_pos = keepViewportInMap(viewport_pos, map_size, viewport_size)
@@ -446,6 +534,7 @@ while running:
     enemy.rect.topleft = (enemy.pos[0] - viewport_pos[0], enemy.pos[1] - viewport_pos[1])
 
     # Draw minimap
+<<<<<<< Updated upstream
     drawMinimap(minimap, map_size, minimap_size, player, enemy)
 
     # Update display and handle events
@@ -465,10 +554,42 @@ while running:
         enemy.move_towards(player, walls)
     else:
         enemy.speed = 0
+=======
+    drawMinimap(minimap, map_size, minimap_size, player, enemy, enemy_defeated, walls)
+
+    # Check for item collision and handle item obtainment
+    if player.rect.colliderect(item_rect) and not item_obtained:
+        player.max_hp += extra_hp_item.effect_strength
+        item_rect = pg.Rect(-100, -100, 32, 32)
+        item_obtained = True
+        pg.time.set_timer(message_timer, message_duration)
+
+    if not zone_complete:
+        if not item_obtained:
+            window.blit(item_sprite, (item_rect.x - viewport_pos[0], item_rect.y - viewport_pos[1]))
+
+    # Check for collision between player and enemy
+    if pg.sprite.collide_rect(player, enemy) and enemy_defeated == False:
+        combat_mode = True
+
+    if combat_mode == True and enemy_defeated == False:
+        original_window_size = window_size  # Store the original window size before combat
+        original_minimap_size = minimap_size  # Store the original minimap size before combat
+        enemy_defeated = combat(enemy)  # Assign the result of combat(enemy) to enemy_defeated
+        combat_mode = False  # Set combat_mode to False and return to exploration mode
+        window_size = original_window_size  # Restore the original window size
+        minimap_size = original_minimap_size  
+        window = pg.display.set_mode(window_size) 
+
+    if not enemy_defeated:
+        enemy.move_towards(player, walls)
+        window.blit(enemy.size, enemy.rect)
+>>>>>>> Stashed changes
 
     window.blit(minimap, (window_size[0]-minimap_size[0]-10, 10))
     window.blit(player.size, player.rect)
 
+<<<<<<< Updated upstream
     if not enemy_defeated:
         window.blit(enemy.size, enemy.rect)
 
@@ -476,7 +597,21 @@ while running:
     enemy.move_towards(player, walls)
 
     # Update the display
+=======
+    if item_obtained and pg.time.get_ticks() < message_duration:
+        font = pg.font.Font(None, 36)
+        text_surface = font.render(item_obtained_message, True, (255, 255, 255))
+        text_rect = text_surface.get_rect()
+        text_rect.center = (window_size[0] // 2, window_size[1] // 2)
+        window.blit(text_surface, text_rect)
+        # Update the display
+>>>>>>> Stashed changes
     pg.display.update()
 
 pg.quit()
 
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes

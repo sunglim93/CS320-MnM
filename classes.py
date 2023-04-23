@@ -3,7 +3,11 @@ import random as rd
 
 class Player:
     """A class representing the main player character in the game."""
+<<<<<<< Updated upstream
     def __init__(self, name, x, y, hp, mp, atk, df, magic, weapon):
+=======
+    def __init__(self, name, x, y, hp, mp, atk, df, magic, weapon, item=None):
+>>>>>>> Stashed changes
         self.name = name
         self.x = x
         self.y = y
@@ -21,14 +25,22 @@ class Player:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
+<<<<<<< Updated upstream
         self.image = pg.image.load(f"rd/player.png")
+=======
+        self.image = pg.image.load("assets/player.png")
+>>>>>>> Stashed changes
         self.size = pg.transform.scale(self.image, (64, 64))
 
     def drawPlayer(self, surface):
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
+<<<<<<< Updated upstream
         self.image = pg.image.load(f"rd/player.png")
+=======
+        self.image = pg.image.load("assets/player.png")
+>>>>>>> Stashed changes
         self.size = pg.transform.scale(self.image, (64, 64))
         surface.blit(self.size, self.rect)
 
@@ -107,14 +119,22 @@ class Enemy:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
+<<<<<<< Updated upstream
         self.image = pg.image.load(f"rd/enemy.png")
+=======
+        self.image = pg.image.load("assets/enemy.png")
+>>>>>>> Stashed changes
         self.size = pg.transform.scale(self.image, (128, 128))
 
     def drawEnemy(self, surface):
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
+<<<<<<< Updated upstream
         self.image = pg.image.load(f"rd/enemy.png")
+=======
+        self.image = pg.image.load("assets/enemy.png")
+>>>>>>> Stashed changes
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
@@ -211,8 +231,14 @@ SPELL_LIST = [
 
 class Item:
     """A class representing an item that can be used by characters in the game."""
+<<<<<<< Updated upstream
     def __init__(self, name, item_type, effect, effect_strength, effect_duration, description):
         self.name = name
+=======
+    def __init__(self, name, pos, item_type, effect, effect_strength, effect_duration, description):
+        self.name = name
+        self.pos = pos
+>>>>>>> Stashed changes
         self.item_type = item_type
         self.effect = effect
         self.effect_strength = effect_strength
