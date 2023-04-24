@@ -1,10 +1,6 @@
 import openai
 
-<<<<<<< Updated upstream
-openai.api_key = ""
-=======
 openai.api_key = "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"
->>>>>>> Stashed changes
 #insert API key here
 
 class NPC:
