@@ -206,7 +206,6 @@ class Enemy:
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
-
     def generateDamage(self):
         return rd.randint(self.atk // 2, self.atk)
 
@@ -434,7 +433,6 @@ def checkPlayerCollideGoal(window, window_size, goal, player, enemy):
         return True
     return False
 
-
 def drawMinimap(minimap, map_size, minimap_size, player, enemy, enemy_defeated, walls):
     minimap.fill((0, 0, 0))
 
@@ -538,9 +536,7 @@ def draw_wall_rects(wall_grid, wall_size, minimap, color_tuple):
 
 def handleItemObtainment(player, item, item_obtained):
     if not item_obtained:
-        player.max_hp += item.effect_strength
         item_obtained = True
-        pg.time.set_timer(message_timer, message_duration)
     return item_obtained
 
 def displayMessage(window, font, color, message, x, y, width, height):
@@ -550,7 +546,7 @@ def displayMessage(window, font, color, message, x, y, width, height):
     window.blit(message_surface, message_rect)
     pg.display.update(message_rect)
 
-def combat(enemy, enemy_image_path, enemy_image, items=None, has_item=False):
+def combat(enemy, enemy_image_path, enemy_image, item_obtained=False):
     """A function to hold combat logic for the combat mode."""
     enemy_defeated = False
     window_width = 800
@@ -564,14 +560,14 @@ def combat(enemy, enemy_image_path, enemy_image, items=None, has_item=False):
     extra_hp_item = Item(name="Helm of Constitution", pos=(window_width - 50, window_height - 50), \
     item_type="healing", effect=None, effect_strength=50, effect_duration=None, description=None)
 
-    if has_item:
+    if item_obtained:
         player = Player("Armored Soul", (window_width * 0.1), (window_height * 0.75), 400, 120, 60, 34, \
     [fire_blast, shocking_blast, poison_dart, healing_light], 'longsword', extra_hp_item, extra_hp_item.effect_strength)
     else:
         player = Player("Armored Soul", (window_width * 0.1), (window_height * 0.75), 400, 120, 60, 34, \
     [fire_blast, shocking_blast, poison_dart, healing_light], 'longsword')
 
-    enemy = Enemy("Wretch", (window_width * 0.65), (window_height * 0.68), 350, 60, 25, 34, [fire_blast], enemy_image_path, enemy_image)
+    enemy = Enemy("Wretch", (window_width * 0.65), (window_height * 0.68), 350, 60, 50, 34, [fire_blast], enemy_image_path, enemy_image)
 
     exit_button, attack_button, magic_button_0, magic_button_1, \
     magic_button_2, magic_button_3 = createButtons(window_height, window_width)

@@ -84,6 +84,9 @@ while running:
             pg.time.delay(message_duration)  # Wait for the message to be displayed for the specified duration
             pg.display.update((window_size[0]//2 - 150, window_size[1]//2 - 50, 300, 100))  # Update the message area
 
+    if player.rect.colliderect(item_rect):
+        pg.time.set_timer(message_timer, message_duration)
+
     # Update viewport position
     viewport_pos = gc.updateViewportPos(viewport_pos, player, viewport_size)
     viewport_pos = gc.keepViewportInMap(viewport_pos, map_size, viewport_size)
@@ -115,12 +118,6 @@ while running:
     # Draw minimap
     gc.drawMinimap(minimap, map_size, minimap_size, player, enemy, enemy_defeated, walls)
 
-    # Check for item collision and handle item obtainment
-    if player.rect.colliderect(item_rect) and not item_obtained:
-        item_rect = pg.Rect(-100, -100, 32, 32)
-        item_obtained = True
-        pg.time.set_timer(message_timer, message_duration)
-
     # Display item to screen
     if not item_obtained:
         window.blit(item_sprite, (extra_hp_item.pos[0] - viewport_pos[0], extra_hp_item.pos[1] - viewport_pos[1]))
@@ -133,7 +130,7 @@ while running:
         original_window_size = window_size  # Store the original window size before combat
         original_minimap_size = minimap_size  # Store the original minimap size before combat
         if item_obtained == True:
-            enemy_defeated = gc.combat(enemy, stable_path, stable_image, item_list)
+            enemy_defeated = gc.combat(enemy, stable_path, stable_image, item_obtained)
         else:
             enemy_defeated = gc.combat(enemy, stable_path, stable_image)
 
@@ -152,7 +149,7 @@ while running:
 
     if player.rect.colliderect(item_rect) and not item_obtained:
         item_rect = pg.Rect(-100, -100, 32, 32)
-        item_obtained = gc.handle_item_obtainment(player, extra_hp_item, item_obtained)
+        item_obtained = gc.handleItemObtainment(player, extra_hp_item, item_obtained)
 
     # if zone_complete:
     #     pg.display.update()
