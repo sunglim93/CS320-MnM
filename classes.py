@@ -13,12 +13,16 @@ class GameState:
 
 class EM_Rectangle:
     """A class for areas or goal states in the game."""
-    def __init__(self, pos):
+    def __init__(self, pos, width=300, height=300):
         self.pos = pos
-        self.rect = pg.Rect(pos[0], pos[1], 300, 300)
+        self.original_pos = pos.copy()
+        self.width = width
+        self.height = height
+        self.rect = pg.Rect(pos[0], pos[1], width, height)
 
     def collides_with(self, rect):
         return self.rect.colliderect(rect)
+
 
 class EM_Player:
     """A class to represent the player in exploration mode."""
@@ -32,12 +36,13 @@ class EM_Player:
 
 class EM_Enemy:
     """A class to represent an enemy in exploration mode."""
-    def __init__(self, player_pos):
+    def __init__(self, player_pos, image_path, image):
         self.pos = [player_pos[0]+500, player_pos[1]+500]
-        self.speed = 0.28
+        self.speed = 0.33
         self.rect = pg.Rect(self.pos[0], self.pos[1], 25, 25)
-        self.image = pg.image.load('assets/enemy.png')
-        self.size = pg.transform.flip(pg.transform.scale(self.image, (100, 100)), True, False)
+        self.image_path = image_path
+        self.image = image
+        self.size = pg.transform.scale(self.image, (96, 96))
         self.rect = pg.Rect(self.pos[0], self.pos[1], self.size.get_width(), self.size.get_height())
 
     def move_towards(self, player, walls):
@@ -151,10 +156,11 @@ class Player:
             if effect["duration"] != None and effect["duration"] > 0:
                 effect["duration"] -= 1
                 if effect["effect"] == "Poison":
-                    self.hp -= effect["strength"]
-                    damage_popup = f"{self.name} takes {effect['strength']} poison damage!"
-                if effect["duration"] != None and effect["duration"] <= 0:
-                    self.effects.remove(effect)
+                    if effect["duration"] % 1 == 0:
+                        self.hp -= effect["strength"]
+                        damage_popup = f"{self.name} takes {effect['strength']} poison damage!"
+            if effect["duration"] != None and effect["duration"] <= 0:
+                self.effects.remove(effect)
         return damage_popup
 
     def useItem(self, item_name):
@@ -172,7 +178,7 @@ class Player:
 
 class Enemy:
     """A class representing an enemy character in the game."""
-    def __init__(self, name, x, y, hp, mp, atk, df, magic):
+    def __init__(self, name, x, y, hp, mp, atk, df, magic, image_path, image):
         self.name = name
         self.x = x
         self.y = y
@@ -187,14 +193,16 @@ class Enemy:
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load("assets/enemy.png")
-        self.size = pg.transform.flip(pg.transform.scale(self.image, (128, 128)), True, False)
+        self.image_path = image_path
+        self.image = image
+        self.size = pg.transform.scale(self.image, (128, 128))
+        self.size = pg.transform.scale(self.image, (128, 128))
 
     def drawEnemy(self, surface):
         self.rect = pg.Rect(self.x, self.y, 50, 50)
         self.sprite = pg.Surface((32, 32))
         self.sprite.fill((255, 0, 0))
-        self.image = pg.image.load("assets/enemy.png")
+        self.image = select_enemy_image()
         self.size = pg.transform.scale(self.image, (128, 128))
         surface.blit(self.size, self.rect)
 
@@ -235,10 +243,11 @@ class Enemy:
             if effect["duration"] != None and effect["duration"] > 0:
                 effect["duration"] -= 1
                 if effect["effect"] == "Poison":
-                    self.hp -= effect["strength"]
-                    damage_popup = f"{self.name} takes {effect['strength']} poison damage!"
-                if effect["duration"] != None and effect["duration"] <= 0:
-                    self.effects.remove(effect)
+                    if effect["duration"] % 1 == 0:
+                        self.hp -= effect["strength"]
+                        damage_popup = f"{self.name} takes {effect['strength']} poison damage!"
+            if effect["duration"] != None and effect["duration"] <= 0:
+                self.effects.remove(effect)
         return damage_popup
 
     def getEffectsPopUp(self):
@@ -328,25 +337,38 @@ class Spell:
     def isHealing(self):
         return self.is_healing
 
-fire_blast = Spell("Fire Blast", 20, 30, "Flame")
+fire_blast = Spell("Fire Blast", 20, 50, "Flame")
 shock_blast = Spell("Shocking Blast", 30, 80, "Electricity")
 ice_blast = Spell("Ice Blast", 25, 35, "Ice", effect="Slow", effect_strength=0.5, effect_duration=3)
-poison_dart = Spell("Poison Dart", 15, 30, "Poison", effect="Poison", effect_strength=2, effect_duration=5)
+poison_dart = Spell("Poison Dart", 15, 40, "Poison", effect="Poison", effect_strength=7, effect_duration=5)
 healing_light = Spell("Healing Light", 10, 60, "Healing", effect="Heal", is_healing=True)
 earthquake = Spell("Earthquake", 50, 80, "Earth", effect="Stun", effect_strength=1, effect_duration=2)
 mind_control = Spell("Mind Control", 70, 0, "Psychic", effect="Control", effect_duration=4)
 energy_drain = Spell("Energy Drain", 30, 10, "Dark", effect="Drain", effect_strength=5, effect_duration=3)
 
 SPELL_LIST = [
-    Spell("Fire Blast", 20, 30, "Flame"),
+    Spell("Fire Blast", 20, 50, "Flame"),
     Spell("Shocking Blast", 30, 80, "Electricity"),
     Spell("Ice Blast", 25, 35, "Ice", effect="Slow", effect_strength=0.5, effect_duration=3),
-    Spell("Poison Dart", 15, 20, "Poison", effect="Poison", effect_strength=2, effect_duration=5),
+    Spell("Poison Dart", 15, 40, "Poison", effect="Poison", effect_strength=7, effect_duration=5),
     Spell("Healing Light", 10, 60, "Healing", effect="Heal", is_healing=True),
     Spell("Earthquake", 50, 80, "Earth", effect="Stun", effect_strength=1, effect_duration=2),
     Spell("Mind Control", 70, 0, "Psychic", effect="Control", effect_duration=4),
     Spell("Energy Drain", 30, 10, "Dark", effect="Drain", effect_strength=5, effect_duration=3)
 ]
+
+def createSpells():
+    fire_blast = Spell("Fire Blast", 20, 100, "Flame")
+    shocking_blast = Spell("Shocking Blast", 30, 125, "Electricity")
+    poison_dart = Spell("Poison Dart", 15, 20, "Poison", effect="Poison", effect_strength=7, effect_duration=5)
+    healing_light = Spell("Healing Light", 40, 60, "Healing", effect="Heal", is_healing=True)
+    return [fire_blast, shocking_blast, poison_dart, healing_light]
+
+def select_enemy_image():
+    enemy_index = rd.randint(0, 2)
+    enemy_image_path = f'assets/enemy{enemy_index}.png'
+    enemy_image = pg.image.load(enemy_image_path).convert_alpha()
+    return enemy_image_path, enemy_image
 
 def updateViewportPos(viewport_pos, player, viewport_size):
     viewport_pos[0] = player.pos[0] + player.rect.width / 2 - viewport_size[0] / 2
@@ -396,11 +418,14 @@ def drawWalls(window, walls, viewport_pos, color_tuple_1):
         window.fill(color_tuple_1, wall_rect)
 
 def updateGoalPos(goal, window_size, viewport_pos):
-    goal.pos = [window_size[0] - 300 - viewport_pos[0], window_size[1] - 300 - viewport_pos[1]]
+    goal.pos = [goal.original_pos[0] - viewport_pos[0], goal.original_pos[1] - viewport_pos[1]]
     return goal
 
 def checkPlayerCollideGoal(window, window_size, goal, player, enemy):
-    if goal.collides_with(player.rect):
+    player_rect = pg.Rect(player.pos[0], player.pos[1], player.rect.width, player.rect.height)
+    goal_rect = pg.Rect(goal.pos[0], goal.pos[1], goal.width, goal.height)
+
+    if player_rect.colliderect(goal_rect):
         font = pg.font.Font(None, 100)
         TEXT_COL = ("#bce7fc")
         font = pg.font.Font("assets/alagard.ttf", 40)
@@ -408,6 +433,7 @@ def checkPlayerCollideGoal(window, window_size, goal, player, enemy):
         window.blit(text, (window_size[0] // 2 - text.get_width() // 2, window_size[1] // 2 - text.get_height() // 2))
         return True
     return False
+
 
 def drawMinimap(minimap, map_size, minimap_size, player, enemy, enemy_defeated, walls):
     minimap.fill((0, 0, 0))
@@ -429,13 +455,6 @@ def drawMinimap(minimap, map_size, minimap_size, player, enemy, enemy_defeated, 
 
 def createWindow(window_height, window_width):
     return ui.Window(window_height, window_width, "Metal & Magic")
-
-def createSpells():
-    fire_blast = Spell("Fire Blast", 20, 100, "Flame")
-    shocking_blast = Spell("Shocking Blast", 30, 125, "Electricity")
-    poison_dart = Spell("Poison Dart", 15, 20, "Poison", effect="Poison", effect_strength=2, effect_duration=5)
-    healing_light = Spell("Healing Light", 40, 60, "Healing", effect="Heal", is_healing=True)
-    return [fire_blast, shocking_blast, poison_dart, healing_light]
 
 def createButtons(window_width, window_height):
     button_width, button_height = 75, 50
@@ -517,21 +536,21 @@ def draw_wall_rects(wall_grid, wall_size, minimap, color_tuple):
                 wall_rect = pg.Rect(j*wall_size[0]//16, i*wall_size[1]//16, wall_size[0]//16, wall_size[1]//16)
                 pg.draw.rect(minimap, color_tuple, wall_rect)
 
-def handle_item_obtainment(player, item, item_obtained):
+def handleItemObtainment(player, item, item_obtained):
     if not item_obtained:
         player.max_hp += item.effect_strength
         item_obtained = True
         pg.time.set_timer(message_timer, message_duration)
     return item_obtained
 
-def display_message(window, font, color, message, x, y, width, height):
+def displayMessage(window, font, color, message, x, y, width, height):
     message_surface = font.render(message, True, color)
     message_rect = message_surface.get_rect()
     message_rect.topleft = (x, y)
     window.blit(message_surface, message_rect)
     pg.display.update(message_rect)
 
-def combat(enemy,items=None, has_item=False):
+def combat(enemy, enemy_image_path, enemy_image, items=None, has_item=False):
     """A function to hold combat logic for the combat mode."""
     enemy_defeated = False
     window_width = 800
@@ -545,7 +564,6 @@ def combat(enemy,items=None, has_item=False):
     extra_hp_item = Item(name="Helm of Constitution", pos=(window_width - 50, window_height - 50), \
     item_type="healing", effect=None, effect_strength=50, effect_duration=None, description=None)
 
-
     if has_item:
         player = Player("Armored Soul", (window_width * 0.1), (window_height * 0.75), 400, 120, 60, 34, \
     [fire_blast, shocking_blast, poison_dart, healing_light], 'longsword', extra_hp_item, extra_hp_item.effect_strength)
@@ -553,13 +571,13 @@ def combat(enemy,items=None, has_item=False):
         player = Player("Armored Soul", (window_width * 0.1), (window_height * 0.75), 400, 120, 60, 34, \
     [fire_blast, shocking_blast, poison_dart, healing_light], 'longsword')
 
-    enemy = Enemy("Wretch", (window_width * 0.65), (window_height * 0.68), 300, 60, 25, 34, [fire_blast])
+    enemy = Enemy("Wretch", (window_width * 0.65), (window_height * 0.68), 350, 60, 25, 34, [fire_blast], enemy_image_path, enemy_image)
 
     exit_button, attack_button, magic_button_0, magic_button_1, \
     magic_button_2, magic_button_3 = createButtons(window_height, window_width)
 
     exit_color = (255, 0, 0)
-    attack_color = (0, 255, 0)
+    attack_color = (0, 100, 0)
     magic_color = (0, 0, 255)
     clear_text = pg.Rect(0, 100, 800, 200)
 
@@ -581,6 +599,16 @@ def combat(enemy,items=None, has_item=False):
         pg.draw.rect(window.res, magic_color, magic_button_1)
         pg.draw.rect(window.res, magic_color, magic_button_2)
         pg.draw.rect(window.res, magic_color, magic_button_3)
+
+        # create button text (janky AF)
+        text = font.render('ATK          FB           SB           PD          HL', True, (255, 255, 255))
+
+        # get the position to center the text on the screen
+        text_x = window_width // 3.9 - text.get_width() // 2
+        text_y = window_height // 1.05 - text.get_height() // 2
+
+        # blit the text surface to the screen
+        window.res.blit(text, (text_x, text_y))
 
         ui.drawHealthBar(player.hp, player.max_hp, window.res, 10, 10, 100, 20)
         ui.drawManaBar(player.mp, player.max_mp, window.res, 10, 40, 100, 20)
@@ -642,11 +670,15 @@ def combat(enemy,items=None, has_item=False):
                         else:
                             ui.displayPopUp(window, font, TEXT_COL, "Not enough MP!", window.width/2 - 250, window.height/2 - 50, 500, 100)
                             continue
+                        ui.drawHealthBar(player.hp, player.max_hp, window.res, 10, 10, 100, 20)
+                        ui.drawManaBar(player.mp, player.max_mp, window.res, 10, 40, 100, 20)
 
                     if turn == 1:
                         time.sleep(0.5)    
                         pg.draw.rect(window.res, (0,0,0), clear_text)
                         if enemy.getHP() <= 0:
+                            ui.drawHealthBar(enemy.hp, enemy.max_hp, window.res, 680, 10, 100, 20)
+                            ui.drawManaBar(enemy.mp, enemy.max_mp, window.res, 680, 40, 100, 20)
                             ui.displayPopUp(window, font, TEXT_COL, enemy.name + " has been defeated! " + player.name
                             + " is Victorious!", window.width/2 - 250, window.height/2 - 50, 500, 100)
                             time.sleep(2.5)
@@ -673,7 +705,8 @@ def combat(enemy,items=None, has_item=False):
                                     player.takeDamage(enemy_dmg)
                                     ui.displayPopUp(window, font, TEXT_COL, enemy.name + " attacks you and deals "+ str(enemy_dmg) \
                                     + " damage!", window.width/2 - 250, window.height/2 - 50, 500, 100)
-
+                            ui.drawHealthBar(enemy.hp, enemy.max_hp, window.res, 680, 10, 100, 20)
+                            ui.drawManaBar(enemy.mp, enemy.max_mp, window.res, 680, 40, 100, 20)
                         pg.display.update(clear_text)            
                         if player.getHP() == 0:
                             ui.displayPopUp(window, font, TEXT_COL,"GAME OVER!", window.width/2 - 250, window.height/2 - 50, 500, 100)

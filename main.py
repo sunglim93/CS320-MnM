@@ -18,7 +18,9 @@ color_tuple_2 = (rd.randint(1, 254),rd.randint(1, 254),rd.randint(1, 254))
 
 # Initialize exploration mode objects
 player = gc.EM_Player()
-enemy = gc.EM_Enemy(player.pos)
+enemy_image_path, enemy_image = gc.select_enemy_image()
+stable_path, stable_image = enemy_image_path, enemy_image
+enemy = gc.EM_Enemy(player.pos, enemy_image_path, enemy_image)
 goal = gc.EM_Rectangle([window_size[0] - 300, window_size[1] - 300])
 
 # Initiallize combat state
@@ -77,7 +79,7 @@ while running:
         if event.type == pg.QUIT:
             running = False
         elif event.type == message_timer:
-            gc.display_message(window, pg.font.Font("assets/alagard.ttf", 40), (0, 0, 0), item_obtained_message, window_size[0]//2 - 150, window_size[1]//2 - 50, 300, 100)
+            gc.displayMessage(window, pg.font.Font("assets/alagard.ttf", 40), (color_tuple_2), item_obtained_message, window_size[0]//2 - 150, window_size[1]//2 - 50, 300, 100)
             pg.time.set_timer(message_timer, 0)  # Stop the timer
             pg.time.delay(message_duration)  # Wait for the message to be displayed for the specified duration
             pg.display.update((window_size[0]//2 - 150, window_size[1]//2 - 50, 300, 100))  # Update the message area
@@ -131,9 +133,10 @@ while running:
         original_window_size = window_size  # Store the original window size before combat
         original_minimap_size = minimap_size  # Store the original minimap size before combat
         if item_obtained == True:
-             enemy_defeated = gc.combat(enemy, item_list, True)
+            enemy_defeated = gc.combat(enemy, stable_path, stable_image, item_list)
         else:
-             enemy_defeated = gc.combat(enemy, False)
+            enemy_defeated = gc.combat(enemy, stable_path, stable_image)
+
 
         combat_mode = False  # Set combat_mode to False and return to exploration mode
         window_size = original_window_size  # Restore the original window size
@@ -151,6 +154,10 @@ while running:
         item_rect = pg.Rect(-100, -100, 32, 32)
         item_obtained = gc.handle_item_obtainment(player, extra_hp_item, item_obtained)
 
+    # if zone_complete:
+    #     pg.display.update()
+    #     pg.time.delay(2000)  # Show the message for 2 seconds
+    #     running = False  # End the game
     pg.display.update()
 
 pg.quit()
