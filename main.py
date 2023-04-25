@@ -37,6 +37,20 @@ item_rect = pg.Rect(extra_hp_item.pos[0], extra_hp_item.pos[1], 32, 32)
 item_list = []
 item_list = extra_hp_item
 
+# Create an NPC instance
+npc_name = "The Black Raven"
+npc_x = 600
+npc_y = 400
+friendly_npc = gc.NPC(npc_name, npc_x, npc_y)
+
+# Set boundaries for NPC movement
+boundaries = {
+    "left": 0,
+    "right": window_size[0],
+    "top": 0,
+    "bottom": window_size[1]
+}
+
 # Set map size
 map_size = gc.setMapSize(4000, 4000)
 
@@ -69,10 +83,15 @@ combat_mode = False
 goal_reached = False
 enemy_defeated = False  
 item_obtained = False
+talking_to_npc = False
 
 item_obtained_message = f"Item obtained: {extra_hp_item.name}!"
 message_duration = 1200  # 1.2 seconds
 message_timer = pg.USEREVENT + 1
+
+point_update_timer = pg.USEREVENT + 2
+pg.time.set_timer(point_update_timer, 2000)  # 2 seconds
+current_point = gc.random_point_within_map(map_size)
 
 while running:
     for event in pg.event.get():
@@ -83,6 +102,12 @@ while running:
             pg.time.set_timer(message_timer, 0)  # Stop the timer
             pg.time.delay(message_duration)  # Wait for the message to be displayed for the specified duration
             pg.display.update((window_size[0]//2 - 150, window_size[1]//2 - 50, 300, 100))  # Update the message area
+        elif event.type == point_update_timer:
+            current_point = gc.random_point_within_map(map_size)
+        elif event.type == pg.KEYUP and talking_to_npc:
+            text = gc.handleTextInput(event, text, font)
+        elif event.type == pg.KEYDOWN and event.key == pg.K_RETURN and talking_to_npc:
+            talking_to_npc = False
 
     if player.rect.colliderect(item_rect):
         pg.time.set_timer(message_timer, message_duration)
@@ -90,6 +115,9 @@ while running:
     # Update viewport position
     viewport_pos = gc.updateViewportPos(viewport_pos, player, viewport_size)
     viewport_pos = gc.keepViewportInMap(viewport_pos, map_size, viewport_size)
+
+    # Update NPC's viewport_pos
+    friendly_npc.viewport_pos = viewport_pos
 
     # Handle player input
     keys = pg.key.get_pressed()
@@ -105,10 +133,10 @@ while running:
     gc.drawWalls(window, walls, viewport_pos, color_tuple_1)
 
     # Update goal position
-    goal = gc.updateGoalPos(goal, window_size, viewport_pos)
+    # goal = gc.updateGoalPos(goal, window_size, viewport_pos)
 
     # Check if player collided with the goal
-    zone_complete = gc.checkPlayerCollideGoal(window, window_size, goal, player, enemy)
+    # zone_complete = gc.checkPlayerCollideGoal(window, window_size, goal, player, enemy)
 
     # Keep objects synced with viewport
     item_rect.topleft = (extra_hp_item.pos[0] - viewport_pos[0], extra_hp_item.pos[1] - viewport_pos[1])
@@ -150,6 +178,45 @@ while running:
     if player.rect.colliderect(item_rect) and not item_obtained:
         item_rect = pg.Rect(-100, -100, 32, 32)
         item_obtained = gc.handleItemObtainment(player, extra_hp_item, item_obtained)
+
+    # Update NPC position and draw it on the screen
+    friendly_npc.move_towards_point(current_point, walls)
+    friendly_npc.drawNPC(window)
+
+    # Keep NPC synced with viewport
+    friendly_npc.rect.topleft = (friendly_npc.x - viewport_pos[0], friendly_npc.y - viewport_pos[1])
+
+    # Check for collision between player and NPC
+    if player.rect.colliderect(friendly_npc.rect) and not talking_to_npc:
+        talking_to_npc = True
+        # text = friendly_npc.message + '\n' + '*' * 20
+
+    if talking_to_npc:
+        pg.draw.rect(window, (255, 255, 255), text_box_rect)
+
+        # Draw the text box
+        pg.draw.rect(window, (0, 0, 0), text_box_rect, 2)
+
+        text_box.fill((255, 255, 255))
+        font_surface = font.render(text, True, (0, 0, 0))
+        text_box.blit(font_surface, (10, 10))
+
+        window.blit(text_box, text_box_rect.topleft)
+
+
+        # Handle text input
+        # for event in pg.event.get():
+        #     if event.type == pg.KEYUP:
+        #         text = gc.handleTextInput(event, text, font)
+        #     elif event.type == pg.KEYDOWN and event.key == pg.K_RETURN:
+        #         talking_to_npc = False
+
+    TEXT_COL = ("#bce7fc")
+    font = pg.font.Font("assets/alagard.ttf",20)
+
+    text_box = pg.Surface((600, 200))
+    text_box_rect = text_box.get_rect()
+    text_box_rect.center = (600, 400)
 
     # if zone_complete:
     #     pg.display.update()

@@ -2,6 +2,84 @@ import UI as ui
 import pygame as pg
 import random as rd
 import time
+import openai
+import pygame.freetype
+import time
+
+openai.api_key = "YOUR_API_KEY"
+
+def npcCollideWall(new_pos, walls, npc_rect):
+    new_npc_rect = npc_rect.copy()
+    new_npc_rect.topleft = new_pos
+    for wall in walls:
+        if new_npc_rect.colliderect(wall):
+            return True
+    return False
+
+def random_point_within_map(map_size):
+    x = rd.randint(0, map_size[0])
+    y = rd.randint(0, map_size[1])
+    return [x, y]
+
+# def handleTextInput(event, text, font):
+#     if event.type == pg.KEYUP:
+#         if event.key == pg.K_BACKSPACE:
+#             text = text[:-1]
+#         elif event.unicode.isprintable():
+#             text += event.unicode
+#     return text
+    
+# def generate_npc_dialogue(prompt):
+#     completions = openai.Completion.create(
+#         engine="text-davinci-002",
+#         prompt=prompt,
+#         max_tokens=50,
+#         n=1,
+#         stop=None,
+#         temperature=0.9,
+#     )
+#     message = completions.choices[0].text.strip()
+#     return message
+    
+class NPC:
+    """A class representing a non-player character in the game."""
+    def __init__(self, name, x, y, viewport_pos=(0, 0), prompt=''):
+        self.name = name
+        self.prompt = prompt
+        # self.message = generate_npc_dialogue(prompt)
+        self.x = x
+        self.y = y
+        self.rect = pg.Rect(self.x, self.y, 50, 50)
+        self.sprite = pg.Surface((32, 32))
+        self.sprite.fill((0, 255, 0))
+        self.image = pg.image.load("assets/npc.png")
+        self.size = pg.transform.scale(self.image, (96, 96))
+        self.move_timer = pg.time.get_ticks()
+        self.viewport_pos = viewport_pos
+
+    def drawNPC(self, surface):
+        surface.blit(self.size, (self.x - self.viewport_pos[0], self.y - self.viewport_pos[1]))
+
+
+    def move_towards_point(self, point, walls, speed=0.33):
+        new_pos = [self.x, self.y]
+        dx = 0
+        dy = 0
+
+        if point[0] > self.x:
+            dx = speed
+        if point[0] < self.x:
+            dx = -speed
+        if point[1] > self.y:
+            dy = speed
+        if point[1] < self.y:
+            dy = -speed
+
+        new_pos[0] += dx
+        new_pos[1] += dy
+
+        if not npcCollideWall(new_pos, walls, self.rect):
+            self.x, self.y = new_pos
 
 class GameState:
     def __init__(self, state_name, state_function):
@@ -196,7 +274,6 @@ class Enemy:
         self.image_path = image_path
         self.image = image
         self.size = pg.transform.scale(self.image, (128, 128))
-        self.size = pg.transform.scale(self.image, (128, 128))
 
     def drawEnemy(self, surface):
         self.rect = pg.Rect(self.x, self.y, 50, 50)
@@ -290,30 +367,6 @@ class Weapon:
     def unequip(self, target):
         target.atk_low -= self.atk_bonus
         target.atk_high -= self.atk_bonus
-
-class NPC:
-    """A class representing a non-player character in the game."""
-    def __init__(self, name, x, y, dialogue):
-        self.name = name
-        self.x = x
-        self.y = y
-        self.dialogue = dialogue
-        self.rect = pg.Rect(self.x, self.y, 50, 50)
-        self.sprite = pg.Surface((32, 32))
-        self.sprite.fill((0, 255, 0))
-        self.image = pg.image.load(f"rd/npc.png")
-        self.size = pg.transform.scale(self.image, (64, 64))
-
-    def drawNPC(self, surface):
-        self.rect = pg.Rect(self.x, self.y, 50, 50)
-        self.sprite = pg.Surface((32, 32))
-        self.sprite.fill((0, 255, 0))
-        self.image = pg.image.load(f"rd/npc.png")
-        self.size = pg.transform.scale(self.image, (64, 64))
-        surface.blit(self.size, self.rect)
-
-    def interact(self):
-        print(self.dialogue)
 
 class Spell:
     """A class representing a spell that can be cast by characters in the game."""
