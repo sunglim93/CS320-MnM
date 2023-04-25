@@ -104,8 +104,8 @@ while running:
             pg.display.update((window_size[0]//2 - 150, window_size[1]//2 - 50, 300, 100))  # Update the message area
         elif event.type == point_update_timer:
             current_point = gc.random_point_within_map(map_size)
-        elif event.type == pg.KEYUP and talking_to_npc:
-            text = gc.handleTextInput(event, text, font)
+        # elif event.type == pg.KEYUP and talking_to_npc:
+        #     text = gc.handleTextInput(event, text, font)
         elif event.type == pg.KEYDOWN and event.key == pg.K_RETURN and talking_to_npc:
             talking_to_npc = False
 
@@ -191,17 +191,17 @@ while running:
         talking_to_npc = True
         # text = friendly_npc.message + '\n' + '*' * 20
 
-    if talking_to_npc:
-        pg.draw.rect(window, (255, 255, 255), text_box_rect)
+    # if talking_to_npc:
+    #     pg.draw.rect(window, (255, 255, 255), text_box_rect)
 
-        # Draw the text box
-        pg.draw.rect(window, (0, 0, 0), text_box_rect, 2)
+    #     # Draw the text box
+    #     pg.draw.rect(window, (0, 0, 0), text_box_rect, 2)
 
-        text_box.fill((255, 255, 255))
-        font_surface = font.render(text, True, (0, 0, 0))
-        text_box.blit(font_surface, (10, 10))
+    #     text_box.fill((255, 255, 255))
+    #     font_surface = font.render(text, True, (0, 0, 0))
+    #     text_box.blit(font_surface, (10, 10))
 
-        window.blit(text_box, text_box_rect.topleft)
+    #     window.blit(text_box, text_box_rect.topleft)
 
 
         # Handle text input
